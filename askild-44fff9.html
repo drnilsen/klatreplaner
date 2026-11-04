@@ -1,0 +1,658 @@
+<!doctype html><html lang="no"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Askild">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icon.png"><link rel="icon" href="icon.svg">
+</head><body>
+<title>Askild – treningsplan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{
+  --bg:#f4f3ef; --card:#ffffff; --ink:#1d2321; --muted:#5f6a66; --line:#dedbd2;
+  --accent:#0f6b5f; --accent-ink:#ffffff; --accent-soft:#dcefe9;
+  --warn:#9a5b00; --warn-soft:#fff1d6; --stop:#a61e1e; --stop-soft:#fde4e4;
+  --chip:#ecebe5;
+  --c-gronn:#2f9e44; --c-gul:#e9b92f; --c-oransje:#ec7d10; --c-rod:#d62f2f; --c-svart:#1b1b1b;
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121615; --card:#1b2120; --ink:#e8ece9; --muted:#9aa6a1; --line:#2c3533;
+    --accent:#4cc2ac; --accent-ink:#0b1513; --accent-soft:#1d3531;
+    --warn:#f2b45a; --warn-soft:#3a2c14; --stop:#ff8a8a; --stop-soft:#3c1d1d;
+    --chip:#252d2b; --c-svart:#000000;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121615; --card:#1b2120; --ink:#e8ece9; --muted:#9aa6a1; --line:#2c3533;
+  --accent:#4cc2ac; --accent-ink:#0b1513; --accent-soft:#1d3531;
+  --warn:#f2b45a; --warn-soft:#3a2c14; --stop:#ff8a8a; --stop-soft:#3c1d1d;
+  --chip:#252d2b; --c-svart:#000000;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:760px;margin:0 auto;
+  padding:0 max(16px,env(safe-area-inset-right)) 48px max(16px,env(safe-area-inset-left))}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding-top:env(safe-area-inset-top);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:12px 0 6px}
+.brand h1{font-size:18px;margin:0;letter-spacing:.01em}
+.brand .sub{font-size:12.5px;color:var(--muted);white-space:nowrap}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{flex:0 0 auto;text-decoration:none;color:var(--ink);background:var(--chip);
+  padding:7px 13px;border-radius:999px;font-size:14px;font-weight:500;white-space:nowrap}
+nav.tabs a.on{background:var(--accent);color:var(--accent-ink)}
+.banner{margin:18px 0 4px;font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--accent)}
+h2{font-size:22px;margin:4px 0 10px;line-height:1.25}
+h3{font-size:16px;margin:18px 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin:12px 0}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.tag{font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--chip);color:var(--ink);white-space:nowrap}
+.tag.acc{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.tag.warn{background:var(--warn-soft);color:var(--warn);font-weight:600}
+.tag.stop{background:var(--stop-soft);color:var(--stop);font-weight:600}
+.daynav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
+.daynav .d{font-weight:600;text-align:center;flex:1}
+.daynav .d small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{background:var(--chip);border:0;border-radius:10px;padding:9px 14px;min-height:42px}
+.btn.pri{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.sm{min-height:34px;padding:5px 11px;font-size:14px}
+.blk{margin:14px 0 0}
+.blk h4{margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.blk .dur{float:right;font-weight:500;text-transform:none;letter-spacing:0}
+ul{margin:4px 0 0;padding-left:20px}
+li{margin:3px 0}
+.key{font-weight:700}
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:9px 12px;border-radius:0 10px 10px 0;margin:10px 0;font-size:14.5px}
+.note.stop{border-color:var(--stop);background:var(--stop-soft)}
+.note.acc{border-color:var(--accent);background:var(--accent-soft)}
+.rest{color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:7px 6px;border-bottom:1px solid var(--line)}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.tscroll{overflow-x:auto;margin:0 -4px}
+tr.now td{background:var(--accent-soft)}
+.week-row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:flex-start;text-decoration:none;color:inherit}
+.week-row:last-child{border-bottom:0}
+.week-row .wd{width:46px;flex:0 0 46px;font-weight:600}
+.week-row .wd small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.week-row .wt{flex:1}
+.week-row .wt small{color:var(--muted)}
+.week-row.today{background:var(--accent-soft);border-radius:10px;padding-left:8px;padding-right:8px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;border:1px solid rgba(0,0,0,.15)}
+.f-gronn{background:var(--c-gronn)} .f-gul{background:var(--c-gul)} .f-oransje{background:var(--c-oransje)}
+.f-rod{background:var(--c-rod)} .f-svart{background:var(--c-svart)}
+/* logg form */
+.colors{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0 12px}
+.colors button{border:2px solid transparent;border-radius:10px;padding:9px 2px 7px;background:var(--chip);font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.colors button .dot{width:20px;height:20px}
+.colors button.on{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+input[type=number],input[type=text],textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+textarea{min-height:76px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.saved{font-size:13px;color:var(--muted);margin-left:10px}
+.grid{display:grid;grid-template-columns:52px repeat(4,1fr);gap:4px;font-size:12.5px;align-items:center}
+.grid .h{color:var(--muted);text-align:center;font-weight:600}
+.grid .wk{color:var(--muted)}
+.grid .cell{height:22px;border-radius:6px;background:var(--chip)}
+.grid .cell.f-gronn{background:var(--c-gronn)} .grid .cell.f-gul{background:var(--c-gul)} .grid .cell.f-oransje{background:var(--c-oransje)} .grid .cell.f-rod{background:var(--c-rod)} .grid .cell.f-svart{background:var(--c-svart)}
+a{color:var(--accent)}
+.grid .cur{color:var(--accent);font-weight:700}
+.entry{padding:10px 0;border-bottom:1px solid var(--line)}
+.entry:last-child{border-bottom:0}
+.entry .eh{display:flex;justify-content:space-between;gap:8px;font-weight:600}
+.entry .eh small{color:var(--muted);font-weight:400}
+.entry p{margin:4px 0 0;font-size:14.5px}
+.muted{color:var(--muted)}
+.small{font-size:13.5px}
+.ex{padding:12px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:112px minmax(0,1fr);gap:12px;align-items:start}
+.ex .fig{background:#fbfbf8;border-radius:10px;border:1px solid var(--line);line-height:0}
+.ex .fig svg{width:100%;height:auto;display:block}
+@media (min-width:560px){.ex{grid-template-columns:150px minmax(0,1fr)}}
+.ex:last-child{border-bottom:0}
+.ex .exh{display:flex;flex-direction:column;gap:2px;font-weight:600}
+.ex .exh span.code{color:var(--accent);margin-right:6px}
+.ex .exh .sets{white-space:nowrap;font-weight:600;color:var(--accent)}
+.ex p{margin:3px 0 0;font-size:14.5px;color:var(--muted)}
+.ok{color:var(--accent)}
+@media (min-width:640px){ .brand h1{font-size:20px} h2{font-size:26px} }
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="brand"><h1>Askild <span style="font-weight:400;color:var(--muted)">· 2026/27</span></h1><span class="sub" id="syncState"></span></div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main id="view"></main>
+</div>
+
+<script>
+/* ============ KALENDER ============ */
+const DAY = ["", "Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag","Søndag"];
+const DAYS = ["", "Man","Tir","Ons","Tor","Fre","Lør","Søn"];
+const MON = ["jan","feb","mars","april","mai","juni","juli","aug","sep","okt","nov","des"];
+
+function ymd(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function parseYmd(s){ const [y,m,dd]=s.split("-").map(Number); return new Date(y,m-1,dd); }
+function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function fmt(d){ return d.getDate()+". "+MON[d.getMonth()]; }
+function isoWeek(d){
+  const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  const dow=t.getUTCDay()||7; t.setUTCDate(t.getUTCDate()+4-dow);
+  const y=t.getUTCFullYear(); const y0=new Date(Date.UTC(y,0,1));
+  return {y, w:Math.ceil(((t-y0)/864e5+1)/7), dow};
+}
+function mondayOf(y,w){ // ISO
+  const jan4=new Date(y,0,4); const dow=jan4.getDay()||7;
+  return addDays(jan4, (w-1)*7-(dow-1));
+}
+
+// Sesongens uker i rekkefølge
+const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
+const LIGHT=new Set([48,5,12,16]);
+const COMP={8:"NM junior lør 27. feb"};
+
+function info(date){
+  const {y,w,dow}=isoWeek(date);
+  const i={date,y,w,dow,odd:w%2===1,light:false,comp:null,phase:"utenfor",label:"Utenfor planen"};
+  const inSeason=(y===2026&&w>=45)||(y===2027&&w<=20);
+  if(!inSeason){ i.phase = (y<2026||(y===2026&&w<45))?"før":"etter"; i.label = i.phase==="før"?"Før sesongstart":"Planen er ferdig"; return i; }
+  i.light=LIGHT.has(w); i.comp=COMP[w]||null;
+  if(y===2026&&w<=51){ i.phase="f1"; i.label="Fase 1 · Grunnlag"; }
+  else if((y===2026&&w>=52)||(y===2027&&w===1)){ i.phase="jul"; i.label= w===1?"Jul · lett oppstart":"Jul"; }
+  else if(w<=7){ i.phase="f2"; i.label="Fase 2 · Mer intensitet"; }
+  else if(w===8){ i.phase="nm"; i.label="NM-uka"; }
+  else { i.phase="f3"; i.label="Fase 3 · Konkurranseperiode"; }
+  return i;
+}
+// Intensitetsnivå for hard buldring/linked (uke 1 og 2 = fase 1-intensitet)
+function lvl(i){
+  if(i.phase==="f1"||i.phase==="jul") return 1;
+  if(i.phase==="f2") return i.w<=2?1:2;
+  if(i.phase==="nm") return 2;
+  if(i.phase==="f3") return 3;
+  return 1;
+}
+const half=n=>Math.max(1,Math.round(n/2));
+
+/* ============ ØKTENE ============ */
+const B=(h,items,dur)=>({h,items,dur});
+
+function session(date){
+  const i=info(date);
+  const s={i,key:"hvile",title:"Hvile",time:"–",blocks:[],notes:[],count:null};
+  if(i.phase==="før"||i.phase==="etter"){ s.title=i.label; s.key="utenfor"; return s; }
+
+  const md=date.getMonth()===11?date.getDate():0;
+  if(i.phase==="jul" && i.w!==1){
+    s.key="jul"; s.title="Jul – fri";
+    s.blocks=[B("I dag",["Fri, lek, lett klatring hvis du har lyst.","Ingen faste økter."])];
+    if(md>=24&&md<=27) s.notes.push(["stop","24.–27. des: ingen harde økter."]);
+    return s;
+  }
+  const L=lvl(i);
+  const lightNote = i.light ? "Lett uke: halvt antall forsøk/runder/sett, samme intensitet." : null;
+  const compNote = i.comp ? "Konkurranseuke: halvt volum, samme intensitet, ingen nye øvelser." : null;
+  const jan1 = i.phase==="jul"&&i.w===1 ? "Uke 1: lett oppstart på fase 1-intensitet." : null;
+
+  switch(i.dow){
+  case 1: { // MANDAG
+    s.key="man"; s.title="Hard buldring"; s.time="ca. 2 t";
+    let max=[0,18,15,12][L], hov={1:"6–8 buldre 1–2 grader under maks · RPE 7–8 · 3 min pause",
+      2:"5–6 buldre nær maks · RPE 8–9 · 3–4 min pause",3:"4–5 buldre på maks · RPE 9 · 4–5 min pause"}[L];
+    const stopp={1:"Kjent flytt glipper to ganger.",2:"Første forsøk med tydelig teknikkfall.",3:"Oppvarmingsbuldre begynner å kreve noe."}[L];
+    if(i.phase==="nm") max=8; else if(i.light) max=half(max);
+    s.count={label:"Forsøk",max};
+    s.blocks=[
+      B("Oppvarming",["5 min puls, mobilitet skulder/hofte.","20 min lett klatring med dagens teknikktema – pyramide lett → middels, 10–12 buldre."],"30 min"),
+      B("Hoveddel",[hov, `<span class="key">Maks ${max} forsøk.</span>`,"Les hele buldret før første forsøk. Rutinen før hvert forsøk. Sitt ned i pausene.","Stopp: "+stopp,
+        "Spraywall eller board. Board: maks 6 forsøk, vinkel ≤ 35°, ingen dynamiske flytt til lister."],"60–70 min"),
+      B("Nedtrapping",["Lett klatring, rist ut."],"10–15 min")];
+    s.notes.push(["acc","Helgeregel: klatret i går (søndag) → i dag blir 3×10 med teknikktema."]);
+    if(date.getDate()<=7) s.notes.push(["acc","Første mandag i måneden: mål høyde (samme tidspunkt, uten sko) og skriv i loggen."]);
+    break; }
+  case 3: { // ONSDAG
+    if(i.phase==="nm"){ s.key="ons"; s.title="Regenerering"; s.time="ca. 45 min";
+      s.count={label:"Runder",max:2};
+      s.blocks=[B("Økt",["Ingen PE denne uka.","2 runder × 10 min lett klatring, RPE 3–4."],"20 min")]; break; }
+    if(i.phase==="f3"){
+      s.key="ons"; s.title="Rutedag på led · 2 × 4"; s.time="ca. 1 t 30";
+      let r=4; if(i.light||i.comp) r=2;
+      s.count={label:"Runder",max:r};
+      s.blocks=[B("Oppvarming",["Lett buldring, 2 lette ruter på led."],"20 min"),
+        B("2 × 4",[`2 ruter på rad, bare sikringsbyttet som pause.`,"1–2 grader under onsight, RPE 7–8.",
+          `<span class="key">${r} runder, 8 min pause.</span>`,"Siste rute i siste runde: pumpet, men går.",
+          "Fall eller heng → neste runde ett hakk lettere. Alt lett → ett hakk hardere neste økt."],"55 min"),
+        B("Nedtrapping",["Lett klatring."],"10 min")];
+      break; }
+    s.key="ons"; s.title="Linked boulders"; s.time="ca. 1 t 15";
+    let main;
+    if(L===1){ const r=i.light?3:5; s.count={label:"Runder",max:r};
+      main=["12–20 flytt, 3–4 grader under maks, RPE 6–7.",`<span class="key">${r} runder, 3–4 min pause.</span>`]; }
+    else { const ser=i.light?1:2; s.count={label:"Runder",max:ser*3};
+      main=["12–16 hardere flytt, 2–3 grader under maks, RPE 7–8.",`<span class="key">${ser} serie${ser>1?"r":""} × 3 runder, 3 min pause${ser>1?", 8 min mellom seriene":""}.</span>`]; }
+    s.blocks=[B("Oppvarming",["Som mandag, med teknikktema."],"25 min"),
+      B("Linked boulders",["2–3 buldre satt sammen, 45–90 s arbeid, alltid fullføre.",...main,
+        "Nye buldre hver uke. Hopp ned på siste tak. Fall → neste runde én grad lettere.","Tak: volumvegg, slopere og pinch – ikke bare lister."],L===1?"ca. 25 min":"ca. 35 min"),
+      B("Nedtrapping",["Lett klatring."],"15 min")];
+    break; }
+  case 4: { // TORSDAG
+    if(i.phase==="nm"){ s.key="tor"; s.title="Lett klatring med rutinen"; s.time="20 min";
+      s.blocks=[B("Økt",["20 min lett klatring. Øv på rutinen før hvert forsøk.","Ingen styrke."],"20 min")]; break; }
+    s.key="tor"; s.title="3×10 + Styrke A"; s.time="ca. 1,5 t";
+    let r=3; if(i.light||i.comp) r=2;
+    const st=strengthSets(i);
+    s.count={label:"Runder 3×10",max:r};
+    s.blocks=[B("Oppvarming",["Lett klatring."],"15 min"),
+      B("3×10",[`<span class="key">${r} runder × 10 min</span> sammenhengende lett klatring, 4+ grader under onsight, RPE 3–4, 5 min pause.`,
+        "Topptau med nedklatring eller traversering.","Runde 1 overdrevet teknikk · runde 2 normalt · runde 3 så lett og stille som mulig."],"40 min"),
+      B("Styrke A",[st.none?st.none:`<a href="#styrke">Styrke A</a> – <span class="key">${st.txt}</span>.`,
+        "Stopp i et sett ved RPE-målet eller når teknikken endres."],"35 min")];
+    s.notes.push(["acc","Onsdagen ble oransje → ett sett ned i styrke i dag."]);
+    break; }
+  case 6: { // LØRDAG
+    if(i.phase==="nm"){ s.key="lor"; s.title="NM junior"; s.time="";
+      s.blocks=[B("Konkurranse",["Samme oppvarming som på jam-lørdagene.","Rutinen før hvert forsøk."])]; break; }
+    if(i.odd){
+      s.key="lor"; s.title="Buldring i jam-format"; s.time="ca. 2 t";
+      const max=i.light?10:20; s.count={label:"Forsøk",max,extra:"Topper"};
+      s.blocks=[B("Oppvarming",["Samme rutine hver gang, lik konkurranse."],"25 min"),
+        B("Jam-format",["Nye buldre: 8–10 buldre fra lett til grensen, valgfri rekkefølge.",
+          `Maks 3 forsøk per buldre, <span class="key">maks ${max} forsøk totalt</span>, minst 2 min pause mellom forsøk.`,
+          "Rutinen før hvert forsøk.","Mål: like mange topper i siste tredjedel som i første.",
+          "Sluttpunkt: tiden, eller tre forsøk på rad med dårligere kvalitet.",
+          "Uten nye buldre: som mandag, hoveddel 60 min, eller buldre du ikke har prøvd på andre vegger."],"75 min"),
+        B("Nedtrapping",["Lett klatring."],"15 min")];
+    } else {
+      s.key="lor"; s.time="ca. 1 t 40";
+      const w=i.w, y=i.y; let main, title, dur;
+      if(y===2026 || (y===2027&&w<=2)){ title="Tau · ledvolum"; const n=i.light?"3–4":"6–8"; s.count={label:"Ruter",max:null};
+        main=[`${n} ruter 3–4 grader under onsight, RPE 5.`,"Sikringsbyttet er pausen.","Tema: klipp fra riktig fot, hvilestillinger."]; dur="60 min"; }
+      else if(w<=7){ title="Tau · onsight"; const n=i.light?"2–3":"4–5"; s.count={label:"Ruter",max:null};
+        main=[`${n} nye ruter 1–2 grader under onsight, RPE 7.`,"6 min lesing, 8–10 min pause.","Rutinen før hvert forsøk."]; dur="60 min"; }
+      else if(w<=14){ title="Tau · 4 × 4"; const r=(i.light||i.comp)?2:3; s.count={label:"Runder",max:r};
+        main=["4 ruter på rad, bare sikringsbyttet som pause.","3–4 grader under onsight, RPE 7–8.",`<span class="key">${r} runder, 10 min pause.</span>`,"Stopp: to fall på rad under eget onsight-nivå."]; dur="75 min"; }
+      else { title="Tau · konkurranselikt"; const n=(i.light||i.comp)?"2":"3–4"; s.count={label:"Ruter",max:null};
+        main=[`${n} ruter på eller nær maks på første forsøk, RPE 8–9.`,"6 min lesing, 10–15 min pause.","Rutinen før hvert forsøk.","Stopp: to fall på rad under eget onsight-nivå."]; dur="60 min"; }
+      s.title=title+" (alt på led)";
+      s.blocks=[B("Oppvarming",["Lett buldring, 2 lette ruter på led."],"20 min"), B(title.replace("Tau · ",""),main,dur)];
+      if((y===2026&&w>=50)||y===2027) s.blocks.push(B("Falltrening",["Kontrollerte fall over taudraget på overhengende vegg, trener sikrer.","4–6 fall. Start 0,5 m over draget, øk 0,5 m per økt til 2–3 m."],"10 min"));
+      s.blocks.push(B("Nedtrapping",["Lett klatring."],"10 min"));
+    }
+    s.notes.push(["acc","Konkurranse i dag? Den erstatter lørdagsøkta."]);
+    break; }
+  default:
+    s.key="hvile"; s.title="Hvile"; s.time="–";
+    s.blocks=[B("Hviledag",["Tapt økt tas ikke igjen."])];
+    if(i.dow===7) s.blocks[0].items.push("Klatrer du ute i dag: mandag blir 3×10 med teknikktema.");
+  }
+  if(s.key!=="hvile"){ [jan1,compNote,lightNote].forEach(n=>n&&s.notes.unshift(["warn",n])); }
+  if(i.phase==="nm"&&s.key!=="hvile") s.notes.unshift(["warn","NM-uka: ingen styrke siste 5 dager."]);
+  return s;
+}
+
+/* ============ STYRKE ============ */
+const EX=[
+ ["A1","Scapula pull-ups","Rette armer, hele hånden rundt stanga. Skulderbladene ned og sammen, kroppen løfter seg 5–10 cm. Rolig ned til fullt heng.",3,"6–8",""],
+ ["A2","Push-ups med «plus»","Rett kropp. På toppen: skulderbladene fram. Lettere: hender på benk. Tyngre: føtter hevet.",3,"8–12","60 s"],
+ ["B1","Inverted rows","Under stang, rett kropp, brystet til stanga, 2 s hold. Lettere: mer oppreist. Tyngre: føtter på kasse.",3,"8–12",""],
+ ["B2","Utadrotasjon med strikk","Albue 90° inntil kroppen, håndkle under albuen. Roter ut, rolig tilbake.",2,"12–15 /side","60 s"],
+ ["C1","Y-T-W på benk","Magen på skrå benk. Rette armer i Y, T, W, tommel opp. Uten vekt eller 0,5–1 kg.",2,"8+8+8",""],
+ ["C2","Hengende knehev","Hele hånden rundt stanga. Knærne til hoftehøyde, ingen sving, rolig ned. Tyngre: rette bein.",3,"8–12","60 s"],
+ ["D1","Sideplanke","Underarm i gulvet, kroppen rett, hofta høyt. Tyngre: løft øverste bein.",2,"20–40 s /side",""],
+ ["D2","Dead bug","Korsryggen mot gulvet. Motsatt arm og bein sakte ut, tilbake, bytt. Stopp hvis ryggen løfter seg.",2,"8–10 /side","45 s"],
+ ["E","Goblet knebøy","Kettlebell eller manual mot brystet. Føttene skulderbredde, knærne over tærne, så dypt du har kontroll med rett rygg. 2 s ned.",2,"10","60 s"],
+];
+const FIG={"A1": "<svg viewBox=\"0 0 200 150\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"40\" y1=\"20\" x2=\"160\" y2=\"20\" stroke=\"#8a97a8\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><circle cx=\"100\" cy=\"52\" r=\"8\" fill=\"#1f3a5f\"/><path d=\"M 100 60 L 100 104\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 100 66 L 90 40 L 88 22\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 100 66 L 110 40 L 112 22\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 100 104 L 94 126 L 94 140\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 100 104 L 108 126 L 110 140\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><line x1=\"130\" y1=\"86\" x2=\"130.0\" y2=\"69.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\" fill=\"none\"/><polygon points=\"130.0,62.0 134.0,69.0 126.0,69.0\" fill=\"#d9534f\"/><line x1=\"70\" y1=\"62\" x2=\"70.0\" y2=\"79.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\" fill=\"none\"/><polygon points=\"70.0,86.0 66.0,79.0 74.0,79.0\" fill=\"#d9534f\"/></svg>", "A2": "<svg viewBox=\"0 0 200 150\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"140\" x2=\"190\" y2=\"140\" stroke=\"#b8c2cf\" stroke-width=\"2\"/><circle cx=\"44\" cy=\"92\" r=\"8\" fill=\"#1f3a5f\"/><path d=\"M 52 96 L 100 104 L 160 128 L 170 138\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 60 98 L 62 118 L 58 138\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 64 99 L 72 118 L 70 138\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><line x1=\"62\" y1=\"80\" x2=\"62.0\" y2=\"73.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\" fill=\"none\"/><polygon points=\"62.0,66.0 66.0,73.0 58.0,73.0\" fill=\"#d9534f\"/></svg>", "B1": "<svg viewBox=\"0 0 200 150\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"140\" x2=\"190\" y2=\"140\" stroke=\"#b8c2cf\" stroke-width=\"2\"/><line x1=\"30\" y1=\"55\" x2=\"170\" y2=\"55\" stroke=\"#8a97a8\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><line x1=\"40\" y1=\"55\" x2=\"40\" y2=\"140\" stroke=\"#8a97a8\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><line x1=\"160\" y1=\"55\" x2=\"160\" y2=\"140\" stroke=\"#8a97a8\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"130\" y=\"110\" width=\"35\" height=\"30\" fill=\"#c9d2de\" stroke=\"#8a97a8\" stroke-width=\"2\"/><circle cx=\"58\" cy=\"86\" r=\"8\" fill=\"#1f3a5f\"/><path d=\"M 66 90 L 100 100 L 140 110\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 76 92 L 92 70 L 90 57\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 80 93 L 100 72 L 106 57\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 140 110 L 146 112\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/></svg>", "B2": "<svg viewBox=\"0 0 200 150\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"140\" x2=\"190\" y2=\"140\" stroke=\"#b8c2cf\" stroke-width=\"2\"/><rect x=\"170\" y=\"40\" width=\"8\" height=\"100\" fill=\"#c9d2de\" stroke=\"#8a97a8\" stroke-width=\"2\"/><line x1=\"170\" y1=\"86\" x2=\"112\" y2=\"88\" stroke=\"#d9534f\" stroke-width=\"3\"/><circle cx=\"70\" cy=\"36\" r=\"8\" fill=\"#1f3a5f\"/><path d=\"M 70 44 L 72 92 L 70 138\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 72 92 L 88 138\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 72 56 L 82 86 L 112 88\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><line x1=\"104\" y1=\"76\" x2=\"91.8\" y2=\"67.9\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\" fill=\"none\"/><polygon points=\"86.0,64.0 94.0,64.6 89.6,71.2\" fill=\"#d9534f\"/></svg>", "C1": "<svg viewBox=\"0 0 200 150\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"140\" x2=\"190\" y2=\"140\" stroke=\"#b8c2cf\" stroke-width=\"2\"/><rect x=\"40\" y=\"95\" width=\"120\" height=\"8\" fill=\"#c9d2de\" stroke=\"#8a97a8\" stroke-width=\"2\"/><line x1=\"55\" y1=\"103\" x2=\"55\" y2=\"140\" stroke=\"#8a97a8\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><line x1=\"145\" y1=\"103\" x2=\"145\" y2=\"140\" stroke=\"#8a97a8\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><circle cx=\"36\" cy=\"82\" r=\"8\" fill=\"#1f3a5f\"/><path d=\"M 44 86 L 100 90 L 160 92\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 56 86 L 40 66 L 28 50\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 60 87 L 60 60 L 62 46\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><g transform=\"translate(28 46) rotate(0)\"><line x1=\"-5.0\" y1=\"0\" x2=\"5.0\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"-8.0\" y=\"-5\" width=\"4\" height=\"10\" fill=\"#c9d2de\" stroke=\"#8a97a8\" stroke-width=\"2\"/><rect x=\"4.0\" y=\"-5\" width=\"4\" height=\"10\" fill=\"#c9d2de\" stroke=\"#8a97a8\" stroke-width=\"2\"/></g><g transform=\"translate(62 42) rotate(0)\"><line x1=\"-5.0\" y1=\"0\" x2=\"5.0\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><rect x=\"-8.0\" y=\"-5\" width=\"4\" height=\"10\" fill=\"#c9d2de\" stroke=\"#8a97a8\" stroke-width=\"2\"/><rect x=\"4.0\" y=\"-5\" width=\"4\" height=\"10\" fill=\"#c9d2de\" stroke=\"#8a97a8\" stroke-width=\"2\"/></g></svg>", "C2": "<svg viewBox=\"0 0 200 150\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"40\" y1=\"20\" x2=\"160\" y2=\"20\" stroke=\"#8a97a8\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><circle cx=\"100\" cy=\"44\" r=\"8\" fill=\"#1f3a5f\"/><path d=\"M 100 52 L 100 100\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 100 60 L 90 40 L 88 22\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 100 60 L 110 40 L 112 22\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 100 100 L 134 94 L 158 100\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 100 102 L 134 100 L 158 106\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><line x1=\"150\" y1=\"130\" x2=\"150.0\" y2=\"119.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\" fill=\"none\"/><polygon points=\"150.0,112.0 154.0,119.0 146.0,119.0\" fill=\"#d9534f\"/></svg>", "D1": "<svg viewBox=\"0 0 200 150\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"140\" x2=\"190\" y2=\"140\" stroke=\"#b8c2cf\" stroke-width=\"2\"/><circle cx=\"48\" cy=\"84\" r=\"8\" fill=\"#1f3a5f\"/><path d=\"M 58 96 L 100 112 L 170 138\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 58 96 L 60 138 L 84 138\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 66 98 L 86 82 L 100 108\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><line x1=\"112\" y1=\"96\" x2=\"112.0\" y2=\"85.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\" fill=\"none\"/><polygon points=\"112.0,78.0 116.0,85.0 108.0,85.0\" fill=\"#d9534f\"/></svg>", "D2": "<svg viewBox=\"0 0 200 150\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"126\" x2=\"190\" y2=\"126\" stroke=\"#b8c2cf\" stroke-width=\"2\"/><circle cx=\"36\" cy=\"118\" r=\"8\" fill=\"#1f3a5f\"/><path d=\"M 44 118 L 100 116\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 60 116 L 62 90 L 64 66\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 64 116 L 40 92 L 24 80\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 100 116 L 112 88 L 132 86\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 100 116 L 134 108 L 164 100\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><line x1=\"150\" y1=\"92\" x2=\"163.0\" y2=\"92.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\" fill=\"none\"/><polygon points=\"170.0,92.0 163.0,96.0 163.0,88.0\" fill=\"#d9534f\"/></svg>", "E": "<svg viewBox=\"0 0 200 150\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"140\" x2=\"190\" y2=\"140\" stroke=\"#b8c2cf\" stroke-width=\"2\"/><circle cx=\"104\" cy=\"46\" r=\"8\" fill=\"#1f3a5f\"/><path d=\"M 100 56 L 88 104\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 88 104 L 124 110 L 110 140 L 124 140\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M 100 64 L 116 80 L 112 70\" stroke=\"#1f3a5f\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><circle cx=\"114\" cy=\"74\" r=\"7\" fill=\"#c9d2de\" stroke=\"#8a97a8\" stroke-width=\"2\"/><line x1=\"60\" y1=\"96\" x2=\"60.0\" y2=\"117.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\" fill=\"none\"/><polygon points=\"60.0,124.0 56.0,117.0 64.0,117.0\" fill=\"#d9534f\"/><line x1=\"46\" y1=\"124\" x2=\"46.0\" y2=\"103.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\" fill=\"none\"/><polygon points=\"46.0,96.0 50.0,103.0 42.0,103.0\" fill=\"#d9534f\"/></svg>"};
+function strengthSets(i){
+  if(i.phase==="nm") return {none:"Ingen styrke denne uka."};
+  if(i.comp) return {none:"Ingen styrke siste 5 dager før konkurranse."};
+  let three = i.phase==="f2" && i.w>=6;
+  let txt = three ? "3 sett (B2, C1, D1, D2, E: 2 sett), RPE 7–8" : "2 sett på alle, RPE 7";
+  if(i.light) txt = three? "halvt antall sett (2/1), RPE 7–8" : "1 sett på alle, RPE 7";
+  return {three,txt,light:i.light};
+}
+function exSets(e,st){
+  if(st.none) return "–";
+  let n = st.three? e[3] : 2; if(st.light) n=half(n);
+  return n+" × "+e[4];
+}
+
+/* ============ TILSTAND / LOGG ============ */
+let LOG={};         // dato -> entry
+const LS_KEY="askild-logg-v1";
+function lsGet(k){ try{ return localStorage.getItem(k);}catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v);}catch(e){} }
+
+function loadLocal(){ try{ LOG=JSON.parse(lsGet(LS_KEY)||"{}")||{}; }catch(e){ LOG={}; } }
+function initDb(){ loadLocal(); setSync(); }
+function setSync(){ document.getElementById("syncState").textContent="Logg på denne telefonen"; }
+async function saveEntry(date,entry){
+  LOG[date]=entry; lsSet(LS_KEY,JSON.stringify(LOG));
+  return lsGet(LS_KEY)?"Lagret på denne telefonen.":"Kunne ikke lagre – nettleseren blokkerer lagring.";
+}
+async function deleteEntry(date){ delete LOG[date]; lsSet(LS_KEY,JSON.stringify(LOG)); }
+
+/* Deling og sikkerhetskopi */
+const FN={gronn:"grønn",gul:"gul",oransje:"oransje",rod:"rød",svart:"svart"};
+function entryLine(k){ const e=LOG[k], d=parseYmd(k);
+  let t=`${DAYS[isoWeek(d).dow]} ${fmt(d)}: ${FN[e.farge]||"–"} · ${e.okt||""}`;
+  if(e.antall!=null&&e.antall!=="") t+=` · ${e.antall} ${(e.antallNavn||"").toLowerCase()}`;
+  if(e.topper!=null&&e.topper!=="") t+=` · ${e.topper} topper`;
+  if(e.hoyde) t+=` · høyde ${e.hoyde} cm`;
+  if(e.kommentar) t+=` – ${e.kommentar}`;
+  return t; }
+function summary(scope){
+  let keys=Object.keys(LOG).sort();
+  if(scope==="uke"){ const {y,w}=isoWeek(cur); const m=mondayOf(y,w); const a=ymd(m), z=ymd(addDays(m,6));
+    keys=keys.filter(k=>k>=a&&k<=z);
+    return `Askild – logg uke ${w}\n`+(keys.length?keys.map(entryLine).join("\n"):"Ingen økter logget."); }
+  let out="Askild – logg vinteren 2026/27", lastW=null;
+  keys.forEach(k=>{ const w=isoWeek(parseYmd(k)).w; if(w!==lastW){ out+=`\n\nUke ${w}`; lastW=w; } out+="\n"+entryLine(k); });
+  return keys.length?out:out+"\nIngen økter logget.";
+}
+async function shareText(t,msgEl){
+  try{ if(navigator.share){ await navigator.share({title:"Treningslogg",text:t}); return; } }catch(e){ if(e&&e.name==="AbortError") return; }
+  try{ await navigator.clipboard.writeText(t); msgEl.textContent="Kopiert – lim inn i en melding til trener."; return; }catch(e){}
+  const ta=document.getElementById("shareFallback"); ta.value=t; ta.hidden=false; ta.select(); msgEl.textContent="Kopier teksten under.";
+}
+function downloadBackup(){
+  const blob=new Blob([JSON.stringify({utover:"Askild",versjon:1,logg:LOG},null,1)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="askild-logg-"+ymd(cur)+".json";
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
+}
+function restoreBackup(file,msgEl){
+  const r=new FileReader();
+  r.onload=()=>{ try{ const o=JSON.parse(r.result); const l=o&&o.logg; if(!l||typeof l!=="object") throw 0;
+      let n=0; for(const k in l){ if(/^\d{4}-\d\d-\d\d$/.test(k)&&!LOG[k]){ LOG[k]=l[k]; n++; } }
+      lsSet(LS_KEY,JSON.stringify(LOG)); render(); const m=document.getElementById("shareMsg"); if(m) m.textContent=`Hentet inn ${n} økter.`; }
+    catch(e){ msgEl.textContent="Fant ingen logg i filen."; } };
+  r.readAsText(file);
+}
+
+/* Varsler fra loggen */
+function alerts(date){
+  const out=[]; const ds=ymd(date);
+  const prev=Object.keys(LOG).filter(k=>k<ds).sort();
+  const last2=prev.slice(-2).map(k=>LOG[k].farge);
+  if(last2.length===2&&last2.every(f=>f==="oransje"||f==="rod")) out.push(["stop","To oransje/røde dager på rad → neste harde økt blir 3×10."]);
+  const lastK=prev[prev.length-1];
+  if(lastK&&LOG[lastK].farge==="rod") out.push(["stop","Sist logget rød: trenger flere hviledager. Snakk med trener."]);
+  if(lastK&&LOG[lastK].farge==="svart") out.push(["stop","Sist logget svart (skade): ikke tren før du har snakket med trener."]);
+  const i=info(date);
+  if(i.dow===1){ const sun=ymd(addDays(date,-1)); if(LOG[sun]) out.push(["warn","Du klatret i går → i dag blir 3×10 med teknikktema."]); }
+  if(i.dow===4){ const wed=ymd(addDays(date,-1)); if(LOG[wed]&&LOG[wed].farge==="oransje") out.push(["warn","Onsdagen ble oransje → ett sett ned i styrke i dag."]); }
+  // vekst
+  const h=Object.keys(LOG).filter(k=>k<=ds&&LOG[k].hoyde).sort().map(k=>({d:parseYmd(k),v:+LOG[k].hoyde}));
+  if(h.length>=2){
+    const a=h[h.length-1], b=h[h.length-2], c=h[h.length-3];
+    const daysSince=(date-a.d)/864e5;
+    const big = a.v-b.v>=1 || (c && a.v-b.v>=0.5 && b.v-c.v>=0.5);
+    if(big && daysSince<=28) out.push(["stop",`Vekstspurt (${(a.v-b.v).toFixed(1)} cm siste måling) → 3–4 uker: hard buldring 2 grader lettere og maks 10 forsøk, jam maks 12, PE 4 runder, torsdag 3 × 6–8 min.`]);
+  }
+  return out;
+}
+
+/* ============ VISNINGER ============ */
+const TABS=[["idag","I dag"],["uka","Uka"],["man","Mandag"],["ons","Onsdag"],["tor","Torsdag"],["lor","Lørdag"],["styrke","Styrke"],["plan","Plan"],["regler","Regler"],["logg","Logg"]];
+let cur = new Date(); cur = new Date(cur.getFullYear(),cur.getMonth(),cur.getDate());
+let selDate = new Date(cur);
+let weekRef = new Date(cur);
+
+function tabsHtml(t){ return TABS.map(([k,n])=>`<a href="#${k}" class="${k===t?"on":""}">${n}</a>`).join(""); }
+function notesHtml(n){ return n.map(([c,t])=>`<div class="note ${c==="warn"?"":c}">${t}</div>`).join(""); }
+function sessHtml(s){
+  if(!s.blocks.length) return "";
+  return s.blocks.map(b=>`<div class="blk"><h4>${b.h}${b.dur?`<span class="dur">${b.dur}</span>`:""}</h4><ul>${b.items.map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("");
+}
+function tagsHtml(i){
+  let t=`<span class="tag">Uke ${i.w}</span><span class="tag acc">${i.label}</span>`;
+  if(i.light) t+=`<span class="tag warn">Lett uke</span>`;
+  if(i.comp) t+=`<span class="tag stop">${i.comp}</span>`;
+  if(i.dow===6&&!["jul","før","etter","nm"].includes(i.phase)) t+=`<span class="tag">${i.odd?"Oddetallsuke · buldring":"Partallsuke · tau"}</span>`;
+  return `<div class="meta">${t}</div>`;
+}
+
+function vIdag(){
+  const s=session(selDate), i=s.i, isToday=ymd(selDate)===ymd(cur);
+  const al=alerts(selDate);
+  let h=`<div class="banner">HVA SKAL JEG ØVE PÅ I DAG?</div>
+  <div class="daynav"><button class="btn sm" data-nav="-1" aria-label="Forrige dag">◀</button>
+   <div class="d">${isToday?"I dag":DAY[i.dow]} · ${fmt(selDate)}<small>${isToday?DAY[i.dow]:'<a href="#" data-today="1">Tilbake til i dag</a>'}</small></div>
+   <button class="btn sm" data-nav="1" aria-label="Neste dag">▶</button></div>`;
+  h+=`<div class="card"><h2>${s.title}</h2>${tagsHtml(i)}${s.time&&s.time!=="–"?`<div class="small muted">Tid: ${s.time}</div>`:""}
+    ${notesHtml(al)}${notesHtml(s.notes.filter(n=>n[0]!=="acc"))}${sessHtml(s)}
+    ${s.notes.filter(n=>n[0]==="acc").map(n=>`<p class="small muted">${n[1]}</p>`).join("")}</div>`;
+  if(s.key==="hvile"){ // vis neste økt
+    let d=addDays(selDate,1), n=session(d), k=0; while(n.key==="hvile"&&k<6){ d=addDays(d,1); n=session(d); k++; }
+    if(n.key!=="hvile") h+=`<div class="card small"><span class="muted">Neste økt:</span> <b>${DAY[n.i.dow]} ${fmt(d)}</b> – ${n.title}</div>`;
+  }
+  h+=formHtml(selDate,s);
+  return h;
+}
+
+let draft={};
+function formHtml(date,s){
+  const ds=ymd(date), e=LOG[ds]||{};
+  draft={...e};
+  const firstMon = info(date).dow===1 && date.getDate()<=7;
+  const colors=[["gronn","Grønn"],["gul","Gul"],["oransje","Oransje"],["rod","Rød"],["svart","Svart"]];
+  const cnt=s.count;
+  return `<div class="card" id="logform"><h3 style="margin-top:0">Logg økta</h3>
+   ${s.key==="hvile"?'<p class="small muted" style="margin:0 0 6px">Hviledag – logg bare hvis du klatret.</p>':""}
+   <label class="f">Fargen på dagen</label>
+   <div class="colors">${colors.map(([k,n])=>`<button type="button" data-farge="${k}" class="${e.farge===k?"on":""}"><span class="dot f-${k}"></span>${n}</button>`).join("")}</div>
+   <div class="row2">
+    <div><label class="f">${cnt?cnt.label:"Forsøk / runder"}${cnt&&cnt.max?` (maks ${cnt.max})`:""}</label><input type="number" inputmode="numeric" id="fAntall" value="${e.antall??""}"></div>
+    ${cnt&&cnt.extra?`<div><label class="f">${cnt.extra}</label><input type="number" inputmode="numeric" id="fTopper" value="${e.topper??""}"></div>`:""}
+   </div>
+   ${firstMon||e.hoyde?`<label class="f">Høyde (cm) – første mandag i måneden</label><input type="number" step="0.1" inputmode="decimal" id="fHoyde" value="${e.hoyde??""}">`:""}
+   <label class="f">Kommentar</label><textarea id="fKom" placeholder="Hva gikk bra, hva kjentes?">${esc(e.kommentar||"")}</textarea>
+   <div style="margin-top:12px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+     <button class="btn pri" id="fSave">${LOG[ds]?"Oppdater":"Lagre"}</button>
+     ${LOG[ds]?'<button class="btn" id="fDel">Slett</button>':""}
+     <span class="saved" id="fMsg">${LOG[ds]?"Logget "+fmtTime(e.lagret):""}</span></div>
+  </div>`;
+}
+function esc(t){ return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function fmtTime(t){ if(!t) return ""; const d=new Date(t); return isNaN(d)?"":fmt(d)+" kl. "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
+
+function vUka(){
+  const {y,w}=isoWeek(weekRef); const mon=mondayOf(y,w);
+  const i=info(mon);
+  let h=`<div class="daynav" style="margin-top:18px"><button class="btn sm" data-wk="-7">◀</button>
+   <div class="d">Uke ${w}<small>${fmt(mon)} – ${fmt(addDays(mon,6))}</small></div><button class="btn sm" data-wk="7">▶</button></div>
+   <div class="card">${tagsHtml({...i,dow:0})}<div style="margin-top:8px">`;
+  for(let k=0;k<7;k++){
+    const d=addDays(mon,k), s=session(d), e=LOG[ymd(d)];
+    const today=ymd(d)===ymd(cur);
+    h+=`<a class="week-row ${today?"today":""}" href="#idag" data-go="${ymd(d)}"><div class="wd">${DAYS[k+1]}<small>${d.getDate()}.</small></div>
+      <div class="wt"><span class="${s.key==="hvile"?"rest":""}">${s.title}</span>${s.time&&s.time!=="–"?` <small>· ${s.time}</small>`:""}</div>
+      ${e&&e.farge?`<span class="dot f-${e.farge}" title="logget"></span>`:""}</a>`;
+  }
+  h+=`</div></div>`;
+  if(weekRef.getTime()!==cur.getTime()) h+=`<p><button class="btn sm" data-wkreset="1">Denne uka</button></p>`;
+  return h;
+}
+
+// Referansesider for hver økt: alle faser
+function phaseCard(title,date){ const s=session(date); return `<div class="card"><h3 style="margin-top:0">${title}</h3>${notesHtml(s.notes.filter(n=>n[0]!=="acc"))}${sessHtml(s)}</div>`; }
+function curPhaseLabel(){ return `<p class="small muted">Nå: uke ${info(cur).w} · ${info(cur).label}</p>`; }
+const D=(y,w,dow)=>addDays(mondayOf(y,w),dow-1);
+function vMan(){ return `<h2 style="margin-top:18px">Mandag · Hard buldring</h2>${curPhaseLabel()}
+  ${phaseCard("Fase 1 · uke 45–51 (og uke 1–2)",D(2026,46,1))}${phaseCard("Fase 2 · uke 3–7",D(2027,3,1))}${phaseCard("Fase 3 · uke 9–20",D(2027,9,1))}
+  <div class="card small"><b>Lett uke:</b> halvt antall forsøk. <b>NM-uka:</b> maks 8 forsøk.</div>`; }
+function vOns(){ return `<h2 style="margin-top:18px">Onsdag</h2>${curPhaseLabel()}
+  ${phaseCard("Linked boulders · fase 1 (uke 45–51, 1–2)",D(2026,46,3))}${phaseCard("Linked boulders · fase 2 (uke 3–7)",D(2027,3,3))}
+  ${phaseCard("NM-uka (uke 8)",D(2027,8,3))}${phaseCard("Rutedag på led · uke 9–20",D(2027,9,3))}`; }
+function vTor(){ return `<h2 style="margin-top:18px">Torsdag · 3×10 + Styrke A</h2>${curPhaseLabel()}
+  ${phaseCard("Vanlig torsdag",D(2026,46,4))}${phaseCard("NM-uka (uke 8)",D(2027,8,4))}
+  <div class="card small">3×10 er regenerering: topptau eller autobelay, aldri hardt. Konkurranseuker og lette uker: 2 runder.</div>`; }
+function vLor(){ return `<h2 style="margin-top:18px">Lørdag</h2>${curPhaseLabel()}
+  <p class="small">Oddetallsuker: buldring i jam-format · partallsuker: tau, alt på led.</p>
+  ${phaseCard("Oddetallsuker · jam-format",D(2026,45,6))}${phaseCard("Partall uke 46–50 og 2 · ledvolum",D(2026,50,6))}
+  ${phaseCard("Partall uke 4–6 · onsight",D(2027,4,6))}${phaseCard("Partall uke 10–14 · 4 × 4",D(2027,10,6))}${phaseCard("Partall uke 16–20 · konkurranselikt",D(2027,18,6))}`; }
+
+function vStyrke(){
+  const i=info(cur); const st=strengthSets(i.phase==="jul"||i.phase==="før"?{...i,phase:"f1"}:i);
+  return `<h2 style="margin-top:18px">Styrke A · torsdag, 35 min</h2>
+  <div class="card small">Rett etter 3×10 · kroppsvekt, strikk og lette manualer · 2 s senkefase · supersett A1/A2 osv. – øvelsen med færre sett hoppes over i siste runde · aldri til utmattelse.
+   <div class="meta" style="margin-top:8px"><span class="tag acc">Denne uka: ${st.none||st.txt}</span></div></div>
+  <div class="card">${EX.map(e=>`<div class="ex"><div class="fig" role="img" aria-label="${e[1]}">${FIG[e[0]]||""}</div><div><div class="exh"><span><span class="code">${e[0]}</span>${e[1]}</span><span class="sets">${exSets(e,st)}</span></div><p>${e[2]}${e[5]?` · Pause ${e[5]}`:""}</p></div></div>`).join("")}</div>
+  <div class="card small"><ul>
+   <li><b>Fase 1:</b> 2 sett på alle, RPE 7 (3 reps igjen).</li>
+   <li><b>Fase 2 fra uke 6:</b> 3 sett (B2, C1, D, E: 2), RPE 7–8 (2–3 igjen).</li>
+   <li><b>Fase 3:</b> 2 sett, RPE 7. Ingen styrke siste 5 dager før konkurranse.</li>
+   <li><b>Stopp i et sett:</b> ved RPE-målet, eller når teknikken endres.</li>
+   <li><b>Progresjon:</b> alle sett på toppen av rep-området med god teknikk → vanskeligere variant, ikke flere reps.</li>
+   <li>Ett sett ned når onsdagen ble oransje.</li></ul></div>`;
+}
+
+function vPlan(){
+  const {w:cw,y:cy}=isoWeek(cur);
+  let rows=SEASON.map(({y,w})=>{
+    const m=mondayOf(y,w), i=info(m);
+    const lor = ["jul","nm"].includes(i.phase)? (i.phase==="nm"?"NM":"–") : (w%2?"Buldring":"Tau");
+    const flags=[i.light?'<span class="tag warn">lett</span>':"", i.comp?'<span class="tag stop">NM</span>':""].join(" ");
+    return `<tr class="${y===cy&&w===cw?"now":""}"><td><a href="#uka" data-week="${ymd(m)}">${w}</a></td><td>${fmt(m)}</td><td>${i.label.replace(" · "," ·&nbsp;")}</td><td>${lor}</td><td>${flags}</td></tr>`;
+  }).join("");
+  return `<h2 style="margin-top:18px">Periodisering</h2>
+  <div class="card small"><ul>
+   <li><b>Fase 1 · Grunnlag (uke 45–51):</b> hard buldring 1–2 grader under maks. Tau: ledvolum, falltrening fra uke 50. Styrke 2 sett. Uke 48 lett.</li>
+   <li><b>Jul (uke 52, 53, 1):</b> fri, lek, lett klatring. Ingen harde økter 24.–27. des. Uke 1: lett oppstart.</li>
+   <li><b>Fase 2 (uke 2–7):</b> én ny ting per uke – uke 2 re-entry · uke 3 hard buldring nær maks · uke 4 tau onsight · uke 6 styrke 3 sett. Uke 5 lett.</li>
+   <li><b>NM junior (uke 8):</b> lør 27. feb.</li>
+   <li><b>Fase 3 (uke 9–20):</b> hard buldring på maks. Onsdag rutedag på led. Tau 4 × 4 uke 9–14, konkurranselikt 15–20. Lette uker 12 og 16.</li>
+   <li><b>Lett uke:</b> samme økter, halvt antall forsøk/runder/sett, samme intensitet.</li></ul></div>
+  <div class="card"><div class="tscroll"><table><thead><tr><th>Uke</th><th>Fra</th><th>Periode</th><th>Lør</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+function vRegler(){
+  return `<h2 style="margin-top:18px">Regler og teknikk</h2>
+  <div class="card"><h3 style="margin-top:0">Fra samtalen</h3><ul>
+   <li><b>Prestere best:</b> buldring og led, jevn form utover våren.</li>
+   <li><b>Utfordringer i konkurranse:</b> slitenhet med mange buldre i jam-kvalik, mange flytt på ruter.</li>
+   <li><b>Prioritering:</b> strukturert opplegg, bygge grunnlag.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Hensyn – vekst</h3><ul>
+   <li><b>Fingre:</b> ingen campusbrett, ingen maksheng/fingerbrett.</li>
+   <li><b>Full crimp:</b> bare uthvilt, aldri de siste 30 minuttene av en økt.</li>
+   <li><b>Smerte i et fingerledd:</b> stopp lister og crimp samme økt, si fra samme dag. Over en uke eller hovent ledd: lege og bildeundersøkelse.</li>
+   <li><b>Høyde:</b> første mandag i måneden, samme tidspunkt, uten sko. Vekstspurt ved ≥ 1 cm på en måned, eller ≥ 0,5 cm to måneder på rad.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Det som ligger fast</h3><ul>
+   <li><b>Hviledager:</b> tirsdag, fredag, søndag. Tapt økt tas ikke igjen.</li>
+   <li><b>Helgeregel:</b> klatret søndag → mandag blir 3×10 med teknikktema.</li>
+   <li><b>Sluttpunkt:</b> antall forsøk bestemmes før økta. Føtter som smeller eller fingre som kjennes = ferdig.</li>
+   <li><b>Grep:</b> unngå samme type tak hele økta. Har alt vært crimp i en time: noe annet til slutt.</li>
+   <li><b>Konkurranse lørdag:</b> erstatter lørdagsøkta.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Rutine før hvert forsøk</h3><ul>
+   <li>Pust ut langsomt – lengre ut enn inn, 3 ganger.</li><li>Si de tre første flyttene stille for deg selv.</li>
+   <li>Skuldrene ned, rist hendene.</li><li>Første fot.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Teknikkbank – ett tema per økt</h3><ul>
+   <li><b>Stille føtter:</b> 3 lette buldre uten lyd fra føttene.</li><li><b>Hofta inn:</b> hofta roteres inn før hånden flyttes.</li>
+   <li><b>Lese før du klatrer:</b> 1 min foran buldret, pek ut hvert flytt.</li><li><b>Flagg og dropknee:</b> lette buldre uten fotbytte.</li>
+   <li><b>Rette armer:</b> albuene strake mellom hvert flytt.</li><li><b>Hvile på tau:</b> tre hvilestillinger, 10 pust i hver.</li>
+   <li><b>Klipping:</b> riktig fot, begge hender.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Justering</h3><ul>
+   <li><b>Vekstspurt</b> (eller føles klønete) → 3–4 uker: hard buldring 2 grader lettere og maks 10 forsøk, jam maks 12, PE 4 runder, torsdag 3 × 6–8 min.</li>
+   <li><b>To oransje dager på rad</b> → neste harde økt blir 3×10.</li>
+   <li><b>Etter ≥ 5 dager fri:</b> første uke på fase 1-intensitet.</li>
+   <li><b>Maks én ny ting per uke.</b></li>
+   <li><b>Lavenergi-uke</b> (prøver, sykdom, reise): behold mandag og torsdag. Lørdag valgfri.</li>
+   <li><b>Progresjon:</b> buldring – først flere buldre, så hardere. PE/tau – først flere runder, så kortere pause, så hardere ruter. Styrke – vanskeligere variant.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Fargen på dagen</h3>
+   <p><span class="dot f-gronn"></span> <b>Grønn</b> uthvilt, god kvalitet, neste økt føles sterkere<br>
+   <span class="dot f-gul"></span> <b>Gul</b> vedlikehold<br><span class="dot f-oransje"></span> <b>Oransje</b> trente for sliten, lav kvalitet<br>
+   <span class="dot f-rod"></span> <b>Rød</b> trenger flere hviledager<br><span class="dot f-svart"></span> <b>Svart</b> skade</p></div>
+  <div class="card"><h3 style="margin-top:0">RPE</h3><div class="tscroll"><table><thead><tr><th>RPE</th><th>Buldring, styrke</th><th>Linked, tau</th></tr></thead><tbody>
+   <tr><td>1–2</td><td>Ingen flytt krever noe.</td><td>Ingen pump.</td></tr>
+   <tr><td>3–4</td><td>Lette buldre, flytende.</td><td>Lett varme i underarmene.</td></tr>
+   <tr><td>5–6</td><td>Går på første–andre forsøk.</td><td>Pump som går tilbake i pausen.</td></tr>
+   <tr><td>7</td><td>Må ta i på nøkkelflyttet. Styrke: 3 reps igjen.</td><td>Tydelig pump, føttene krever jobb.</td></tr>
+   <tr><td>8</td><td>Full kraft, treffer og holder. Styrke: 2 igjen.</td><td>Hard pump, flyttene sitter.</td></tr>
+   <tr><td>9</td><td>Alt du har, treffer så vidt.</td><td>Kvaliteten holder akkurat.</td></tr>
+   <tr><td>10</td><td>Bom eller fall.</td><td>Falt av pump.</td></tr></tbody></table></div></div>`;
+}
+
+function vLogg(){
+  const keys=Object.keys(LOG).sort().reverse();
+  // rutenett per uke
+  const {y:cy,w:cw}=isoWeek(cur);
+  let grid=`<div class="grid"><div></div><div class="h">Man</div><div class="h">Ons</div><div class="h">Tor</div><div class="h">Lør</div>`;
+  for(const {y,w} of SEASON){
+    const m=mondayOf(y,w); if(m>addDays(cur,7)) break;
+    grid+=`<div class="wk ${y===cy&&w===cw?"cur":""}">Uke ${w}</div>`;
+    for(const k of [0,2,3,5]){ const e=LOG[ymd(addDays(m,k))]; grid+=`<div class="cell ${e&&e.farge?"f-"+e.farge:""}" title="${e&&e.farge||""}"></div>`; }
+  }
+  grid+="</div>";
+  const counts={}; keys.forEach(k=>{ const f=LOG[k].farge; if(f) counts[f]=(counts[f]||0)+1; });
+  const names={gronn:"grønn",gul:"gul",oransje:"oransje",rod:"rød",svart:"svart"};
+  return `<h2 style="margin-top:18px">Logg</h2>
+  <p class="small muted">Loggen lagres bare på denne telefonen, i denne nettleseren. Logg en økt fra <a href="#idag">I dag</a> – bla til riktig dag med pilene.</p>
+  <div class="card"><h3 style="margin-top:0">Send til trener</h3>
+   <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn pri" data-share="uke">Del denne uka</button><button class="btn" data-share="alt">Del hele loggen</button></div>
+   <p class="small muted" style="margin:8px 0 0" id="shareMsg"></p><textarea id="shareFallback" hidden readonly style="margin-top:8px;min-height:140px"></textarea>
+   <h3>Sikkerhetskopi</h3>
+   <p class="small muted" style="margin:0 0 8px">Ta en kopi av og til, og før du bytter telefon eller sletter nettleserdata.</p>
+   <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" data-backup="1">Last ned kopi</button><label class="btn" style="display:inline-flex;align-items:center">Hent inn kopi<input type="file" accept=".json,application/json" id="restoreFile" hidden></label></div></div>
+  <div class="card"><h3 style="margin-top:0">Sesongen</h3>${grid}
+   <p class="small muted" style="margin-bottom:0">${Object.keys(names).filter(k=>counts[k]).map(k=>`<span class="dot f-${k}"></span> ${counts[k]} ${names[k]}`).join(" &nbsp; ")||"Ingen økter logget ennå."}</p></div>
+  <div class="card"><h3 style="margin-top:0">Økter</h3>${keys.length?keys.map(k=>{ const e=LOG[k], d=parseYmd(k);
+    return `<div class="entry"><div class="eh"><span>${e.farge?`<span class="dot f-${e.farge}"></span> `:""}${DAY[isoWeek(d).dow]} ${fmt(d)}</span><small>uke ${isoWeek(d).w}</small></div>
+      <p>${esc(e.okt||"")}${e.antall!=null&&e.antall!==""?` · ${e.antall} ${esc((e.antallNavn||"").toLowerCase())}`:""}${e.topper!=null&&e.topper!==""?` · ${e.topper} topper`:""}${e.hoyde?` · høyde ${e.hoyde} cm`:""}</p>
+      ${e.kommentar?`<p class="muted">${esc(e.kommentar)}</p>`:""}<p><a href="#idag" data-go="${k}" class="small">Åpne</a></p></div>`; }).join(""):'<p class="muted">Ingen økter logget ennå.</p>'}</div>`;
+}
+
+/* ============ RUTING ============ */
+function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
+function render(){
+  const t=route();
+  document.getElementById("tabs").innerHTML=tabsHtml(t);
+  const v={idag:vIdag,uka:vUka,man:vMan,ons:vOns,tor:vTor,lor:vLor,styrke:vStyrke,plan:vPlan,regler:vRegler,logg:vLogg}[t]();
+  const focus=document.activeElement&&document.activeElement.id;
+  // ikke overskriv skjema mens man skriver
+  if(t==="idag"&&focus&&["fAntall","fTopper","fHoyde","fKom"].includes(focus)) return;
+  document.getElementById("view").innerHTML=v;
+  const on=document.querySelector("nav.tabs a.on"); if(on&&on.scrollIntoView) on.scrollIntoView({block:"nearest",inline:"nearest"});
+}
+window.addEventListener("hashchange",()=>{ render(); window.scrollTo(0,0); });
+
+document.addEventListener("click",async ev=>{
+  const el=ev.target.closest("button,a"); if(!el) return;
+  if(el.dataset.nav){ selDate=addDays(selDate,+el.dataset.nav); render(); return; }
+  if(el.dataset.today){ ev.preventDefault(); selDate=new Date(cur); render(); return; }
+  if(el.dataset.wk){ weekRef=addDays(weekRef,+el.dataset.wk); render(); return; }
+  if(el.dataset.wkreset){ weekRef=new Date(cur); render(); return; }
+  if(el.dataset.week){ ev.preventDefault(); weekRef=parseYmd(el.dataset.week); if(location.hash!=="#uka") location.hash="#uka"; else render(); return; }
+  if(el.dataset.go){ ev.preventDefault(); selDate=parseYmd(el.dataset.go); if(location.hash!=="#idag") location.hash="#idag"; else { render(); window.scrollTo(0,0);} return; }
+  if(el.dataset.farge){ draft.farge=el.dataset.farge; document.querySelectorAll(".colors button").forEach(b=>b.classList.toggle("on",b===el)); return; }
+  if(el.id==="fSave"){
+    const msg=document.getElementById("fMsg");
+    if(!draft.farge){ msg.textContent="Velg fargen på dagen."; return; }
+    const s=session(selDate), num=id=>{ const x=document.getElementById(id); return x&&x.value!==""?+x.value:null; };
+    const entry={dato:ymd(selDate),uke:s.i.w,okt:s.title,farge:draft.farge,
+      antall:num("fAntall"),antallNavn:s.count?s.count.label:"",topper:num("fTopper"),hoyde:num("fHoyde"),
+      kommentar:(document.getElementById("fKom").value||"").trim(),lagret:new Date().toISOString()};
+    el.disabled=true; msg.textContent="Lagrer …";
+    const r=await saveEntry(ymd(selDate),entry);
+    document.activeElement&&document.activeElement.blur&&document.activeElement.blur();
+    render(); const m2=document.getElementById("fMsg"); if(m2) m2.textContent=r;
+    return;
+  }
+  if(el.dataset.share){ shareText(summary(el.dataset.share),document.getElementById("shareMsg")); return; }
+  if(el.dataset.backup){ downloadBackup(); return; }
+  if(el.id==="fDel"){ await deleteEntry(ymd(selDate)); render(); return; }
+});
+
+document.addEventListener("change",ev=>{ if(ev.target.id==="restoreFile"&&ev.target.files[0]) restoreBackup(ev.target.files[0],document.getElementById("shareMsg")); });
+initDb();
+render();
+</script>
+
+</body></html>
