@@ -1,0 +1,698 @@
+<!doctype html><html lang="no"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Vilje">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icon.png"><link rel="manifest" href="manifest-vilje.webmanifest"><meta name="theme-color" content="#0f6b5f"><link rel="icon" href="icon.svg">
+</head><body>
+<title>Vilje – treningsplan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{
+  --bg:#f4f3ef; --card:#ffffff; --ink:#1d2321; --muted:#5f6a66; --line:#dedbd2;
+  --accent:#0f6b5f; --accent-ink:#ffffff; --accent-soft:#dcefe9;
+  --warn:#9a5b00; --warn-soft:#fff1d6; --stop:#a61e1e; --stop-soft:#fde4e4;
+  --chip:#ecebe5;
+  --c-gronn:#2f9e44; --c-gul:#e9b92f; --c-oransje:#ec7d10; --c-rod:#d62f2f; --c-svart:#1b1b1b;
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121615; --card:#1b2120; --ink:#e8ece9; --muted:#9aa6a1; --line:#2c3533;
+    --accent:#4cc2ac; --accent-ink:#0b1513; --accent-soft:#1d3531;
+    --warn:#f2b45a; --warn-soft:#3a2c14; --stop:#ff8a8a; --stop-soft:#3c1d1d;
+    --chip:#252d2b; --c-svart:#000000;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121615; --card:#1b2120; --ink:#e8ece9; --muted:#9aa6a1; --line:#2c3533;
+  --accent:#4cc2ac; --accent-ink:#0b1513; --accent-soft:#1d3531;
+  --warn:#f2b45a; --warn-soft:#3a2c14; --stop:#ff8a8a; --stop-soft:#3c1d1d;
+  --chip:#252d2b; --c-svart:#000000;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:760px;margin:0 auto;
+  padding:0 max(16px,env(safe-area-inset-right)) 48px max(16px,env(safe-area-inset-left))}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding-top:env(safe-area-inset-top);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:12px 0 6px}
+.brand h1{font-size:18px;margin:0;letter-spacing:.01em}
+.brand .sub{font-size:12.5px;color:var(--muted);white-space:nowrap}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{flex:0 0 auto;text-decoration:none;color:var(--ink);background:var(--chip);
+  padding:7px 13px;border-radius:999px;font-size:14px;font-weight:500;white-space:nowrap}
+nav.tabs a.on{background:var(--accent);color:var(--accent-ink)}
+.banner{margin:18px 0 4px;font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--accent)}
+h2{font-size:22px;margin:4px 0 10px;line-height:1.25}
+h3{font-size:16px;margin:18px 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin:12px 0}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.tag{font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--chip);color:var(--ink);white-space:nowrap}
+.tag.acc{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.tag.warn{background:var(--warn-soft);color:var(--warn);font-weight:600}
+.tag.stop{background:var(--stop-soft);color:var(--stop);font-weight:600}
+.daynav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
+.daynav .d{font-weight:600;text-align:center;flex:1}
+.daynav .d small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{background:var(--chip);border:0;border-radius:10px;padding:9px 14px;min-height:42px}
+.btn.pri{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.sm{min-height:34px;padding:5px 11px;font-size:14px}
+.blk{margin:14px 0 0}
+#rutine{scroll-margin-top:110px}
+.blk h4{margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.blk .dur{float:right;font-weight:500;text-transform:none;letter-spacing:0}
+ul{margin:4px 0 0;padding-left:20px}
+li{margin:3px 0}
+.key{font-weight:700}
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:9px 12px;border-radius:0 10px 10px 0;margin:10px 0;font-size:14.5px}
+.note.stop{border-color:var(--stop);background:var(--stop-soft)}
+.note.acc{border-color:var(--accent);background:var(--accent-soft)}
+.rest{color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:7px 6px;border-bottom:1px solid var(--line)}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.tscroll{overflow-x:auto;margin:0 -4px}
+tr.now td{background:var(--accent-soft)}
+.week-row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:flex-start;text-decoration:none;color:inherit}
+.week-row:last-child{border-bottom:0}
+.week-row .wd{width:46px;flex:0 0 46px;font-weight:600}
+.week-row .wd small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.week-row .wt{flex:1}
+.week-row .wt small{color:var(--muted)}
+.week-row.today{background:var(--accent-soft);border-radius:10px;padding-left:8px;padding-right:8px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;border:1px solid rgba(0,0,0,.15)}
+.f-gronn{background:var(--c-gronn)} .f-gul{background:var(--c-gul)} .f-oransje{background:var(--c-oransje)}
+.f-rod{background:var(--c-rod)} .f-svart{background:var(--c-svart)}
+/* logg form */
+.colors{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0 12px}
+.colors button{border:2px solid transparent;border-radius:10px;padding:9px 2px 7px;background:var(--chip);font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.colors button .dot{width:20px;height:20px}
+.colors button.on{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+input[type=number],input[type=text],textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+textarea{min-height:76px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.saved{font-size:13px;color:var(--muted);margin-left:10px}
+.grid{display:grid;grid-template-columns:52px repeat(4,1fr);gap:4px;font-size:12.5px;align-items:center}
+.grid .h{color:var(--muted);text-align:center;font-weight:600}
+.grid .wk{color:var(--muted)}
+.grid .cell{height:22px;border-radius:6px;background:var(--chip)}
+.grid .cell.f-gronn{background:var(--c-gronn)} .grid .cell.f-gul{background:var(--c-gul)} .grid .cell.f-oransje{background:var(--c-oransje)} .grid .cell.f-rod{background:var(--c-rod)} .grid .cell.f-svart{background:var(--c-svart)}
+a{color:var(--accent)}
+.grid .cur{color:var(--accent);font-weight:700}
+.entry{padding:10px 0;border-bottom:1px solid var(--line)}
+.entry:last-child{border-bottom:0}
+.entry .eh{display:flex;justify-content:space-between;gap:8px;font-weight:600}
+.entry .eh small{color:var(--muted);font-weight:400}
+.entry p{margin:4px 0 0;font-size:14.5px}
+.muted{color:var(--muted)}
+.small{font-size:13.5px}
+.ex{padding:12px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-items:start}
+.ex .fig{max-width:340px;background:#fbfbf8;border-radius:10px;border:1px solid var(--line);line-height:0}
+.ex .fig svg{width:100%;height:auto;display:block}
+@media (min-width:560px){.ex{grid-template-columns:220px minmax(0,1fr);gap:14px}}
+.ex:last-child{border-bottom:0}
+.ex .exh{display:flex;flex-direction:column;gap:2px;font-weight:600}
+.ex .exh span.code{color:var(--accent);margin-right:6px}
+.ex .exh .sets{white-space:nowrap;font-weight:600;color:var(--accent)}
+.ex p{margin:3px 0 0;font-size:14.5px;color:var(--muted)}
+.ok{color:var(--accent)}
+.upd{position:fixed;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));z-index:20;
+  background:var(--accent);color:var(--accent-ink);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:736px;margin:0 auto}
+.upd[hidden]{display:none}
+.upd p{margin:0;flex:1;font-size:14.5px}.upd .btn{background:var(--accent-ink);color:var(--accent);font-weight:700}
+.ver{font-size:12px;color:var(--muted);text-align:center;margin:28px 0 0}
+.trinn{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:12px 0 0}
+.tbtn{border:2px solid var(--line);background:var(--card);border-radius:10px;min-width:40px;min-height:38px;font-weight:700}
+.tbtn.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chk{display:flex;align-items:center;gap:8px;margin:12px 0 0;font-size:15px}
+.chk input{width:20px;height:20px}
+.exlist .ex{grid-template-columns:118px minmax(0,1fr);gap:12px}
+@media (min-width:560px){.exlist .ex{grid-template-columns:200px minmax(0,1fr)}}
+@media (min-width:640px){ .brand h1{font-size:20px} h2{font-size:26px} }
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="brand"><h1>Vilje <span style="font-weight:400;color:var(--muted)">· 2026/27</span></h1><span class="sub" id="syncState"></span></div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main id="view"></main>
+<p class="ver" id="ver"></p>
+<div class="upd" id="upd" hidden><p id="updTxt">Ny versjon av planen.</p><button class="btn sm" id="updBtn">Oppdater</button></div>
+</div>
+
+<script>
+/* ============ KALENDER ============ */
+const NAVN="Vilje", KEY="vilje";
+const DAY = ["", "Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag","Søndag"];
+const DAYS = ["", "Man","Tir","Ons","Tor","Fre","Lør","Søn"];
+const MON = ["jan","feb","mars","april","mai","juni","juli","aug","sep","okt","nov","des"];
+function ymd(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function parseYmd(s){ const [y,m,dd]=s.split("-").map(Number); return new Date(y,m-1,dd); }
+function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function fmt(d){ return d.getDate()+". "+MON[d.getMonth()]; }
+function isoWeek(d){
+  const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  const dow=t.getUTCDay()||7; t.setUTCDate(t.getUTCDate()+4-dow);
+  const y=t.getUTCFullYear(); const y0=new Date(Date.UTC(y,0,1));
+  return {y, w:Math.ceil(((t-y0)/864e5+1)/7), dow};
+}
+function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; return addDays(jan4,(w-1)*7-(dow-1)); }
+const SEASON=[]; for(let w=43;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
+const LIGHT=new Set([48,52,53]);
+
+function info(date){
+  const {y,w,dow}=isoWeek(date);
+  const i={date,y,w,dow,light:false,phase:"utenfor",label:"Utenfor planen"};
+  const inSeason=(y===2026&&w>=43)||(y===2027&&w<=20);
+  if(!inSeason){ i.phase=(y<2026||(y===2026&&w<43))?"før":"etter"; i.label=i.phase==="før"?"Før start":"Planen er ferdig"; return i; }
+  if(y===2026){ i.phase="h"; i.light=LIGHT.has(w); i.label=w>=52?"8–12 reps · jul, lett uke":"8–12 reps"; }
+  else { i.phase="s"; i.label="3–5 reps"; }
+  return i;
+}
+
+/* ============ TRINN ============ */
+const T_KEY=KEY+"-trinn-v1";
+function lsGet(k){ try{ return localStorage.getItem(k);}catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v);}catch(e){} }
+let TRINN={trinn:1,fra:null,hist:[]};
+function loadTrinn(){ try{ const t=JSON.parse(lsGet(T_KEY)||"null"); if(t&&t.trinn) TRINN=t; }catch(e){} }
+function setTrinn(n){
+  if(n===TRINN.trinn) return;
+  const d=ymd(new Date()); TRINN.hist=(TRINN.hist||[]).concat([{trinn:n,fra:d}]); TRINN.trinn=n; TRINN.fra=d;
+  lsSet(T_KEY,JSON.stringify(TRINN));
+}
+const TRINN_TXT={
+ 1:{klatring:"Store tak og jugs, loddrett til svakt overhengende, statiske flytt.",styrke:"Stropper på alle drag."},
+ 2:{klatring:"Åpne, runde lister. Bratt vegg.",styrke:"Stropper av, unntatt pull-ups med vekt og enarms roing."},
+ 3:{klatring:"Halvcrimp på middels lister.",styrke:"Alt uten stropper."},
+ 4:{klatring:"Normal klatring, crimp bare uthvilt.",styrke:"Styrkevolumet justeres når klatrevolumet øker."}};
+function gripRules(t){
+  const r=[];
+  if(t<=1) r.push("Bare store tak og jugs.");
+  if(t<=2) r.push("Ingen halvcrimp, ingen små lister, ingen dynamiske flytt eller fangtak, ingen hopp av og på.");
+  if(t<=3) r.push("Ingen full crimp, ingen lommer (1–2 fingre), ingen monos, ingen tak der fingeren ikke er med, ingen campus, ingen fingertuppheng.");
+  return r;
+}
+
+/* ============ STYRKE ============ */
+// [kode, navn, utførelse, sett 8–12, reps 8–12, pause, figur, dragtype]  dragtype: "alle"=stropper til trinn 2, "tung"=stropper til trinn 3
+const EX_A=[
+ ["A1","Pull-ups","Brystet mot stangen, kontrollert ned (2 s). Strikk under føttene hvis under 6 reps, vekt i belte hvis over 10.",4,"6–10","","pullup","tung"],
+ ["A2","Pike push-ups","Føtter på kasse, hofta høyt. Hodet mot gulvet foran hendene, press opp. Lettere: føtter på gulvet. Tyngre: høyere kasse eller manual skulderpress 8–12.",4,"8–12","90 s","pike",""],
+ ["B1","Ringroing","Ringer i hoftehøyde, føttene på kasse, kroppen rett. Ringene inn til brystet, albuene langs kroppen, 2 s hold. Lettere: føttene i gulvet eller mer oppreist.",3,"10–15","","ringrow","alle"],
+ ["B2","Push-ups med «plus»","Rett kropp. På toppen: skulderbladene fram. Tyngre: føtter hevet, eller ringer fra trinn 2.",3,"10–15","75 s","pushup_plus",""],
+ ["C1","Enarms manualroing","Hånd og kne på benk, rett rygg. Manualen mot hofta med albuen inntil, rolig ned.",3,"10–12 /side","","db_row","tung"],
+ ["C2","Bulgarsk utfall (goblet)","Bakre fot på benk, manualen mot brystet. Rett ned til fremre lår er vannrett, kneet over foten. Press opp gjennom hælen.",3,"8–10 /bein","75 s","bulgarian",""],
+ ["D","Utadrotasjon i kabel","Siden mot kabelen, albue 90° inntil kroppen, håndkle under albuen. Roter ut, rolig tilbake. Lett vekt.",3,"12–15 /side","45 s","cable_er",""],
+ ["E","Y-T-W på benk","Magen på skrå benk (ca. 30°). Rette armer i Y, T, W, 10 av hver, tommel opp. 0,5–2 kg eller ingen vekt.",1,"10+10+10","","ytw",""]];
+const EX_B=[
+ ["A1","Dips","Senk til overarmen er vannrett, lett framoverlent. Lettere: strikk under knærne. Tyngre: vekt i belte.",4,"6–10","","dips","dips"],
+ ["A2","Chin-ups, nøytralt grep","Parallelle håndtak, haka over, 2 s ned. Alternativ: nedtrekk i kabel med nøytralt grep.",4,"6–10","90 s","chinup","alle"],
+ ["B1","Manual benkpress / gulvpress","Manualer over brystet, fingrene rundt uten å klemme. Senk til albuene er på høyde med kroppen, press opp. Skulderbladene samlet og nede.",3,"8–12","","bench","press"],
+ ["B2","Sittende kabelroing","Nøytralt eller bredt håndtak, brystet opp. Håndtaket mot magen, skulderbladene samlet, ikke rykk med ryggen.",3,"10–12","75 s","cable_row","alle"],
+ ["C1","Scapula pull-ups","Rette armer i heng. Skulderbladene ned og sammen, kroppen løfter seg 5–10 cm.",3,"12–15","","scap","alle"],
+ ["C2","Enbeins markløft (goblet)","Manualen mot brystet. Vipp overkroppen fram mens det frie beinet går bakover. Press opp med hofta.",3,"10 /bein","60 s","sl_rdl",""],
+ ["D1","Y-raise","Lett framoverbøyd, manualer 1–3 kg. Rette armer skrått opp i Y, tommel opp.",3,"12–15","","y_raise",""],
+ ["D2","Fingerekstensjon med strikk","Strikk rundt alle fem fingre. Spre og rett ut fingrene, slipp rolig. Smertefritt.",3,"20","45 s","finger_ext",""],
+ ["E","Cuban press","Manualer 1–3 kg. Albuer i skulderhøyde, roter underarmene opp til vertikalt, press over hodet. Rolig tilbake.",2,"12","45 s","cuban",""]];
+// Hovedløft i 3–5-fasen
+const HEAVY={"A:A1":[4,"3–5"],"A:C1":[3,"4–6 /side"],"B:A1":[4,"3–5"],"B:B1":[3,"4–6"]};
+const FIG={"pullup": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"60\" y1=\"22\" x2=\"180\" y2=\"22\" stroke=\"#8a97a8\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M102.0 22.0 L108.0 48.0 L110.0 64.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M138.0 22.0 L132.0 48.0 L130.0 64.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M110.0 64.0 L120.0 62.0 L130.0 64.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M120.0 62.0 L120.0 108.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M114.0 108.0 L112.0 128.0 L113.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M126.0 108.0 L128.0 128.0 L127.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"120\" cy=\"50\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M102.0 22.0 L92.0 48.0 L110.0 42.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M138.0 22.0 L148.0 48.0 L130.0 42.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M110.0 42.0 L120.0 40.0 L130.0 42.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M120.0 40.0 L120.0 86.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M114.0 86.0 L112.0 106.0 L113.0 124.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M126.0 86.0 L128.0 106.0 L127.0 124.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"120\" cy=\"24\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><line x1=\"186\" y1=\"104\" x2=\"186.0\" y2=\"79.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M186.0 76.0 L192.0 85.6 L180.0 85.6 Z\" fill=\"#d9534f\"/></svg>", "pike": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"168\" y=\"112\" width=\"44\" height=\"36\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><path d=\"M100.0 104.0 L146.0 62.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M146.0 62.0 L168.0 88.0 L188.0 112.0 L196.0 110.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"92\" cy=\"96\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M100.0 104.0 L98.0 126.0 L96.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M98.0 118.0 L146.0 62.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M146.0 62.0 L168.0 88.0 L188.0 112.0 L196.0 110.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"86\" cy=\"126\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M98.0 118.0 L116.0 128.0 L96.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"70\" y1=\"104\" x2=\"70.0\" y2=\"125.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M70.0 128.0 L64.0 118.4 L76.0 118.4 Z\" fill=\"#d9534f\"/><line x1=\"56\" y1=\"128\" x2=\"56.0\" y2=\"107.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M56.0 104.0 L62.0 113.6 L50.0 113.6 Z\" fill=\"#d9534f\"/></svg>", "ringrow": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><line x1=\"40\" y1=\"6\" x2=\"120\" y2=\"6\" stroke=\"#8a97a8\" stroke-width=\"4\"/><line x1=\"76\" y1=\"6\" x2=\"76\" y2=\"83\" stroke=\"#8a97a8\" stroke-width=\"2.5\" opacity=\"0.22\"/><circle cx=\"76\" cy=\"90\" r=\"7\" fill=\"none\" stroke=\"#8a97a8\" stroke-width=\"3.5\" opacity=\"0.22\"/><path d=\"M76.0 126.0 L140.0 135.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M140.0 135.0 L172.0 140.0 L204.0 144.0 L206.0 138.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"62\" cy=\"124\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M76.0 126.0 L76.0 108.0 L76.0 90.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><line x1=\"76\" y1=\"6\" x2=\"86\" y2=\"89\" stroke=\"#8a97a8\" stroke-width=\"2.5\" opacity=\"1\"/><circle cx=\"86\" cy=\"96\" r=\"7\" fill=\"none\" stroke=\"#8a97a8\" stroke-width=\"3.5\" opacity=\"1\"/><path d=\"M84.0 92.0 L140.0 119.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M140.0 119.0 L172.0 131.0 L204.0 144.0 L206.0 136.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"70\" cy=\"84\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M84.0 92.0 L100.0 112.0 L86.0 96.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"124\" y1=\"92\" x2=\"124.0\" y2=\"79.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M124.0 76.0 L130.0 85.6 L118.0 85.6 Z\" fill=\"#d9534f\"/></svg>", "pushup_plus": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M66.0 112.0 L98.0 116.0 L138.0 121.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M138.0 121.0 L170.0 133.0 L204.0 144.0 L212.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"54\" cy=\"100.0\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M68.0 114.0 L68.0 131.0 L70.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M66.0 112.0 L98.0 104.0 L138.0 121.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M138.0 121.0 L170.0 133.0 L204.0 144.0 L212.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"54\" cy=\"96.4\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M68.0 114.0 L68.0 131.0 L70.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"98\" y1=\"92\" x2=\"98.0\" y2=\"79.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M98.0 76.0 L104.0 85.6 L92.0 85.6 Z\" fill=\"#d9534f\"/><text x=\"120\" y=\"22\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">skulderbladene fram på toppen</text></svg>", "db_row": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"56\" y=\"104\" width=\"100\" height=\"7\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><line x1=\"64\" y1=\"111\" x2=\"64\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"3\"/><line x1=\"148\" y1=\"111\" x2=\"148\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"3\"/><path d=\"M80.0 88.0 L82.0 108.0 L84.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><g transform=\"translate(84 130) rotate(0)\" opacity=\"0.22\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><path d=\"M140.0 90.0 L146.0 104.0 L172.0 104.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M78.0 88.0 L80.0 104.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M76.0 86.0 L140.0 90.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M140.0 90.0 L150.0 120.0 L152.0 147.0 L162.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"62\" cy=\"80\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M80.0 88.0 L104.0 70.0 L100.0 94.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><g transform=\"translate(100 96) rotate(0)\" opacity=\"1\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><line x1=\"118\" y1=\"124\" x2=\"118.0\" y2=\"103.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M118.0 100.0 L124.0 109.6 L112.0 109.6 Z\" fill=\"#d9534f\"/></svg>", "bulgarian": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"170\" y=\"112\" width=\"52\" height=\"7\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><line x1=\"178\" y1=\"119\" x2=\"178\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"3\"/><line x1=\"214\" y1=\"119\" x2=\"214\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"3\"/><path d=\"M138.0 90.0 L160.0 124.0 L186.0 112.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M136.0 46.0 L138.0 90.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M138.0 90.0 L112.0 116.0 L100.0 147.0 L88.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"136\" cy=\"34\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M136.0 50.0 L148.0 64.0 L140.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"144\" cy=\"62\" r=\"7\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"0.22\"/><path d=\"M140.0 112.0 L162.0 140.0 L186.0 112.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M136.0 68.0 L140.0 112.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M140.0 112.0 L104.0 112.0 L100.0 147.0 L88.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"136\" cy=\"56\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M136.0 72.0 L148.0 86.0 L140.0 82.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"144\" cy=\"84\" r=\"7\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"1\"/><line x1=\"60\" y1=\"70\" x2=\"60.0\" y2=\"101.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M60.0 104.0 L54.0 94.4 L66.0 94.4 Z\" fill=\"#d9534f\"/><line x1=\"46\" y1=\"104\" x2=\"46.0\" y2=\"73.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M46.0 70.0 L52.0 79.6 L40.0 79.6 Z\" fill=\"#d9534f\"/></svg>", "cable_er": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"14\" y=\"94\" width=\"22\" height=\"40\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><circle cx=\"34\" cy=\"114\" r=\"4\" fill=\"#8a97a8\"/><text x=\"25\" y=\"150\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">kabel</text><path d=\"M158.0 92.0 L130.0 114.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><line x1=\"34\" y1=\"114\" x2=\"130\" y2=\"114\" stroke=\"#8a97a8\" stroke-width=\"2.5\" opacity=\"0.32\"/><rect x=\"146\" y=\"80\" width=\"10\" height=\"9\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\"/><ellipse cx=\"120\" cy=\"70\" rx=\"40\" ry=\"15\" fill=\"#1f3a5f\"/><circle cx=\"120\" cy=\"70\" r=\"11\" fill=\"#2c4f7c\" opacity=\"1\"/><path d=\"M156.0 74.0 L158.0 92.0\" stroke=\"#1f3a5f\" stroke-width=\"8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M158.0 92.0 L186.0 116.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"34\" y1=\"114\" x2=\"186\" y2=\"116\" stroke=\"#8a97a8\" stroke-width=\"2.5\"/><rect x=\"182\" y=\"112\" width=\"9\" height=\"8\" rx=\"2\" fill=\"#8a97a8\"/><path d=\"M140 128 Q166 138 181.4 129.5\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M184.0 128.0 L178.5 137.9 L172.7 127.4 Z\" fill=\"#d9534f\"/><text x=\"130\" y=\"150\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">albuen inntil kroppen</text><text x=\"232\" y=\"16\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"end\">ovenfra</text></svg>", "ytw": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"26\" y=\"58\" width=\"28\" height=\"70\" rx=\"5\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><path d=\"M30.0 66.0 L17.4 40.0 L10.2 22.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M50.0 66.0 L62.6 40.0 L69.8 22.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M40.0 66.0 L40.0 112.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M36.0 112.0 L34.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M44.0 112.0 L46.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"40\" cy=\"54\" r=\"8\" fill=\"#2c4f7c\" opacity=\"1\"/><text x=\"40\" y=\"152\" font-family=\"system-ui,sans-serif\" font-size=\"15\" font-weight=\"700\" fill=\"#0f6b5f\" text-anchor=\"middle\">Y</text><rect x=\"106\" y=\"58\" width=\"28\" height=\"70\" rx=\"5\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><path d=\"M110.0 66.0 L94.7 66.0 L81.2 66.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M130.0 66.0 L145.3 66.0 L158.8 66.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M120.0 66.0 L120.0 112.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M116.0 112.0 L114.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M124.0 112.0 L126.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"120\" cy=\"54\" r=\"8\" fill=\"#2c4f7c\" opacity=\"1\"/><text x=\"120\" y=\"152\" font-family=\"system-ui,sans-serif\" font-size=\"15\" font-weight=\"700\" fill=\"#0f6b5f\" text-anchor=\"middle\">T</text><rect x=\"186\" y=\"58\" width=\"28\" height=\"70\" rx=\"5\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><path d=\"M190.0 66.0 L172.0 74.0 L166.6 54.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M210.0 66.0 L228.0 74.0 L233.4 54.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M200.0 66.0 L200.0 112.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M196.0 112.0 L194.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M204.0 112.0 L206.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"200\" cy=\"54\" r=\"8\" fill=\"#2c4f7c\" opacity=\"1\"/><text x=\"200\" y=\"152\" font-family=\"system-ui,sans-serif\" font-size=\"15\" font-weight=\"700\" fill=\"#0f6b5f\" text-anchor=\"middle\">W</text></svg>", "dips": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"90\" y1=\"84\" x2=\"190\" y2=\"84\" stroke=\"#8a97a8\" stroke-width=\"5\" stroke-linecap=\"round\"/><line x1=\"98\" y1=\"84\" x2=\"98\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"4\"/><line x1=\"182\" y1=\"84\" x2=\"182\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"4\"/><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M138.0 42.0 L140.0 88.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M140.0 88.0 L134.0 112.0 L152.0 124.0 L156.0 120.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"136\" cy=\"28\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M138.0 44.0 L139.0 64.0 L140.0 84.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M114.0 62.0 L126.0 104.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M126.0 104.0 L118.0 128.0 L138.0 140.0 L142.0 136.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"104\" cy=\"50\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M114.0 62.0 L140.0 62.0 L140.0 84.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"60\" y1=\"40\" x2=\"60.0\" y2=\"63.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M60.0 66.0 L54.0 56.4 L66.0 56.4 Z\" fill=\"#d9534f\"/><line x1=\"46\" y1=\"66\" x2=\"46.0\" y2=\"43.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M46.0 40.0 L52.0 49.6 L40.0 49.6 Z\" fill=\"#d9534f\"/></svg>", "chinup": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"80\" y1=\"22\" x2=\"170\" y2=\"22\" stroke=\"#8a97a8\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M120.0 62.0 L122.0 106.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M122.0 106.0 L124.0 126.0 L124.0 146.0 L132.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"118\" cy=\"50\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M120.0 62.0 L120.0 42.0 L120.0 22.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M118.0 26.0 L122.0 70.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M122.0 70.0 L124.0 90.0 L124.0 110.0 L132.0 111.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"116\" cy=\"14\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M118.0 28.0 L134.0 44.0 L120.0 22.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"170\" y1=\"100\" x2=\"170.0\" y2=\"75.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M170.0 72.0 L176.0 81.6 L164.0 81.6 Z\" fill=\"#d9534f\"/><text x=\"120\" y=\"146\" font-family=\"system-ui,sans-serif\" font-size=\"9\" font-weight=\"600\" fill=\"#5f6a66\" text-anchor=\"start\"></text></svg>", "bench": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"40\" y=\"110\" width=\"110\" height=\"7\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><line x1=\"48\" y1=\"117\" x2=\"48\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"3\"/><line x1=\"142\" y1=\"117\" x2=\"142\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"3\"/><path d=\"M130.0 104.0 L156.0 100.0 L162.0 147.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M62.0 104.0 L130.0 104.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M130.0 104.0 L160.0 96.0 L170.0 147.0 L180.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"48\" cy=\"100\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M66.0 104.0 L80.0 122.0 L72.0 92.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><g transform=\"translate(72 90) rotate(0)\" opacity=\"0.22\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><path d=\"M66.0 104.0 L68.0 80.0 L70.0 56.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><g transform=\"translate(70 54) rotate(0)\" opacity=\"1\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><line x1=\"94\" y1=\"92\" x2=\"94.0\" y2=\"65.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M94.0 62.0 L100.0 71.6 L88.0 71.6 Z\" fill=\"#d9534f\"/></svg>", "cable_row": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"10\" y=\"40\" width=\"22\" height=\"108\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><circle cx=\"32\" cy=\"104\" r=\"4\" fill=\"#8a97a8\"/><rect x=\"128\" y=\"130\" width=\"64\" height=\"8\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"84\" y=\"112\" width=\"6\" height=\"30\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M152.0 78.0 L126.0 92.0 L100.0 104.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><line x1=\"32\" y1=\"104\" x2=\"100\" y2=\"104\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"0.32\"/><path d=\"M152.0 76.0 L152.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M152.0 128.0 L118.0 110.0 L92.0 126.0 L92.0 118.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"156\" cy=\"62\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M152.0 78.0 L174.0 100.0 L140.0 104.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"32\" y1=\"104\" x2=\"140\" y2=\"104\" stroke=\"#8a97a8\" stroke-width=\"2.2\"/><line x1=\"110\" y1=\"90\" x2=\"133.0\" y2=\"90.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M136.0 90.0 L126.4 96.0 L126.4 84.0 Z\" fill=\"#d9534f\"/></svg>", "scap": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"20\" y1=\"22\" x2=\"220\" y2=\"22\" stroke=\"#8a97a8\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M46.0 22.0 L57.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M94.0 22.0 L83.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M57.0 60.0 L70.0 60.0 L83.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M70.0 60.0 L70.0 104.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M64.0 104.0 L62.0 124.0 L63.0 142.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M76.0 104.0 L78.0 124.0 L77.0 142.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"70\" cy=\"52\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><text x=\"70\" y=\"156\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">heng</text><path d=\"M146.0 22.0 L157.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M194.0 22.0 L183.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M157.0 60.0 L170.0 51.0 L183.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M170.0 51.0 L170.0 95.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M164.0 95.0 L162.0 115.0 L163.0 133.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M176.0 95.0 L178.0 115.0 L177.0 133.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"170\" cy=\"38\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><text x=\"170\" y=\"156\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">skuldrene ned</text><line x1=\"120\" y1=\"70\" x2=\"143.0\" y2=\"70.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M146.0 70.0 L136.4 76.0 L136.4 64.0 Z\" fill=\"#d9534f\"/><line x1=\"206\" y1=\"96\" x2=\"206.0\" y2=\"81.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M206.0 78.0 L212.0 87.6 L200.0 87.6 Z\" fill=\"#d9534f\"/><line x1=\"150\" y1=\"50\" x2=\"154.7\" y2=\"59.3\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M156.0 62.0 L146.3 56.1 L157.1 50.7 Z\" fill=\"#d9534f\"/><line x1=\"190\" y1=\"50\" x2=\"185.3\" y2=\"59.3\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M184.0 62.0 L182.9 50.7 L193.7 56.1 Z\" fill=\"#d9534f\"/></svg>", "sl_rdl": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M112.0 92.0 L122.0 118.0 L128.0 140.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M112.0 44.0 L112.0 92.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M112.0 92.0 L112.0 120.0 L112.0 147.0 L122.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"112\" cy=\"30\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M112.0 48.0 L124.0 62.0 L118.0 58.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"120\" cy=\"60\" r=\"7\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"0.22\"/><path d=\"M114.0 96.0 L150.0 94.0 L184.0 90.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M68.0 92.0 L114.0 96.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M114.0 96.0 L112.0 122.0 L112.0 147.0 L122.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"54\" cy=\"86\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M70.0 94.0 L80.0 108.0 L76.0 104.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"78\" cy=\"104\" r=\"7\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"1\"/><path d=\"M70 60 Q52 64 50.4 75.0\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M50.0 78.0 L45.4 67.6 L57.3 69.3 Z\" fill=\"#d9534f\"/></svg>", "y_raise": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M88.0 72.0 L132.0 102.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M132.0 102.0 L128.0 124.0 L132.0 147.0 L142.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"76\" cy=\"64\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M90.0 74.0 L92.0 92.0 L94.0 110.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><g transform=\"translate(94 113) rotate(90)\" opacity=\"0.22\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><path d=\"M90.0 74.0 L70.0 56.0 L50.0 38.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><g transform=\"translate(48 36) rotate(45)\" opacity=\"1\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><path d=\"M112 104 Q96 62 66.6 45.5\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M64.0 44.0 L75.3 43.5 L69.4 53.9 Z\" fill=\"#d9534f\"/><text x=\"176\" y=\"40\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">tommel opp</text></svg>", "finger_ext": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"48\" y=\"88\" width=\"44\" height=\"46\" rx=\"14\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M53.0 96.0 L33.1 82.6\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M61.0 88.0 L58.3 54.1\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M70.0 86.0 L70.0 48.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M79.0 88.0 L81.7 54.1\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M88.0 92.0 L93.0 64.5\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><ellipse cx=\"70\" cy=\"62.0\" rx=\"22\" ry=\"9\" fill=\"none\" stroke=\"#d9534f\" stroke-width=\"2.5\" opacity=\"1\"/><text x=\"70\" y=\"152\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">start</text><rect x=\"148\" y=\"88\" width=\"44\" height=\"46\" rx=\"14\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M153.0 96.0 L129.6 101.5\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M161.0 88.0 L146.2 57.4\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M170.0 86.0 L170.0 48.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M179.0 88.0 L193.8 57.4\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M188.0 92.0 L209.9 74.6\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><ellipse cx=\"170\" cy=\"62.0\" rx=\"36\" ry=\"9\" fill=\"none\" stroke=\"#d9534f\" stroke-width=\"2.5\" opacity=\"1\"/><text x=\"170\" y=\"152\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">spre og rett ut</text><line x1=\"108\" y1=\"96\" x2=\"129.0\" y2=\"96.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M132.0 96.0 L122.4 102.0 L122.4 90.0 Z\" fill=\"#d9534f\"/></svg>", "cuban": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M120.0 58.0 L120.0 110.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M102.0 62.0 L120.0 58.0 L138.0 62.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"120\" cy=\"40\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M114.0 110.0 L112.0 130.0 L113.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M126.0 110.0 L128.0 130.0 L127.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M102.0 62.0 L80.0 64.0 L80.0 88.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M138.0 62.0 L160.0 64.0 L160.0 88.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><g transform=\"translate(80 92) rotate(0)\" opacity=\"0.22\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><g transform=\"translate(160 92) rotate(0)\" opacity=\"0.22\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><path d=\"M102.0 62.0 L80.0 64.0 L80.0 40.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M138.0 62.0 L160.0 64.0 L160.0 40.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><g transform=\"translate(80 36) rotate(0)\" opacity=\"1\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><g transform=\"translate(160 36) rotate(0)\" opacity=\"1\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><path d=\"M60 90 Q48 66 60.4 46.5\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M62.0 44.0 L61.9 55.3 L51.8 48.9 Z\" fill=\"#d9534f\"/><path d=\"M180 90 Q192 66 179.6 46.5\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M178.0 44.0 L188.2 48.9 L178.1 55.3 Z\" fill=\"#d9534f\"/><text x=\"120\" y=\"16\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">roter opp, så press over hodet</text></svg>", "dead_bug": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M54.0 138.0 L110.0 138.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M110.0 138.0 L112.0 106.0 L144.0 104.0 L150.0 100.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"40\" cy=\"136\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M56.0 138.0 L58.0 112.0 L60.0 90.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M110.0 138.0 L112.0 106.0 L144.0 104.0 L150.0 100.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M56.0 138.0 L58.0 112.0 L60.0 90.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M54.0 138.0 L110.0 138.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M110.0 138.0 L146.0 130.0 L186.0 124.0 L192.0 118.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"40\" cy=\"136\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M56.0 138.0 L34.0 124.0 L14.0 116.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"30\" y1=\"100\" x2=\"18.6\" y2=\"106.5\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M16.0 108.0 L21.4 98.0 L27.3 108.4 Z\" fill=\"#d9534f\"/><line x1=\"170\" y1=\"108\" x2=\"187.1\" y2=\"113.1\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M190.0 114.0 L179.1 117.0 L182.5 105.5 Z\" fill=\"#d9534f\"/><text x=\"120\" y=\"22\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">motsatt arm og bein · korsryggen i gulvet</text></svg>", "side_plank": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M52.0 108.0 L52.0 146.0 L78.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M52.0 108.0 L130.0 138.0 L206.0 144.0\" stroke=\"#1f3a5f\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M205.0 140.0 L210.0 130.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"40\" cy=\"96\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M60.0 106.0 L88.0 92.0 L128.0 130.0\" stroke=\"#1f3a5f\" stroke-width=\"6.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M52.0 108.0 L52.0 146.0 L78.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M52.0 108.0 L130.0 126.0 L206.0 144.0\" stroke=\"#1f3a5f\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M205.0 140.0 L210.0 130.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"40\" cy=\"96\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M60.0 106.0 L88.0 92.0 L128.0 118.0\" stroke=\"#1f3a5f\" stroke-width=\"6.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"150\" y1=\"104\" x2=\"150.0\" y2=\"93.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M150.0 90.0 L156.0 99.6 L144.0 99.6 Z\" fill=\"#d9534f\"/><text x=\"232\" y=\"16\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"end\">forfra</text></svg>"};
+
+function exPlan(okt,e,i){
+  let sets=e[3], reps=e[4], rpe="RPE 7–8", pause=e[5], heavy=false;
+  const h=HEAVY[okt+":"+e[0]];
+  if(i.phase==="s"&&h){ sets=h[0]; reps=h[1]; rpe="RPE 8"; heavy=true; }
+  if(i.light){ sets=Math.min(sets,2); rpe="RPE 6–7"; }
+  return {sets,reps,rpe,pause,heavy};
+}
+function strapNote(e,t){
+  if(e[7]==="alle"&&t<=1) return "Stropper";
+  if(e[7]==="tung"&&t<=2) return t<=1?"Stropper":(e[0]==="A1"?"Stropper ved ekstravekt":"Stropper");
+  if(e[7]==="dips"&&t<=1) return "Parallelle stenger, ikke ringer";
+  if(e[7]==="press") return "Smerte ved manualgrep → gulvpress med stang";
+  return "";
+}
+function exHtml(okt,list,i,t){
+  return `<div class="exlist">${list.map(e=>{ const p=exPlan(okt,e,i), sn=strapNote(e,t);
+    return `<div class="ex"><div class="fig" role="img" aria-label="${e[1]}">${FIG[e[6]]||""}</div><div>
+     <div class="exh"><span><span class="code">${e[0]}</span>${e[1]}</span><span class="sets">${p.sets} × ${p.reps}${p.heavy?" · hovedløft":""}</span></div>
+     ${sn?`<div class="meta"><span class="tag warn">${sn}</span></div>`:""}
+     <p>${e[2]}${p.pause?` · Pause ${p.pause}`:""}</p></div></div>`; }).join("")}</div>`;
+}
+function strengthHead(i){
+  if(i.phase==="s") return `Hovedløft <a href="#rpe">RPE 8</a>, A1 → 2 min → A2 → 2 min. Øvrige 8–12, <a href="#rpe">RPE 7–8</a>. Fingersmerte → stropper tilbake.`;
+  if(i.light) return `Lett uke: 2 sett, <a href="#rpe">RPE 6–7</a> (3–4 reps igjen).`;
+  return `<a href="#rpe">RPE 7–8</a> (3–2 reps igjen) · pause 60–90 s, stabilisering 45–60 s · supersett: gjør begge, så pausen.`;
+}
+
+/* ============ ØKTENE ============ */
+const B=(h,items,dur)=>({h,items,dur});
+function lastSaturday(d){ let x=new Date(d); while(isoWeek(x).dow!==6) x=addDays(x,-1); return x; }
+function session(date,noTheme){
+  const i=info(date), t=TRINN.trinn;
+  const s={i,key:"hvile",title:"Hvile",time:"–",blocks:[],notes:[],ex:null,fields:[]};
+  if(i.phase==="før"||i.phase==="etter"){ s.title=i.label; s.key="utenfor"; return s; }
+  if(i.light) s.notes.push(["warn",i.w>=52?"Jul, lett uke: samme øvelser, 2 sett, RPE 6–7.":"Lett uke: samme øvelser, 2 sett, RPE 6–7."]);
+  const warmTheme = noTheme?null:themeFor(lastSaturday(date));
+  const warm=(extra)=>B("Oppvarming",["Lett klatring på autobelay, 8–10 min: store tak, rolig tempo."+(warmTheme?` Teknikktema fra lørdag: ${themeLink(warmTheme[0])}.`:""),
+     "Strikk pull-aparts 2 × 15. "+extra,"Ett lett oppvarmingssett av første øvelse."],"12 min");
+  const climb=(dur,first)=>{
+    const items=[];
+    items.push(t<=1?"Loddrett til svakt overhengende, jugs og store tak, statiske flytt, RPE 3–4.":
+               t===2?"Åpne, runde lister og bratt vegg, RPE 3–5.":
+               t===3?"Halvcrimp på middels lister tillatt, RPE 3–5.":"Normal klatring, crimp bare uthvilt.");
+    items.push("Led på lette ruter: klipping fra god og dårlig posisjon. Onsight-lesing: les ruta 2 min, klatre uten stopp.");
+    if(t>=2) items.push("2 × 15 min sammenhengende klatring på store tak, lett pump, RPE 5.");
+    items.push("Sluttpunkt: tida, merkbar pump, eller <a href='#finger' data-anchor='smerteregel'>smerteregelen</a>.");
+    return items;
+  };
+  switch(i.dow){
+  case 1:
+    s.key="man"; s.title="Styrke A"; s.time=i.phase==="s"?"ca. 75 min":"ca. 65 min";
+    s.blocks=[warm("Scapula push-ups 2 × 10.")]; s.ex=["A",EX_A];
+    s.lead="Vertikal dra/dytt, roing, bein, rotatorkappe, skulderbladskontroll.";
+    s.fields=[["reps","Pull-ups: reps per sett"],["ekstra","Ekstravekt / strikkhjelp"]];
+    s.notes.push(["acc","Pilates kan tas rett etter Styrke A i stedet for onsdag (ca. 20 min)."]);
+    break;
+  case 3:
+    s.key="ons"; s.title="Lett klatring + pilates"; s.time="60–80 + 20 min";
+    s.blocks=[B("Oppvarming",["Lett autobelay, skulderaktivering."],"10 min"),B("Lett klatring",climb(),"60–80 min"),
+      B("Pilates kjerne",["Rolig tempo, ingen grep.","Dead bug 2 × 8 /side · sideplanke på underarm 2 × 20–30 s /side · bird dog 2 × 8 /side · seteløft 2 × 12 · hollow hold 2 × 20 s · roll-up 2 × 6."],"20 min")];
+    s.fields=[["pilates","Pilates gjort"]]; s.climb=true;
+    break;
+  case 5:
+    s.key="fre"; s.title="Styrke B"; s.time=i.phase==="s"?"ca. 65 min":"ca. 60 min";
+    s.blocks=[warm("Serratus wall slides 2 × 12.")]; s.ex=["B",EX_B];
+    s.lead="Dips og chin-ups, press og roing, skulderbladskontroll, bein, fingerekstensjon.";
+    s.fields=[["reps","Dips: reps per sett"],["ekstra","Ekstravekt / strikkhjelp"]];
+    break;
+  case 6:
+    s.key="lor"; s.title="Lett klatring"; s.time="60–90 min";
+    s.blocks=[B("Oppvarming",["Lett autobelay, skulderaktivering."],"10 min"),B("Lett klatring",climb(),"60–90 min")]; s.climb=true;
+    break;
+  default:
+    s.blocks=[B("Hviledag",["Tapt økt tas ikke igjen."])];
+  }
+  if(s.climb&&!noTheme){ const th=themeFor(date); s.theme=th[0]; s.blocks[0].items.unshift(`Teknikktema: ${themeLink(th[0],true)} – ${th[1]}`); }
+  return s;
+}
+
+/* Teknikktema – roterer per klatreøkt (onsdag og lørdag) */
+const TEMA=[["Stille føtter","Ingen lyd, ingen justering etter plassering."],
+ ["Lese før du klatrer","Si sekvensen høyt før forsøket, sammenlign etterpå."],
+ ["Klipp i vanskelige posisjoner","Hvert klipp fra en ny, vanskeligere stilling."],
+ ["Hofta inn","Samme flytt med brystet mot veggen og med hofta inn – velg det som krever minst."],
+ ["Hvile på tau","Planlagte hvil, valgt under lesing."],
+ ["Rette armer","Flytt med bein og hofte, armen bøyes bare i flyttet."],
+ ["Flagg og dropknee","Ingen fotbytte – flagg eller dropknee i stedet."]];
+const themeCache={};
+function themeFor(date){
+  const k=ymd(date); if(themeCache[k]) return themeCache[k];
+  let n=0; for(let d=new Date(2026,9,19); d<date; d=addDays(d,1)){ const w=isoWeek(d).dow; if(w===3||w===6) n++; }
+  return themeCache[k]=TEMA[n%TEMA.length];
+}
+function themeLink(n,strong){ return `<a ${strong?'class="key" ':""}href="#teknikk" data-anchor="tema-${temaId(n)}">${n}</a>`; }
+
+/* ============ LOGG ============ */
+let LOG={};
+const LS_KEY=KEY+"-logg-v1";
+function loadLocal(){ try{ LOG=JSON.parse(lsGet(LS_KEY)||"{}")||{}; }catch(e){ LOG={}; } }
+function initDb(){ loadLocal(); loadTrinn(); document.getElementById("syncState").textContent="Logg på denne telefonen"; }
+async function saveEntry(date,entry){ LOG[date]=entry; lsSet(LS_KEY,JSON.stringify(LOG)); return lsGet(LS_KEY)?"Lagret på denne telefonen.":"Kunne ikke lagre – nettleseren blokkerer lagring."; }
+async function deleteEntry(date){ delete LOG[date]; lsSet(LS_KEY,JSON.stringify(LOG)); }
+const FN={gronn:"grønn",gul:"gul",oransje:"oransje",rod:"rød",svart:"svart"};
+const has=v=>v!=null&&v!=="";
+function entryLine(k){ const e=LOG[k], d=parseYmd(k);
+  let t=`${DAYS[isoWeek(d).dow]} ${fmt(d)}: ${FN[e.farge]||"–"} · ${e.okt||""} · trinn ${e.trinn||"?"}`;
+  if(has(e.reps)) t+=` · ${e.repsNavn||"reps"}: ${e.reps}`;
+  if(has(e.ekstra)) t+=` · ${e.ekstra}`;
+  if(e.pilates) t+=` · pilates`;
+  if(has(e.fUnder)||has(e.fMorgen)) t+=` · finger ${has(e.fUnder)?e.fUnder:"–"}/${has(e.fMorgen)?e.fMorgen:"–"}`;
+  if(e.kommentar) t+=` – ${e.kommentar}`;
+  return t; }
+function summary(scope){
+  let keys=Object.keys(LOG).sort();
+  const head=`${NAVN} – trinn ${TRINN.trinn}${TRINN.fra?` (fra ${fmt(parseYmd(TRINN.fra))})`:""}. Finger = under økta / neste morgen (0–10).`;
+  if(scope==="uke"){ const {y,w}=isoWeek(cur); const m=mondayOf(y,w); const a=ymd(m), z=ymd(addDays(m,6));
+    keys=keys.filter(k=>k>=a&&k<=z);
+    return `${head}\nLogg uke ${w}\n`+(keys.length?keys.map(entryLine).join("\n"):"Ingen økter logget."); }
+  let out=`${head}\nLogg vinteren 2026/27`, lastW=null;
+  keys.forEach(k=>{ const w=isoWeek(parseYmd(k)).w; if(w!==lastW){ out+=`\n\nUke ${w}`; lastW=w; } out+="\n"+entryLine(k); });
+  return keys.length?out:out+"\nIngen økter logget.";
+}
+async function shareText(t,msgEl){
+  try{ if(navigator.share){ await navigator.share({title:"Treningslogg",text:t}); return; } }catch(e){ if(e&&e.name==="AbortError") return; }
+  try{ await navigator.clipboard.writeText(t); msgEl.textContent="Kopiert – lim inn i en melding til trener."; return; }catch(e){}
+  const ta=document.getElementById("shareFallback"); ta.value=t; ta.hidden=false; ta.select(); msgEl.textContent="Kopier teksten under.";
+}
+function downloadBackup(){
+  const blob=new Blob([JSON.stringify({utover:NAVN,versjon:1,trinn:TRINN,logg:LOG},null,1)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=KEY+"-logg-"+ymd(cur)+".json";
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
+}
+function restoreBackup(file,msgEl){
+  const r=new FileReader();
+  r.onload=()=>{ try{ const o=JSON.parse(r.result); const l=o&&o.logg; if(!l||typeof l!=="object") throw 0;
+      let n=0; for(const k in l){ if(/^\d{4}-\d\d-\d\d$/.test(k)&&!LOG[k]){ LOG[k]=l[k]; n++; } }
+      if(o.trinn&&o.trinn.trinn&&!lsGet(T_KEY)){ TRINN=o.trinn; lsSet(T_KEY,JSON.stringify(TRINN)); }
+      lsSet(LS_KEY,JSON.stringify(LOG)); render(); const m=document.getElementById("shareMsg"); if(m) m.textContent=`Hentet inn ${n} økter.`; }
+    catch(e){ msgEl.textContent="Fant ingen logg i filen."; } };
+  r.readAsText(file);
+}
+
+/* Varsler fra loggen */
+function alerts(date){
+  const out=[]; const ds=ymd(date);
+  const prev=Object.keys(LOG).filter(k=>k<ds).sort();
+  const lastK=prev[prev.length-1];
+  const react=k=>{ const e=LOG[k]; return (has(e.fUnder)&&+e.fUnder>=3)||(has(e.fMorgen)&&+e.fMorgen>=3); };
+  if(lastK&&(date-parseYmd(lastK))/864e5<=3&&react(lastK))
+    out.push(["stop",`Finger 3/10 eller mer sist (${fmt(parseYmd(lastK))}): stopp øvelsen eller klatringen som gjorde vondt. Ett trinn ned i 1 uke, så prøv igjen.`]);
+  const recent=prev.filter(k=>(date-parseYmd(k))/864e5<=14&&react(k));
+  if(recent.length>=2) out.push(["stop","Fingerreaksjon to ganger på 14 dager: fysioterapeut."]);
+  if(lastK&&LOG[lastK].farge==="svart") out.push(["stop","Sist logget svart: ikke tren før du har snakket med trener."]);
+  if(lastK&&LOG[lastK].farge==="rod") out.push(["stop","Sist logget rød: trenger flere hviledager."]);
+  const yd=ymd(addDays(date,-1));
+  if(LOG[yd]&&!has(LOG[yd].fMorgen)&&ds===ymd(cur)) out.push(["acc",`Fyll inn fingeren i morges for gårsdagens økt: <a href="#idag" data-go="${yd}">åpne i går</a>.`]);
+  if(TRINN.fra&&TRINN.trinn<4){ const days=(date-parseYmd(TRINN.fra))/864e5;
+    if(days>=21&&!recent.length) out.push(["acc",`${Math.floor(days/7)} uker på trinn ${TRINN.trinn}: gå gjennom <a href="#finger" data-anchor="neste-trinn">kriteriene for neste trinn</a> med fysio.`]); }
+  return out;
+}
+
+/* ============ VISNINGER ============ */
+const TABS=[["idag","I dag"],["uka","Uka"],["man","Styrke A"],["fre","Styrke B"],["klatring","Klatring"],["finger","Finger"],["teknikk","Teknikk"],["plan","Plan"],["rpe","RPE"],["regler","Regler"],["logg","Logg"]];
+let cur=new Date(); cur=new Date(cur.getFullYear(),cur.getMonth(),cur.getDate());
+let selDate=new Date(cur), weekRef=new Date(cur);
+function tabsHtml(t){ return TABS.map(([k,n])=>`<a href="#${k}" class="${k===t?"on":""}">${n}</a>`).join(""); }
+function notesHtml(n){ return n.map(([c,t])=>`<div class="note ${c==="warn"?"":c}">${t}</div>`).join(""); }
+function rpeLink(t){ return t.replace(/RPE \d+(–\d+)?(?![^<]*<\/a>)/g,m=>`<a href="#rpe">${m}</a>`); }
+function sessHtml(s){ return s.blocks.map(b=>`<div class="blk"><h4>${b.h}${b.dur?`<span class="dur">${b.dur}</span>`:""}</h4><ul>${b.items.map(x=>`<li>${rpeLink(x)}</li>`).join("")}</ul></div>`).join(""); }
+function trinnPicker(){
+  return `<div class="trinn"><span class="small muted">Fingerens trinn:</span>${[1,2,3,4].map(n=>`<button class="tbtn ${n===TRINN.trinn?"on":""}" data-trinn="${n}">${n}</button>`).join("")}
+   <a class="small" href="#finger">Hva betyr trinnene?</a></div>`;
+}
+function tagsHtml(i){
+  let t=`<span class="tag">Uke ${i.w}</span><span class="tag acc">${i.label}</span>`;
+  if(i.light) t+=`<span class="tag warn">Lett uke</span>`;
+  if(!["før","etter"].includes(i.phase)) t+=`<span class="tag">Trinn ${TRINN.trinn}</span>`;
+  return `<div class="meta">${t}</div>`;
+}
+function sessionCard(s,withAlerts){
+  const i=s.i, t=TRINN.trinn;
+  let h=`<div class="card"><h2>${s.title}</h2>${tagsHtml(i)}${s.time&&s.time!=="–"?`<div class="small muted">Tid: ${s.time}</div>`:""}
+   ${withAlerts?notesHtml(alerts(s.i.date)):""}${notesHtml(s.notes.filter(n=>n[0]!=="acc"))}`;
+  if(s.lead) h+=`<p class="small" style="margin:8px 0 0">${s.lead}</p>`;
+  h+=sessHtml(s);
+  if(s.ex){ h+=`<div class="blk"><h4>Hoveddel</h4><p class="small" style="margin:0 0 4px">${strengthHead(i)}</p></div>${exHtml(s.ex[0],s.ex[1],i,t)}`; }
+  if(s.climb){ const g=gripRules(t); if(g.length) h+=`<div class="note">${g.join(" ")}</div>`; }
+  h+=s.notes.filter(n=>n[0]==="acc").map(n=>`<p class="small muted">${n[1]}</p>`).join("")+`</div>`;
+  return h;
+}
+function vIdag(){
+  const s=session(selDate), i=s.i, isToday=ymd(selDate)===ymd(cur);
+  let h=`<div class="banner">HVA SKAL JEG ØVE PÅ I DAG?</div>
+  <div class="daynav"><button class="btn sm" data-nav="-1" aria-label="Forrige dag">◀</button>
+   <div class="d">${isToday?"I dag":DAY[i.dow]} · ${fmt(selDate)}<small>${isToday?DAY[i.dow]:'<a href="#" data-today="1">Tilbake til i dag</a>'}</small></div>
+   <button class="btn sm" data-nav="1" aria-label="Neste dag">▶</button></div>${trinnPicker()}`;
+  h+=sessionCard(s,true);
+  if(s.key==="hvile"){ let d=addDays(selDate,1), n=session(d,true), k=0; while(n.key==="hvile"&&k<6){ d=addDays(d,1); n=session(d,true); k++; }
+    if(n.key!=="hvile") h+=`<div class="card small"><span class="muted">Neste økt:</span> <b>${DAY[n.i.dow]} ${fmt(d)}</b> – ${n.title}</div>`; }
+  h+=formHtml(selDate,s);
+  return h;
+}
+let draft={};
+function formHtml(date,s){
+  const ds=ymd(date), e=LOG[ds]||{}; draft={...e};
+  const colors=[["gronn","Grønn"],["gul","Gul"],["oransje","Oransje"],["rod","Rød"],["svart","Svart"]];
+  const f=Object.fromEntries(s.fields);
+  return `<div class="card" id="logform"><h3 style="margin-top:0">Logg økta</h3>
+   ${s.key==="hvile"?'<p class="small muted" style="margin:0 0 6px">Hviledag – logg bare hvis du trente.</p>':""}
+   <label class="f">Fargen på dagen</label>
+   <div class="colors">${colors.map(([k,n])=>`<button type="button" data-farge="${k}" class="${e.farge===k?"on":""}"><span class="dot f-${k}"></span>${n}</button>`).join("")}</div>
+   ${f.reps?`<div class="row2"><div><label class="f">${f.reps}</label><input type="text" id="fReps" placeholder="f.eks. 8, 8, 7, 6" value="${esc(e.reps??"")}"></div>
+     <div><label class="f">${f.ekstra}</label><input type="text" id="fEkstra" placeholder="f.eks. +2,5 kg / blå strikk" value="${esc(e.ekstra??"")}"></div></div>`:""}
+   ${f.pilates?`<label class="chk"><input type="checkbox" id="fPil" ${e.pilates?"checked":""}> ${f.pilates}</label>`:""}
+   <div class="row2"><div><label class="f">Finger under økta</label><input type="number" min="0" max="10" inputmode="numeric" placeholder="0–10" id="fUnder" value="${e.fUnder??""}"></div>
+     <div><label class="f">Finger neste morgen</label><input type="number" min="0" max="10" inputmode="numeric" placeholder="0–10" id="fMorgen" value="${e.fMorgen??""}"></div></div>
+   <label class="f">Kommentar</label><textarea id="fKom" placeholder="Hva gikk bra, hva kjentes?">${esc(e.kommentar||"")}</textarea>
+   <div style="margin-top:12px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+     <button class="btn pri" id="fSave">${LOG[ds]?"Oppdater":"Lagre"}</button>${LOG[ds]?'<button class="btn" id="fDel">Slett</button>':""}
+     <span class="saved" id="fMsg">${LOG[ds]?"Logget "+fmtTime(e.lagret):""}</span></div></div>`;
+}
+function esc(t){ return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function fmtTime(t){ if(!t) return ""; const d=new Date(t); return isNaN(d)?"":fmt(d)+" kl. "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
+
+function vUka(){
+  const {y,w}=isoWeek(weekRef); const mon=mondayOf(y,w); const i=info(mon);
+  let h=`<div class="daynav" style="margin-top:18px"><button class="btn sm" data-wk="-7">◀</button>
+   <div class="d">Uke ${w}<small>${fmt(mon)} – ${fmt(addDays(mon,6))}</small></div><button class="btn sm" data-wk="7">▶</button></div>
+   <div class="card">${tagsHtml({...i,dow:0})}<div style="margin-top:8px">`;
+  for(let k=0;k<7;k++){ const d=addDays(mon,k), s=session(d,true), e=LOG[ymd(d)], today=ymd(d)===ymd(cur);
+    h+=`<a class="week-row ${today?"today":""}" href="#idag" data-go="${ymd(d)}"><div class="wd">${DAYS[k+1]}<small>${d.getDate()}.</small></div>
+      <div class="wt"><span class="${s.key==="hvile"?"rest":""}">${s.title}</span>${s.time&&s.time!=="–"?` <small>· ${s.time}</small>`:""}</div>
+      ${e&&e.farge?`<span class="dot f-${e.farge}"></span>`:""}</a>`; }
+  h+=`</div></div>`;
+  if(weekRef.getTime()!==cur.getTime()) h+=`<p><button class="btn sm" data-wkreset="1">Denne uka</button></p>`;
+  return h;
+}
+function curLabel(){ const i=info(cur); return `<p class="small muted">Nå: uke ${i.w} · ${i.label} · trinn ${TRINN.trinn}</p>`; }
+const D=(y,w,dow)=>addDays(mondayOf(y,w),dow-1);
+function refDate(dow){ const i=info(cur); if(["før","etter"].includes(i.phase)) return D(2026,45,dow); return addDays(mondayOf(i.y,i.w),dow-1); }
+function vStyrkeTab(dow){ const s=session(refDate(dow),true); return `<div style="margin-top:18px"></div>${curLabel()}${sessionCard(s,false)}
+  <div class="card small"><b>3–5-fasen (fra uke 1):</b> ${dow===1?"pull-ups 4 × 3–5 og enarms roing 3 × 4–6":"dips 4 × 3–5 og manual benkpress 3 × 4–6"}, RPE 8, A1 → 2 min → A2 → 2 min. Øvrige 8–12 som før.</div>`; }
+function vKlatring(){ const s=session(refDate(6),true); const o=session(refDate(3),true);
+  return `<div style="margin-top:18px"></div>${curLabel()}${sessionCard(s,false)}
+  <div class="card"><h3 style="margin-top:0">Onsdag: + pilates kjerne</h3>${sessHtml({blocks:[o.blocks[2]]})}</div>`; }
+
+function vFinger(){
+  const t=TRINN.trinn;
+  return `<h2 style="margin-top:18px">Finger</h2>${trinnPicker()}
+  <div class="card"><h3 style="margin-top:0">Trinn – gradert retur</h3><p class="small muted" style="margin:0 0 6px">Avklares med fysioterapeut. Minst 2–3 uker per trinn.</p>
+   <div class="tscroll"><table><thead><tr><th>Trinn</th><th>Klatring</th><th>Styrke</th></tr></thead><tbody>
+   ${[1,2,3,4].map(n=>`<tr class="${n===t?"now":""}"><td><b>${n}</b></td><td>${TRINN_TXT[n].klatring}</td><td>${TRINN_TXT[n].styrke}</td></tr>`).join("")}</tbody></table></div></div>
+  <div class="card" id="neste-trinn" style="scroll-margin-top:110px"><h3 style="margin-top:0">Neste trinn når</h3><ul>
+   <li>trykket på fingeren ikke gjør vondt</li><li>full aktiv bøy og strekk</li><li>passiv strekk uten smerte</li>
+   <li>belastningstesten er godkjent av fysioterapeut (f.eks. blokkløft, åpen hånd, ≥ 80 % av den andre hånda)</li><li>7 dager uten neste-morgen-reaksjon</li></ul></div>
+  <div class="card" id="smerteregel" style="scroll-margin-top:110px"><h3 style="margin-top:0">Smerteregel</h3><ul>
+   <li><b>Under økta:</b> maks 2/10, borte innen 1 time.</li><li><b>Neste morgen:</b> som før økta.</li><li><b>Uke til uke:</b> ikke økende.</li>
+   <li><b>3/10 eller mer, eller verre neste morgen:</b> stopp øvelsen eller klatringen den dagen. Ett trinn ned i 1 uke, så prøv igjen.</li>
+   <li><b>Samme reaksjon to ganger på 14 dager:</b> fysioterapeut.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Grep og tak</h3><ul>
+   <li><b>Trinn 1:</b> bare store tak og jugs.</li>
+   <li><b>Til trinn 3:</b> ingen halvcrimp, ingen små lister, ingen dynamiske flytt eller fangtak, ingen hopp av og på.</li>
+   <li><b>Til trinn 4:</b> ingen full crimp, ingen lommer (1–2 fingre), ingen monos, ingen tak der fingeren ikke er med, ingen campus, ingen fingertuppheng.</li>
+   <li><b>Unntak:</b> fysioterapeutens øvelser (f.eks. blokkløft med føttene i gulvet).</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Styrke</h3><ul>
+   <li><b>Håndleddsstropper</b> på alle drag til trinn 2. Stroppen rundt stangen eller ringen, fingrene hviler løst – ikke klem.</li>
+   <li><b>Fra trinn 2:</b> stropper av, men beholdes på pull-ups med vekt og enarms roing til trinn 3.</li>
+   <li><b>Dips:</b> parallelle stenger, ikke ringer, til trinn 2. Push-ups i ringer fra trinn 2.</li>
+   <li><b>Manualer i press:</b> fingrene rundt uten å klemme. Smerte ved manualgrep → gulvpress med stang.</li>
+   <li><b>Smerte ved flat hånd</b> → push-ups på knyttneve.</li>
+   <li><b>Bein:</b> goblet eller stang på ryggen – ingen tunge manualer i hendene.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Stopp og si fra til trener samme dag</h3><ul>
+   <li>Smell eller «pop» med plutselig smerte.</li><li>Klarer ikke å bøye ytterleddet aktivt.</li><li>Hevelse eller blåmerke i håndflata eller fingeren.</li>
+   <li>Senen buer ut ved bøy.</li><li>Nummenhet.</li></ul>
+   <h3>Si fra innen en uke</h3><ul>
+   <li>Smerte på baksiden av fingerleddene.</li><li>Smerte i hvile eller om natta.</li><li>Smerte 3/10 eller mer som varer over 24 t, to ganger samme uke.</li>
+   <li>Ingen framgang etter 3 uker på samme trinn.</li><li>Smerte i håndflata ved klatring med én finger strak og nabofingrene bøyd.</li></ul></div>`;
+}
+
+function vPlan(){
+  const {w:cw,y:cy}=isoWeek(cur);
+  const rows=SEASON.map(({y,w})=>{ const m=mondayOf(y,w), i=info(m);
+    return `<tr class="${y===cy&&w===cw?"now":""}"><td><a href="#uka" data-week="${ymd(m)}">${w}</a></td><td>${fmt(m)}</td><td>${i.label}</td><td>${i.light?'<span class="tag warn">lett</span>':""}</td></tr>`; }).join("");
+  return `<h2 style="margin-top:18px">Plan</h2>
+  <div class="card small"><ul>
+   <li><b>Uka:</b> mandag Styrke A · onsdag lett klatring + pilates · fredag Styrke B · lørdag lett klatring. Tirsdag, torsdag og søndag hvile.</li>
+   <li><b>8–12 reps (uke 43–51):</b> 8–12 (6–10 pull-ups, chin-ups og dips, 10–15 roing og push-ups, 12–15 stabilisering, fingerekstensjon 20). RPE 7–8.</li>
+   <li><b>Lette uker (48, 52 og jul):</b> samme øvelser, 2 sett, RPE 6–7.</li>
+   <li><b>3–5 reps (uke 1–20 2027):</b> hovedløft pull-ups og dips 4 × 3–5, manual benkpress og enarms roing 3 × 4–6, RPE 8. Øvrige øvelser 8–12. Styrke A ca. 75 min, Styrke B ca. 65 min – eller ta ut E.</li>
+   <li><b>Rep-området følger kalenderen.</b> Fingerens trinn styrer stropper, grep og klatring.</li></ul></div>
+  <div class="card"><div class="tscroll"><table><thead><tr><th>Uke</th><th>Fra</th><th>Fase</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+function vRpe(){
+  return `<h2 style="margin-top:18px">RPE og intensitet</h2>
+  <p class="small muted">RPE = hvor hardt det kjennes, 1–10. Nå: uke ${info(cur).w} · ${info(cur).label}.</p>
+  <div class="card"><div class="tscroll"><table><thead><tr><th>RPE</th><th>Styrke</th><th>Lett klatring</th></tr></thead><tbody>
+   <tr><td>3–4</td><td>Oppvarmingssett.</td><td>Rolig pust, lett varme. Trinn 1.</td></tr>
+   <tr><td>5</td><td>4+ reps igjen.</td><td>Lett pump som går over i pausen. Fra trinn 2.</td></tr>
+   <tr><td>6–7</td><td>3–4 reps igjen. Lette uker, tung skoleuke.</td><td>Merkbar pump – for hardt.</td></tr>
+   <tr><td>7–8</td><td>3–2 reps igjen. Arbeidssett 8–12.</td><td>–</td></tr>
+   <tr><td>8</td><td>2 reps igjen. Hovedløft 3–5.</td><td>–</td></tr>
+   <tr><td>9</td><td>1 rep igjen. Brukes ikke.</td><td>–</td></tr></tbody></table></div></div>
+  <div class="card"><h3 style="margin-top:0">Intensitet per økt</h3>
+   <div class="blk"><h4>Styrke</h4><ul><li><span class="muted">Uke 43–52:</span> 8–12 reps, RPE 7–8. Pause 60–90 s, stabilisering 45–60 s. Stopp i et sett: RPE-målet, eller teknikken endres.</li>
+    <li><span class="muted">Uke 1–20:</span> hovedløft 3–5 / 4–6 reps, RPE 8, A1 → 2 min → A2 → 2 min. Øvrige 8–12. Fingersmerte → stropper tilbake.</li>
+    <li><span class="muted">Trinn 3–4:</span> styrkevolumet justeres når klatrevolumet øker.</li></ul></div>
+   <div class="blk"><h4>Lett klatring</h4><ul><li>Trinn 1: jugs, RPE 3–4. Trinn 2: åpne lister, RPE 3–5. Stopp: smerteregelen.</li><li>Klatrevolum opp trinn for trinn.</li></ul></div></div>`;
+}
+function vRegler(){
+  return `<h2 style="margin-top:18px">Regler</h2>
+  <div class="card"><h3 style="margin-top:0">Rammer</h3><ul>
+   <li>Dra og dytt i balanse hver uke.</li><li>Skulderstabilitet i hver økt: rotatorkappe, serratus og skulderbladskontroll.</li>
+   <li>Rep-området følger kalenderen. Fingerens trinn styrer stropper, grep og klatring – se <a href="#finger">Finger</a>.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Progresjon</h3><ul>
+   <li><b>Generelt:</b> start nederst i rep-området. Når alle sett når toppen: tyngre (manual, mindre strikkhjelp, vanskeligere variant), start nederst igjen.</li>
+   <li><b>Hovedløft 3–5:</b> alle sett på toppen → +1–2,5 kg.</li>
+   <li><b>Kroppsvekt:</b> flere reps → langsommere senkefase (3 s) → vanskeligere variant → ekstravekt i belte.</li>
+   <li><b>Manualer og kabel:</b> minste mulige hopp (1–2 kg).</li>
+   <li><b>Skulderstabilisering:</b> kontroll, pause i ytterstilling og reps – nesten aldri vekt.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Justering</h3><ul>
+   <li><b>Finger:</b> se <a href="#finger">Finger</a>.</li>
+   <li><b>Skulder:</b> smerte foran i skulderen ved dips eller press → kutt dips, dobbel dose utadrotasjon og Y-T-W, ta dips opp igjen etter 2 uker. Ikke bedre → fysioterapeut.</li>
+   <li><b>Albue innside:</b> mindre pull-up-volum, mer nøytralt grep.</li>
+   <li><b>Tung uke på skolen:</b> 2 sett, RPE 6–7.</li>
+   <li><b>Etter sykdom eller ferie:</b> første uke med 2 sett.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Fargen på dagen</h3>
+   <p><span class="dot f-gronn"></span> <b>Grønn</b> uthvilt, god kvalitet, neste økt føles sterkere<br>
+   <span class="dot f-gul"></span> <b>Gul</b> vedlikehold<br><span class="dot f-oransje"></span> <b>Oransje</b> trente for sliten, lav kvalitet<br>
+   <span class="dot f-rod"></span> <b>Rød</b> trenger flere hviledager<br><span class="dot f-svart"></span> <b>Svart</b> skade</p></div>`;
+}
+const TEKNIKK=[
+ {id:"stille-fotter",n:"Stille føtter",mal:"Én plassering, ingen justering – også i fart og på små tak.",slik:[],
+  drill:["Lette buldre eller ruter uten lyd – lyd betyr start på nytt.","Foten plasseres én gang og står, også på dynamiske flytt.",
+   "Samme buldre i dobbelt tempo med samme presisjon.","Spraywall: bare de minste fottakene."],
+  feil:["Blikket videre før foten er lastet.","Justering etter plassering."],prog:"Mindre tak, brattere vegg, høyere tempo."},
+ {id:"hofta-inn",n:"Hofta inn",mal:"Rekkevidde fra hofteposisjon i stedet for armkraft.",slik:[],
+  drill:["Samme flytt tre ganger: med brystet mot veggen, med hofta inn og med dropknee. Velg det som krever minst.","Bratt vegg: hvert flytt med hofta inn, armen som holder er rett.",
+   "Lange flytt: hofta inn i stedet for lock-off.","3×10: overdrevet vridning i runde 1."],
+  feil:["Brystet mot veggen av vane på bratt vegg.","Lock-off der hofta kunne gjort jobben."],prog:"Lengre flytt, mindre tak."},
+ {id:"lese",n:"Lese før du klatrer",mal:"Første forsøk etter plan.",slik:[],
+  drill:["Si sekvensen høyt til partner før forsøket – hender, føtter, nøkkelflytt. Sammenlign etterpå.","Lesing på tid: maks 30 s lesing per buldre før første forsøk, eller fast lesetid for ruta.",
+   "Flash-forsøk på nye buldre: ikke se andre klatre dem før du har lest og prøvd selv.","Rute: merk hvilestillinger og klippestillinger under lesing, klatre etter planen.",
+   "Etter forsøket: hvor avvek du fra planen, og hvorfor."],
+  feil:["Leser bare hendene.","Ingen plan for føttene på nøkkelflyttet."],prog:"Kortere lesetid, lengre buldre og ruter."},
+ {id:"flagg",n:"Flagg og dropknee",mal:"Flagg og dropknee som førstevalg der du ellers ville byttet fot.",slik:[],
+  drill:["4–6 lette buldre der fotbytte er naturlig. Ingen fotbytte tillatt – hvert bytte erstattes med flagg eller dropknee.",
+   "Samme buldre en gang til med flagg på motsatt side.","Bratt vegg: minst ett dropknee per buldre.",
+   "Spraywall: partner peker ut håndtakene, du velger føttene selv – ingen fotbytte.",
+   "3×10: runde 1 flagg eller dropknee på hvert flytt det går, runde 2 normalt, runde 3 bare der det sparer kraft."],
+  feil:["Fotbytte av vane på lette flytt.","Dropknee som kjennes i kneet – ut av stillingen."],prog:"Brattere vegg, mindre fottak, lengre flytt."},
+ {id:"rette-armer",n:"Rette armer",mal:"Flyt med minst mulig armkraft.",slik:[],
+  drill:["Lett traversering: albuene strake mellom hvert flytt. Partner sier fra ved bøyd arm.","Bratt vegg: flyttet drives av bein og hofte, armen bøyes bare i selve flyttet.",
+   "Kalking og lesing på veggen alltid i rett arm.","3×10 runde 3: så lett og stille som mulig."],
+  feil:["Bøyd arm mens du leser eller kalker.","Trekker deg inn mot veggen mellom flyttene."],prog:"Brattere vegg, lengre ruter."},
+ {id:"klipping",n:"Klipp i vanskelige posisjoner",mal:"Klipp som ikke stresser – også fra dårlige tak, bratt vegg og med pump.",slik:[],
+  drill:["Lett rute, hvert klipp fra en annen stilling: lavt ved hofta, høyt med strak arm, fra dårlig posisjon, med motsatt hånd.",
+   "Klippetak bestemt på forhånd – velg selv under lesing, eller la sikringspartner velge. Også de dårlige.",
+   "Bratt vegg: lås stillingen 3 s før du klipper.",
+   "Pumpet klipp: siste rute i en 2 × 4- eller 4 × 4-runde – klippene teller like mye som flyttene.",
+   "Under lesing: bestem hvor du klipper fra for hvert klipp, ikke bare hvor flyttene går.",
+   "Falltrening: kontrollert fall med tau i hånden rett over bolten, lav høyde, øk gradvis."],
+  feil:["Klipper fra første tak bolten er ved, ikke det beste.","Henger i bøyd arm mens du klipper.","Drar opp for mye tau over hodet."],
+  prog:"Dårligere posisjon, brattere vegg, mer pump."},
+ {id:"hvile-tau",n:"Hvile på tau",mal:"Hente seg inn underveis – planlagt, ikke tilfeldig.",slik:[],
+  drill:["Lett rute: tre hvilestillinger, 10 pust i hver. Kjenn om pumpen går ned før du går videre.","Bratt vegg: hvil med kneebar, heel hook eller stemming der det finnes.",
+   "4 × 4 eller 2 × 4: én planlagt hvile per rute, valgt under lesing.","Rist ut i takt med pusten, veksle hånd hver 2.–3. pust."],
+  feil:["For lenge på dårlig tak.","Hviler i bøyd arm."],prog:"Hvil på mindre tak og brattere vegg."}];
+function temaId(name){ const t=TEKNIKK.find(x=>x.n===name); return t?t.id:""; }
+
+function vTeknikk(){
+  return `<h2 style="margin-top:18px">Teknikk</h2>
+  <p class="small muted">Ett tema per klatreøkt, også i oppvarmingen til styrke. Temaet roterer og står under <a href="#idag">I dag</a>. Følg grepsreglene for trinnet ditt i alle øvelser.</p>
+  ${TEKNIKK.map(t=>`<div class="card" id="tema-${t.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${t.n}</h3>
+   <p style="margin:0 0 6px"><b>Mål:</b> ${t.mal}</p>
+   <div class="blk"><h4>Øvelse</h4><ul>${t.drill.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+   <div class="blk"><h4>Typiske feil</h4><ul>${t.feil.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+   <p class="small" style="margin:10px 0 0"><b>Vanskeligere:</b> ${t.prog}</p></div>`).join("")}`;
+}
+function vLogg(){
+  const keys=Object.keys(LOG).sort().reverse(), {y:cy,w:cw}=isoWeek(cur);
+  let grid=`<div class="grid"><div></div><div class="h">Man</div><div class="h">Ons</div><div class="h">Fre</div><div class="h">Lør</div>`;
+  for(const {y,w} of SEASON){ const m=mondayOf(y,w); if(m>addDays(cur,7)) break; if(m<addDays(cur,-7*12)) continue;
+    grid+=`<div class="wk ${y===cy&&w===cw?"cur":""}">Uke ${w}</div>`;
+    for(const k of [0,2,4,5]){ const e=LOG[ymd(addDays(m,k))]; grid+=`<div class="cell ${e&&e.farge?"f-"+e.farge:""}"></div>`; } }
+  grid+="</div>";
+  return `<h2 style="margin-top:18px">Logg</h2>
+  <p class="small muted">Loggen lagres bare på denne telefonen, i denne nettleseren. Logg en økt fra <a href="#idag">I dag</a> – bla til riktig dag med pilene.</p>
+  <div class="card"><h3 style="margin-top:0">Send til trener</h3>
+   <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn pri" data-share="uke">Del denne uka</button><button class="btn" data-share="alt">Del hele loggen</button></div>
+   <p class="small muted" style="margin:8px 0 0" id="shareMsg"></p><textarea id="shareFallback" hidden readonly style="margin-top:8px;min-height:140px"></textarea>
+   <h3>Sikkerhetskopi</h3><p class="small muted" style="margin:0 0 8px">Ta en kopi av og til, og før du bytter telefon eller sletter nettleserdata.</p>
+   <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" data-backup="1">Last ned kopi</button><label class="btn" style="display:inline-flex;align-items:center">Hent inn kopi<input type="file" accept=".json,application/json" id="restoreFile" hidden></label></div></div>
+  <div class="card"><h3 style="margin-top:0">Siste uker</h3>${grid}</div>
+  <div class="card"><h3 style="margin-top:0">Økter</h3>${keys.length?keys.map(k=>{ const e=LOG[k], d=parseYmd(k);
+    return `<div class="entry"><div class="eh"><span>${e.farge?`<span class="dot f-${e.farge}"></span> `:""}${DAY[isoWeek(d).dow]} ${fmt(d)}</span><small>uke ${isoWeek(d).w} · trinn ${e.trinn||"?"}</small></div>
+      <p>${esc(e.okt||"")}${has(e.reps)?` · ${esc(e.reps)}`:""}${has(e.ekstra)?` · ${esc(e.ekstra)}`:""}${e.pilates?" · pilates":""}${has(e.fUnder)||has(e.fMorgen)?` · finger ${has(e.fUnder)?e.fUnder:"–"}/${has(e.fMorgen)?e.fMorgen:"–"}`:""}</p>
+      ${e.kommentar?`<p class="muted">${esc(e.kommentar)}</p>`:""}<p><a href="#idag" data-go="${k}" class="small">Åpne</a></p></div>`; }).join(""):'<p class="muted">Ingen økter logget ennå.</p>'}</div>`;
+}
+
+/* ============ RUTING ============ */
+function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
+const FORM_IDS=["fReps","fEkstra","fUnder","fMorgen","fKom"];
+function render(){
+  const t=route();
+  document.getElementById("tabs").innerHTML=tabsHtml(t);
+  const v={idag:vIdag,uka:vUka,man:()=>vStyrkeTab(1),fre:()=>vStyrkeTab(5),klatring:vKlatring,finger:vFinger,plan:vPlan,regler:vRegler,rpe:vRpe,teknikk:vTeknikk,logg:vLogg}[t]();
+  const focus=document.activeElement&&document.activeElement.id;
+  if(t==="idag"&&focus&&FORM_IDS.includes(focus)) return;
+  document.getElementById("view").innerHTML=v;
+  const on=document.querySelector("nav.tabs a.on"); if(on&&on.scrollIntoView) on.scrollIntoView({block:"nearest",inline:"nearest"});
+}
+window.addEventListener("hashchange",()=>{ render(); window.scrollTo(0,0); });
+document.addEventListener("click",async ev=>{
+  const el=ev.target.closest("button,a"); if(!el) return;
+  if(el.dataset.nav){ selDate=addDays(selDate,+el.dataset.nav); render(); return; }
+  if(el.dataset.today){ ev.preventDefault(); selDate=new Date(cur); render(); return; }
+  if(el.dataset.wk){ weekRef=addDays(weekRef,+el.dataset.wk); render(); return; }
+  if(el.dataset.wkreset){ weekRef=new Date(cur); render(); return; }
+  if(el.dataset.week){ ev.preventDefault(); weekRef=parseYmd(el.dataset.week); if(location.hash!=="#uka") location.hash="#uka"; else render(); return; }
+  if(el.dataset.go){ ev.preventDefault(); selDate=parseYmd(el.dataset.go); if(location.hash!=="#idag") location.hash="#idag"; else { render(); window.scrollTo(0,0);} return; }
+  if(el.dataset.trinn){ setTrinn(+el.dataset.trinn); render(); return; }
+  if(el.dataset.farge){ draft.farge=el.dataset.farge; document.querySelectorAll(".colors button").forEach(b=>b.classList.toggle("on",b===el)); return; }
+  if(el.id==="fSave"){
+    const msg=document.getElementById("fMsg");
+    if(!draft.farge){ msg.textContent="Velg fargen på dagen."; return; }
+    const s=session(selDate,true), val=id=>{ const x=document.getElementById(id); return x&&x.value!==""?x.value.trim():null; };
+    const num=id=>{ const v=val(id); return v==null?null:Math.max(0,Math.min(10,+v)); };
+    const f=Object.fromEntries(s.fields);
+    const entry={dato:ymd(selDate),uke:s.i.w,okt:s.title,farge:draft.farge,trinn:TRINN.trinn,
+      reps:val("fReps"),repsNavn:f.reps?f.reps.split(":")[0]:"",ekstra:val("fEkstra"),
+      pilates:!!(document.getElementById("fPil")&&document.getElementById("fPil").checked),
+      fUnder:num("fUnder"),fMorgen:num("fMorgen"),
+      kommentar:(document.getElementById("fKom").value||"").trim(),lagret:new Date().toISOString()};
+    if(LOG[ymd(selDate)]&&LOG[ymd(selDate)].trinn) entry.trinn=LOG[ymd(selDate)].trinn;
+    el.disabled=true; msg.textContent="Lagrer …";
+    const r=await saveEntry(ymd(selDate),entry);
+    document.activeElement&&document.activeElement.blur&&document.activeElement.blur();
+    render(); const m2=document.getElementById("fMsg"); if(m2) m2.textContent=r; return;
+  }
+  if(el.dataset.anchor){ ev.preventDefault(); const go=()=>{ const t=document.getElementById(el.dataset.anchor); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); };
+    const tab=el.getAttribute("href")||"#idag"; if(location.hash!==tab){ location.hash=tab; setTimeout(go,150); } else go(); return; }
+  if(el.dataset.share){ shareText(summary(el.dataset.share),document.getElementById("shareMsg")); return; }
+  if(el.dataset.backup){ downloadBackup(); return; }
+  if(el.id==="fDel"){ await deleteEntry(ymd(selDate)); render(); return; }
+});
+document.addEventListener("change",ev=>{ if(ev.target.id==="restoreFile"&&ev.target.files[0]) restoreBackup(ev.target.files[0],document.getElementById("shareMsg")); });
+initDb();
+render();
+
+/* ============ OPPDATERING ============ */
+const APP_VERSION="2026-11-05-091448";
+function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
+async function checkUpdate(){
+  if(APP_VERSION.startsWith("__")) return;
+  try{ const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"}); if(!r.ok) return;
+    const j=await r.json(); const v=j&&j[KEY]; if(!v||!v.versjon||v.versjon===APP_VERSION) return;
+    document.getElementById("updTxt").textContent="Ny versjon av planen."+(v.melding?" "+v.melding:"");
+    document.getElementById("upd").hidden=false; }catch(e){}
+}
+document.getElementById("ver").textContent=verLabel(APP_VERSION);
+document.getElementById("updBtn").addEventListener("click",()=>location.reload());
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") checkUpdate(); });
+setInterval(checkUpdate,30*60*1000);
+checkUpdate();
+
+</script>
+
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}</script>
+</body></html>
