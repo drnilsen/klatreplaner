@@ -227,7 +227,7 @@ function session(date,noTheme){
   case 1: { // MANDAG
     s.key="man"; s.title="Hard buldring"; s.time="ca. 2 t";
     let max=[0,18,15,12][L], hov={1:"6–8 buldre 1–2 grader under maks · RPE 7–8 · 3 min pause",
-      2:"5–6 buldre nær maks · RPE 8–9 · 3–4 min pause",3:"4–5 buldre på maks · RPE 9 · 4–5 min pause"}[L];
+      2:"5–6 buldre nær maks · RPE 8 · 3–4 min pause",3:"4–5 buldre nær maks · RPE 8 · 4–5 min pause"}[L];
     const stopp={1:"Bom to ganger på et flytt du har klart før.",2:"Første forsøk med tydelig teknikkfall.",3:"Oppvarmingsbuldre begynner å kreve noe."}[L];
     if(i.phase==="nm") max=8; else if(i.light) max=half(max);
     s.count={label:"Forsøk",max};
@@ -302,7 +302,7 @@ function session(date,noTheme){
       else if(w<=14){ title="Tau · 4 × 4"; const r=(i.light||i.comp)?2:3; s.count={label:"Runder",max:r};
         main=["4 ruter på rad, bare sikringsbyttet som pause.","3–4 grader under onsight, RPE 7–8.",`<span class="key">${r} runder, 10 min pause.</span>`,"Stopp: to fall på rad under eget onsight-nivå."]; dur="75 min"; }
       else { title="Tau · konkurranselikt"; const n=(i.light||i.comp)?"2":"3–4"; s.count={label:"Ruter",max:null};
-        main=[`${n} ruter på eller nær maks på første forsøk, RPE 8–9.`,"6 min lesing, 10–15 min pause.","<a href='#teknikk' data-anchor='rutine'>Rutinen før hvert forsøk</a>.","Stopp: to fall på rad under eget onsight-nivå."]; dur="60 min"; }
+        main=[`${n} ruter nær maks på første forsøk, RPE 8.`,"6 min lesing, 10–15 min pause.","<a href='#teknikk' data-anchor='rutine'>Rutinen før hvert forsøk</a>.","Stopp: to fall på rad under eget onsight-nivå."]; dur="60 min"; }
       s.title=title+" (alt på led)";
       s.blocks=[B("Oppvarming",["Lett buldring, 2 lette ruter på led."],"20 min"), B(title.replace("Tau · ",""),main,dur)];
       if((y===2026&&w>=50)||y===2027) s.blocks.push(B("Falltrening",["Kontrollerte fall over taudraget på overhengende vegg, trener sikrer.","4–6 fall. Start 0,5 m over draget, øk 0,5 m per økt til 2–3 m."],"10 min"));
@@ -596,7 +596,7 @@ function vPlan(){
    <li><b>Jul (uke 52, 53, 1):</b> fri, lek, lett klatring. Ingen harde økter 24.–27. des. Uke 1: lett oppstart.</li>
    <li><b>Fase 2 (uke 2–7):</b> én ny ting per uke – uke 2 re-entry · uke 3 hard buldring nær maks · uke 4 tau onsight · uke 6 styrke 3 sett. Uke 5 lett.</li>
    <li><b>NM junior (uke 8):</b> lør 27. feb.</li>
-   <li><b>Fase 3 (uke 9–20):</b> hard buldring på maks. Onsdag rutedag på led. Tau 4 × 4 uke 9–14, konkurranselikt 15–20. Lette uker 12 og 16.</li>
+   <li><b>Fase 3 (uke 9–20):</b> hard buldring nær maks, RPE 8. Onsdag rutedag på led. Tau 4 × 4 uke 9–14, konkurranselikt 15–20. Lette uker 12 og 16.</li>
    <li><b>Lett uke:</b> samme økter, halvt antall forsøk/runder/sett, samme intensitet.</li></ul></div>
   <div class="card"><div class="tscroll"><table><thead><tr><th>Uke</th><th>Fra</th><th>Periode</th><th>Lør</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
@@ -641,14 +641,14 @@ function vRpe(){
    ["3–4","Lette buldre, flytende.","Rolig pust, lett varme i underarmene.","3×10, teknikkdriller"],
    ["5–6","Middels buldre, går på første–andre forsøk.","Merkbar pump som går tilbake i pausen.","Oppvarmingspyramide, ledvolum"],
    ["7","Må ta i på nøkkelflyttet, kontrollert.","Tydelig pump, føttene krever jobb.","Hard buldring fase 1, PE første runder, styrke (3 reps igjen)"],
-   ["8","Full kraft, treffer og holder.","Hard pump, flyttene sitter.","Hard buldring fase 2, PE siste runder, 4 × 4, styrke (2 reps igjen)"],
-   ["9","Alt du har, treffer så vidt.","Kvaliteten holder akkurat.","Hard buldring fase 3, onsight/konkurranselikt"],
-   ["10","Bom eller fall.","Falt av pump.","Skjer på grenseforsøk i fase 3. Ikke et mål i seg selv."]];
-  const I=[["Hard buldring (man)","1–2 grader under maks, RPE 7–8, 3 min, maks 18 forsøk. Stopp: bom to ganger på et flytt du har klart før.","Nær maks, RPE 8–9, 3–4 min, maks 15 forsøk. Stopp: første forsøk med tydelig teknikkfall.","På maks, RPE 9, 4–5 min, maks 12 forsøk. Stopp: oppvarmingsbuldre begynner å kreve noe."],
+   ["8","Full kraft, treffer og holder.","Hard pump, flyttene sitter.","Hard buldring fase 2 og 3, PE siste runder, 4 × 4, konkurranselikt tau, styrke (2 reps igjen)"],
+   ["9","Alt du har, treffer så vidt.","Kvaliteten holder akkurat.","Brukes ikke i trening."],
+   ["10","Bom eller fall.","Falt av pump.","Brukes ikke i trening."]];
+  const I=[["Hard buldring (man)","1–2 grader under maks, RPE 7–8, 3 min, maks 18 forsøk. Stopp: bom to ganger på et flytt du har klart før.","Nær maks, RPE 8, 3–4 min, maks 15 forsøk. Stopp: første forsøk med tydelig teknikkfall.","Nær maks, RPE 8, 4–5 min, maks 12 forsøk. Stopp: oppvarmingsbuldre begynner å kreve noe."],
    ["Onsdag","Linked: 3–4 grader under maks, RPE 6–7, 3–4 min.","Linked: 2–3 under maks, RPE 7–8, 3 min. Ingen PE uke 8.","Rutedag 2 × 4: 1–2 under onsight, RPE 7–8, 8 min."],
    ["3×10 (tor)","4+ grader under onsight, RPE 3–4.","Samme.","Samme, 2 runder i konkurranseuker."],
    ["Jam-format (lør)","RPE 5–8, ingen buldre på RPE 9. Maks 3 forsøk per buldre, 20 totalt, 2 min mellom forsøk.","Samme.","Samme."],
-   ["Tau (lør)","Ledvolum: 3–4 under onsight, RPE 5.","Onsight: 1–2 under onsight, RPE 7, 8–10 min.","Uke 9–14 4 × 4: 3–4 under onsight, RPE 7–8, 10 min. Uke 15–20: maks, RPE 8–9, 10–15 min. Stopp: to fall på rad under eget onsight-nivå."],
+   ["Tau (lør)","Ledvolum: 3–4 under onsight, RPE 5.","Onsight: 1–2 under onsight, RPE 7, 8–10 min.","Uke 9–14 4 × 4: 3–4 under onsight, RPE 7–8, 10 min. Uke 15–20: nær maks, RPE 8, 10–15 min. Stopp: to fall på rad under eget onsight-nivå."],
    ["Styrke A (tor)","2 sett, RPE 7, 45–60 s.","Fra uke 6: 3 sett (B2, C1, D, E: 2), RPE 7–8, 45–60 s. Ett sett ned når onsdagen ble oransje.","2 sett, RPE 7. Ingen styrke siste 5 dager før konkurranse."]];
   const ph=["Fase 1 · uke 45–51, 1–2","Fase 2 · uke 3–7","Fase 3 · uke 9–20"];
   return `<h2 style="margin-top:18px">RPE og intensitet</h2>
@@ -963,7 +963,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-210602";
+const APP_VERSION="2026-11-05-210717";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
