@@ -640,11 +640,11 @@ function vRpe(){
    ["7","Må ta i på nøkkelflyttet, kontrollert.","Tydelig pump, føttene krever jobb.","Hard buldring fase 1, PE første runder, styrke (3 reps igjen)"],
    ["8","Full kraft, treffer og holder.","Hard pump, flyttene sitter.","Hard buldring fase 2, PE siste runder, 4 × 4, styrke (2 reps igjen)"],
    ["9","Alt du har, treffer så vidt.","Kvaliteten holder akkurat.","Hard buldring fase 3, onsight/konkurranselikt"],
-   ["10","Bom eller fall.","Falt av pump.","Skjer på grenseforsøk i fase 3 og jam. Ikke et mål i seg selv."]];
+   ["10","Bom eller fall.","Falt av pump.","Skjer på grenseforsøk i fase 3. Ikke et mål i seg selv."]];
   const I=[["Hard buldring (man)","1–2 grader under maks, RPE 7–8, 3 min, maks 18 forsøk. Stopp: bom to ganger på et flytt du har klart før.","Nær maks, RPE 8–9, 3–4 min, maks 15 forsøk. Stopp: første forsøk med tydelig teknikkfall.","På maks, RPE 9, 4–5 min, maks 12 forsøk. Stopp: oppvarmingsbuldre begynner å kreve noe."],
    ["Onsdag","Linked: 3–4 grader under maks, RPE 6–7, 3–4 min.","Linked: 2–3 under maks, RPE 7–8, 3 min. Ingen PE uke 8.","Rutedag 2 × 4: 1–2 under onsight, RPE 7–8, 8 min."],
    ["3×10 (tor)","4+ grader under onsight, RPE 3–4.","Samme.","Samme, 2 runder i konkurranseuker."],
-   ["Jam-format (lør)","Maks 3 forsøk per buldre, 20 totalt, 2 min mellom forsøk.","Samme.","Samme."],
+   ["Jam-format (lør)","RPE 5–8, ingen buldre på RPE 9. Maks 3 forsøk per buldre, 20 totalt, 2 min mellom forsøk.","Samme.","Samme."],
    ["Tau (lør)","Ledvolum: 3–4 under onsight, RPE 5.","Onsight: 1–2 under onsight, RPE 7, 8–10 min.","Uke 9–14 4 × 4: 3–4 under onsight, RPE 7–8, 10 min. Uke 15–20: maks, RPE 8–9, 10–15 min. Stopp: to fall på rad under eget onsight-nivå."],
    ["Styrke A (tor)","2 sett, RPE 7, 45–60 s.","Fra uke 6: 3 sett (B2, C1, D, E: 2), RPE 7–8, 45–60 s. Ett sett ned når onsdagen ble oransje.","2 sett, RPE 7. Ingen styrke siste 5 dager før konkurranse."]];
   const ph=["Fase 1 · uke 45–51, 1–2","Fase 2 · uke 3–7","Fase 3 · uke 9–20"];
@@ -895,7 +895,7 @@ const RPE_DEF=[
  [/^STYRKE/i,"RPE 7–8."],
  [/^(I DAG|ØKT)/i,t=>/aktivering/i.test(t)?"Aktivering: RPE 5–6.":/Styrke A, 2 sett/.test(t)?"RPE 7.":/lett(e)? (klatr|buldr|sva|ruter)|lette (klatre|ruter)/i.test(t)?"Lett klatring: RPE 3–4.":null]];
 function fillRpe(root){
-  if(!root) return;
+  if(!root||location.hash==="#rpe") return;
   root.querySelectorAll(".blk").forEach(bl=>{
     const h4=bl.querySelector("h4"); if(!h4) return;
     const head=(h4.childNodes[0]&&h4.childNodes[0].textContent||"").trim().toUpperCase(); if(!head) return;
@@ -961,7 +961,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-205621";
+const APP_VERSION="2026-11-05-210457";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
