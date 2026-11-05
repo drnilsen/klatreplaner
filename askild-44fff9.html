@@ -300,13 +300,13 @@ function session(date,noTheme){
   return s;
 }
 /* Teknikktema – roterer per økt */
-const TEMA_GEN=[["Stille føtter","Ingen lyd fra føttene. Se på taket til foten står."],
- ["Hofta inn","Hofta på samme side roteres inn før hånden flyttes."],
- ["Lese før du klatrer","1 min foran buldret eller ruta, pek ut hvert flytt, klatre uten å stoppe."],
+const TEMA_GEN=[["Stille føtter","Ingen lyd, ingen justering etter plassering."],
+ ["Hofta inn","Samme flytt frontalt og med hofta inn – velg det som krever minst."],
+ ["Lese før du klatrer","Si sekvensen høyt før forsøket, sammenlign etterpå."],
  ["Flagg og dropknee","Ingen fotbytte – flagg eller dropknee i stedet."],
- ["Rette armer","Albuene strake mellom hvert flytt."]];
-const TEMA_TAU=[["Klipp i vanskelige posisjoner","Hvert klipp fra en ny, vanskeligere stilling."],["Hvile på tau","Tre hvilestillinger på en rute, 10 pust i hver, rist ut."],
- ["Stille føtter","Ingen lyd fra føttene på de lette rutene."],["Rette armer","Albuene strake mellom hvert flytt."]];
+ ["Rette armer","Flytt med bein og hofte, armen bøyes bare i flyttet."]];
+const TEMA_TAU=[["Klipp i vanskelige posisjoner","Hvert klipp fra en ny, vanskeligere stilling."],["Hvile på tau","Planlagte hvil, valgt under lesing."],
+ ["Stille føtter","Ingen lyd, ingen justering etter plassering."],["Rette armer","Flytt med bein og hofte, armen bøyes bare i flyttet."]];
 function themeCat(s){
   if(["jul","utenfor","hvile"].includes(s.key)) return null;
   if(s.i.phase==="nm") return null;
@@ -629,28 +629,29 @@ function vRpe(){
 }
 
 const TEKNIKK=[
- {id:"stille-fotter",n:"Stille føtter",mal:"Presis fotplassering. Vekten over på foten først når den står.",
-  slik:["Se på taket helt til tåa står.","Plasser foten én gang – ingen justering etterpå.","Flytt vekten over på foten, så hånden."],
-  drill:["3–4 lette buldre eller ruter uten lyd fra føttene.","Partner eller trener lytter og sier fra ved lyd."],
-  feil:["Blikket går videre før foten står.","Skrapelyd eller fot som glir."],prog:"Mindre fottak, så brattere vegg."},
- {id:"hofta-inn",n:"Hofta inn",mal:"Lengre rekkevidde og mindre armkraft på bratt vegg.",
-  slik:["Vri hofta inn mot veggen på samme side som hånden som skal flytte.","Stå på yttersiden av skoen på den foten.","Skulderen strekkes mot neste tak, armen som holder er rett."],
-  drill:["Lette buldre i bratt vegg: hvert flytt med hofta inn.","Prøv samme flytt med hofta ut og hofta inn – kjenn forskjellen i rekkevidde."],
-  feil:["Hofta ut fra veggen, brystet mot veggen.","Bøyd arm på taket du holder."],prog:"Lengre flytt, mindre tak."},
- {id:"lese",n:"Lese før du klatrer",mal:"Bedre første forsøk og færre stopp.",
-  slik:["1 min foran buldret eller ruta.","Pek ut hvert håndtak og hvert fottak – også føttene.","Finn nøkkelflyttet og hvilestillingene.","Se for deg sekvensen i riktig tempo."],
-  drill:["Les, klatre uten å stoppe.","Etterpå: hvor skilte planen seg fra det du gjorde?"],
-  feil:["Leser bare hendene.","Planlegger for få flytt framover."],prog:"Lengre buldre og ruter, kortere lesetid."},
+ {id:"stille-fotter",n:"Stille føtter",mal:"Én plassering, ingen justering – også i fart og på små tak.",slik:[],
+  drill:["Lette buldre eller ruter uten lyd. Partner lytter – lyd betyr start på nytt.","Foten plasseres én gang og står, også på dynamiske flytt.",
+   "Samme buldre i dobbelt tempo med samme presisjon.","Spraywall: bare de minste fottakene."],
+  feil:["Blikket videre før foten er lastet.","Justering etter plassering."],prog:"Mindre tak, brattere vegg, høyere tempo."},
+ {id:"hofta-inn",n:"Hofta inn",mal:"Rekkevidde fra hofteposisjon i stedet for armkraft.",slik:[],
+  drill:["Samme flytt tre ganger: frontalt, hofta inn og dropknee. Velg det som krever minst.","Bratt vegg: hvert flytt med hofta inn, armen som holder er rett.",
+   "Lange flytt: hofta inn i stedet for lock-off.","3×10: overdrevet vridning i runde 1."],
+  feil:["Frontalt av vane på bratt vegg.","Lock-off der hofta kunne gjort jobben."],prog:"Lengre flytt, mindre tak."},
+ {id:"lese",n:"Lese før du klatrer",mal:"Første forsøk etter plan.",slik:[],
+  drill:["Si sekvensen høyt til partner før forsøket – hender, føtter, nøkkelflytt. Sammenlign etterpå.","Konkurransetid: 30 s per buldre, eller fast lesetid for ruta.",
+   "Flash: buldre partner har klatret, uten å se beta.","Rute: merk hvilestillinger og klippestillinger under lesing, klatre etter planen.",
+   "Etter forsøket: hvor avvek du fra planen, og hvorfor."],
+  feil:["Leser bare hendene.","Ingen plan for føttene på nøkkelflyttet."],prog:"Kortere lesetid, lengre buldre og ruter."},
  {id:"flagg",n:"Flagg og dropknee",mal:"Flagg og dropknee som førstevalg der du ellers ville byttet fot.",slik:[],
   drill:["4–6 lette buldre der fotbytte er naturlig. Ingen fotbytte tillatt – hvert bytte erstattes med flagg eller dropknee.",
    "Samme buldre en gang til med flagg på motsatt side.","Bratt vegg: minst ett dropknee per buldre.",
    "Spraywall: partner peker ut håndtakene, du velger føttene selv – ingen fotbytte.",
    "3×10: runde 1 flagg eller dropknee på hvert flytt det går, runde 2 normalt, runde 3 bare der det sparer kraft."],
   feil:["Fotbytte av vane på lette flytt.","Dropknee som kjennes i kneet – ut av stillingen."],prog:"Brattere vegg, mindre fottak, lengre flytt."},
- {id:"rette-armer",n:"Rette armer",mal:"Spare kraft i underarmene.",
-  slik:["Heng i rette armer mellom flyttene.","Flytt med beina og hofta, ikke ved å trekke.","Armen bøyes først når hånden skal videre."],
-  drill:["Lett klatring: sjekk albuene mellom hvert flytt.","Stopp og rett ut armen hvis den er bøyd."],
-  feil:["Henger i bøyde armer mens du leser eller hviler.","Trekker deg inn mot veggen mellom flyttene."],prog:"Brattere vegg, lengre ruter."},
+ {id:"rette-armer",n:"Rette armer",mal:"Flyt med minst mulig armkraft.",slik:[],
+  drill:["Lett traversering: albuene strake mellom hvert flytt. Partner sier fra ved bøyd arm.","Bratt vegg: flyttet drives av bein og hofte, armen bøyes bare i selve flyttet.",
+   "Kalking og lesing på veggen alltid i rett arm.","3×10 runde 3: så lett og stille som mulig."],
+  feil:["Bøyd arm mens du leser eller kalker.","Trekker deg inn mot veggen mellom flyttene."],prog:"Brattere vegg, lengre ruter."},
  {id:"klipping",n:"Klipp i vanskelige posisjoner",mal:"Klipp som ikke stresser – også fra dårlige tak, bratt vegg og med pump.",slik:[],
   drill:["Lett rute, hvert klipp fra en annen stilling: lavt ved hofta, høyt med strak arm, fra dårlig tak, med motsatt hånd.",
    "Trener markerer med tape hvilket tak du skal klippe fra – også de dårlige.",
@@ -660,10 +661,10 @@ const TEKNIKK=[
    "Falltrening med trener: kontrollert fall med tau i hånden rett over bolten, lav høyde, øk gradvis."],
   feil:["Klipper fra første tak bolten er ved, ikke det beste.","Henger i bøyd arm mens du klipper.","Drar opp for mye tau over hodet."],
   prog:"Dårligere tak, brattere vegg, mer pump."},
- {id:"hvile-tau",n:"Hvile på tau",mal:"Hente seg inn underveis på ruta.",
-  slik:["Finn stillinger med rett arm og vekten på føttene: store tak, stemming, hofta inn.","Rist ut én arm om gangen, hånden under hjertehøyde.","Rolig pust – lengre ut enn inn."],
-  drill:["Tre hvilestillinger på en lett rute, 10 pust i hver.","Kjenn etter om pumpen går ned før du klatrer videre."],
-  feil:["Hviler med bøyd arm.","Blir for lenge på et dårlig tak."],prog:"Hvil på mindre tak og brattere vegg."}];
+ {id:"hvile-tau",n:"Hvile på tau",mal:"Hente seg inn underveis – planlagt, ikke tilfeldig.",slik:[],
+  drill:["Lett rute: tre hvilestillinger, 10 pust i hver. Kjenn om pumpen går ned før du går videre.","Bratt vegg: hvil med kneebar, heel hook eller stemming der det finnes.",
+   "4 × 4 eller 2 × 4: én planlagt hvile per rute, valgt under lesing.","Rist ut i takt med pusten, veksle hånd hver 2.–3. pust."],
+  feil:["For lenge på dårlig tak.","Hviler i bøyd arm."],prog:"Hvil på mindre tak og brattere vegg."}];
 function temaId(name){ const t=TEKNIKK.find(x=>x.n===name); return t?t.id:""; }
 function vTeknikk(){
   return `<h2 style="margin-top:18px">Teknikkbank</h2>
