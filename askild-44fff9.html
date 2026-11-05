@@ -305,7 +305,7 @@ const TEMA_GEN=[["Stille føtter","Ingen lyd fra føttene. Se på taket til fote
  ["Lese før du klatrer","1 min foran buldret eller ruta, pek ut hvert flytt, klatre uten å stoppe."],
  ["Flagg og dropknee","Ingen fotbytte – flagg eller dropknee i stedet."],
  ["Rette armer","Albuene strake mellom hvert flytt."]];
-const TEMA_TAU=[["Hvile på tau","Tre hvilestillinger på en rute, 10 pust i hver, rist ut."],
+const TEMA_TAU=[["Klipp i vanskelige posisjoner","Hvert klipp fra en ny, vanskeligere stilling."],["Hvile på tau","Tre hvilestillinger på en rute, 10 pust i hver, rist ut."],
  ["Stille føtter","Ingen lyd fra føttene på de lette rutene."],["Rette armer","Albuene strake mellom hvert flytt."]];
 function themeCat(s){
   if(["jul","utenfor","hvile"].includes(s.key)) return null;
@@ -651,6 +651,15 @@ const TEKNIKK=[
   slik:["Heng i rette armer mellom flyttene.","Flytt med beina og hofta, ikke ved å trekke.","Armen bøyes først når hånden skal videre."],
   drill:["Lett klatring: sjekk albuene mellom hvert flytt.","Stopp og rett ut armen hvis den er bøyd."],
   feil:["Henger i bøyde armer mens du leser eller hviler.","Trekker deg inn mot veggen mellom flyttene."],prog:"Brattere vegg, lengre ruter."},
+ {id:"klipping",n:"Klipp i vanskelige posisjoner",mal:"Klipp som ikke stresser – også fra dårlige tak, bratt vegg og med pump.",slik:[],
+  drill:["Lett rute, hvert klipp fra en annen stilling: lavt ved hofta, høyt med strak arm, fra dårlig tak, med motsatt hånd.",
+   "Trener markerer med tape hvilket tak du skal klippe fra – også de dårlige.",
+   "Bratt vegg: lås stillingen 3 s før du klipper.",
+   "Pumpet klipp: siste rute i en 2 × 4- eller 4 × 4-runde – klippene teller like mye som flyttene.",
+   "Under lesing: bestem hvor du klipper fra for hvert klipp, ikke bare hvor flyttene går.",
+   "Falltrening med trener: kontrollert fall med tau i hånden rett over bolten, lav høyde, øk gradvis."],
+  feil:["Klipper fra første tak bolten er ved, ikke det beste.","Henger i bøyd arm mens du klipper.","Drar opp for mye tau over hodet."],
+  prog:"Dårligere tak, brattere vegg, mer pump."},
  {id:"hvile-tau",n:"Hvile på tau",mal:"Hente seg inn underveis på ruta.",
   slik:["Finn stillinger med rett arm og vekten på føttene: store tak, stemming, hofta inn.","Rist ut én arm om gangen, hånden under hjertehøyde.","Rolig pust – lengre ut enn inn."],
   drill:["Tre hvilestillinger på en lett rute, 10 pust i hver.","Kjenn etter om pumpen går ned før du klatrer videre."],
