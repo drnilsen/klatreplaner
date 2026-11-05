@@ -204,7 +204,7 @@ function exRow(e,sets){
    <div class="exh"><span><span class="code">${e[0]}</span>${e[1]}${vid(e[1])}</span><span class="sets">${sets} × ${e[3]}</span></div><p>${e[2]}${e[4]?` · Pause ${e[4]}`:""}</p></div></div>`;
 }
 function styrkeHtml(i){
-  return `<div class="blk"><h4>Styrke – skulder og kjerne<span class="dur">30 min</span></h4><ul><li><span class="key">${i.st} sett</span>. Rolig tempo. Gjør A1 og A2 annenhver gang, så B1 og B2 osv.</li>
+  return `<div class="blk"><h4>Styrke – skulder og kjerne<span class="dur">30 min</span></h4><ul><li><span class="key">${i.st} sett</span>, RPE 7. Rolig tempo. Gjør A1 og A2 annenhver gang, så B1 og B2 osv.</li>
    <li>Stopp settet mens du har 3 reps igjen. Klarer du alle reps lett: velg en vanskeligere variant.</li></ul></div>
    <div class="exlist">${STYRKE.map(e=>exRow(e,e[6]?Math.min(e[6],i.st):i.st)).join("")}</div>`;
 }
@@ -238,23 +238,23 @@ function session(date,noTheme){
     if(i.y===2027&&w===13) s.notes.push(["warn","2. påskedag: sjekk åpningstider i hallen."]);
     if(i.y===2027&&w===20) s.notes.push(["warn","17. mai: sjekk åpningstider i hallen."]);
     if(c){ s.title="Nye buldre – kort økt"; s.time="ca. 1 t";
-      s.blocks=[B("Oppvarming",[OPPV],"25 min"),B("Nye buldre",["4 buldre du ikke har prøvd før. Maks 3 forsøk på hvert.","4 min på hvert buldre, 4 min pause – som i konkurranse.",PUST+"."],"30 min"),B("Nedtrapping",["Lett buldring."],"5 min")];
+      s.blocks=[B("Oppvarming",[OPPV],"25 min"),B("Nye buldre",["4 buldre du ikke har prøvd før, RPE 8–9. Maks 3 forsøk på hvert.","4 min på hvert buldre, 4 min pause – som i konkurranse.",PUST+"."],"30 min"),B("Nedtrapping",["Lett buldring."],"5 min")];
       s.fields=[["topper","Topper"]]; break; }
     let mx=i.mb===1?14:12; if(i.light) mx=half(mx);
     s.title="Buldring + teknikk"; s.time="ca. 1 t 35";
     s.blocks=[B("Oppvarming",[OPPV],"25 min"),
-      B("Teknikk",["Lette buldre med ukas tema."],"15 min"),
-      B("Vanskelige buldre",["Buldre du har lyst til å få til – vanskelige for deg.",`<span class="key">Maks ${mx} harde forsøk.</span> God pause mellom forsøkene, gjerne sittende.`,PUST+".","Stopp når du bommer på ting du klarte tidligere i økta."],"45 min"),
+      B("Teknikk",["Lette buldre med ukas tema, RPE 3–4."],"15 min"),
+      B("Vanskelige buldre",["Buldre du har lyst til å få til – vanskelige for deg.",i.mb===1?"RPE 7–8: du må ta i, men har kontroll. Ikke hardere.":"RPE 8–9: full kraft, men flyttene sitter. Ikke hardere.",`<span class="key">Maks ${mx} harde forsøk.</span> God pause mellom forsøkene, gjerne sittende.`,PUST+".","Stopp når du bommer på ting du klarte tidligere i økta."],"45 min"),
       B("Nedtrapping",["Lett buldring."],"10 min")];
     if(!noTheme){ s.blocks[1].items.unshift(tLink(t)); s.theme=t.n; }
     s.fields=[["forsok","Harde forsøk"],["topper","Topper"]];
     break; }
   case 3: {
     s.key="ons";
-    if(c){ s.title="Kort buldreøkt"; s.time="45 min"; s.blocks=[B("Økt",["Oppvarming 20 min.","3 buldre som kjennes harde, maks 2 forsøk på hvert. God pause."],"45 min")]; s.fields=[["topper","Topper"]]; break; }
+    if(c){ s.title="Kort buldreøkt"; s.time="45 min"; s.blocks=[B("Økt",["Oppvarming 20 min.","3 buldre på RPE 8, maks 2 forsøk på hvert. God pause."],"45 min")]; s.fields=[["topper","Topper"]]; break; }
     const n=i.light?3:6;
     s.title="Lange buldre"; s.time="ca. 1 t 05";
-    s.blocks=[B("Oppvarming",[OPPV],"20 min"),B("Lange buldre",["Sett sammen 2–3 buldre du klarer til ett langt buldre.",`<span class="key">${n} lange buldre</span>, ${i.lk===1?"3–4":"3"} min pause mellom hvert.`,i.lk===1?"Lette buldre, mange flytt.":"Litt hardere buldre, færre flytt.","Faller du: velg et lettere neste gang.","Varier: volumer, slopere og klyper, ikke bare lister."],"35 min"),B("Nedtrapping",["Lett buldring."],"10 min")];
+    s.blocks=[B("Oppvarming",[OPPV],"20 min"),B("Lange buldre",["Sett sammen 2–3 buldre du klarer til ett langt buldre.",`<span class="key">${n} lange buldre</span>, ${i.lk===1?"3–4":"3"} min pause mellom hvert.`,i.lk===1?"Lette buldre, mange flytt, RPE 6–7: pumpen går over i pausen.":"Litt hardere buldre, færre flytt, RPE 7–8.","Faller du, eller kjennes det hardere enn RPE-tallet: velg et lettere neste gang.","Varier: volumer, slopere og klyper, ikke bare lister."],"35 min"),B("Nedtrapping",["Lett buldring."],"10 min")];
     s.fields=[["antall","Lange buldre"]];
     break; }
   case 5: {
@@ -262,7 +262,7 @@ function session(date,noTheme){
     s.key="fre"; s.title="Board – valgfri"; s.time="ca. 1 t 15";
     s.notes.push(["acc","Sliten → dropp økta, uten å ta den igjen."]);
     s.blocks=[B("Oppvarming",[OPPV,"Avslutt med noen lette boardproblemer."],"25 min"),
-      B("Board",["Problemer du har lyst til å prøve, ikke brattere enn 40°.",`<span class="key">Maks 8 harde forsøk.</span> God pause mellom forsøkene.`,"Ingen full crimp.","Resten av tida: lette problemer, eller lek med flytt du ikke får til."],"40 min"),B("Nedtrapping",["Store tak."],"10 min")];
+      B("Board",["Problemer du har lyst til å prøve, ikke brattere enn 40°, RPE 7–8.",`<span class="key">Maks 8 harde forsøk.</span> God pause mellom forsøkene.`,"Ingen full crimp.","Resten av tida: lette problemer, eller lek med flytt du ikke får til."],"40 min"),B("Nedtrapping",["Store tak."],"10 min")];
     s.fields=[["forsok","Harde forsøk"]];
     break; }
   case 6: {
@@ -271,7 +271,7 @@ function session(date,noTheme){
     const f=i.light?7:15, fb=i.light?5:10;
     s.title="Nye buldre + styrke"; s.time="ca. 1 t 40";
     s.blocks=[B("Oppvarming",[OPPV],"25 min"),
-      B("Nye buldre",["Buldre du ikke har prøvd før. Se på buldret, lag en plan, prøv.","Maks 3 forsøk på hvert buldre.",`<span class="key">Maks ${f} forsøk</span> – ${fb} hvis du klatret board fredag.`,"Vil du øve på konkurranse: 4 min på hvert buldre, 4 min pause."],"40 min"),
+      B("Nye buldre",["Buldre du ikke har prøvd før. Se på buldret, lag en plan, prøv.",i.mb===1?"RPE 7–8.":"RPE 8–9.","Maks 3 forsøk på hvert buldre.",`<span class="key">Maks ${f} forsøk</span> – ${fb} hvis du klatret board fredag.`,"Vil du øve på konkurranse: 4 min på hvert buldre, 4 min pause."],"40 min"),
       B("Nedtrapping",["Lett buldring."],"5 min")];
     s.extra=styrkeHtml(i);
     s.notes.push(["acc","Klatret ute i helga: erstatter lørdag. Styrken tas etter buldringen mandag, eller utgår."]);
@@ -445,15 +445,15 @@ function vPlan(){
   <div class="card"><div class="tscroll"><table><thead><tr><th>Uke</th><th>Fra</th><th>Periode</th><th>Nytt</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
 function vRpe(){
-  return `<h2 style="margin-top:18px">RPE og intensitet</h2><p class="small muted">RPE = hvor hardt det kjennes, 1–10.</p>
-  <div class="card"><h3 style="margin-top:0">RPE-skala</h3><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">6–7</div><div><div class="small"><b>Buldring, styrke:</b> Krevende, kontrollert. Styrke: 3–4 reps igjen.</div><div class="small"><b>Lange buldre:</b> Merkbar pump som går tilbake i pausen.</div><p class="small">Brukes i: Lange buldre til uke 3, styrke</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">7–8</div><div><div class="small"><b>Buldring, styrke:</b> Må ta i på nøkkelflyttet.</div><div class="small"><b>Lange buldre:</b> Tydelig pump, føttene krever jobb.</div><p class="small">Brukes i: Vanskelige buldre til uke 2, board, lange buldre fra uke 4</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">8–9</div><div><div class="small"><b>Buldring, styrke:</b> Full kraft, treffer og holder.</div><p class="small">Brukes i: Vanskelige buldre fra uke 3</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">9</div><div><div class="small"><b>Buldring, styrke:</b> Alt du har, treffer så vidt.</div><p class="small">Brukes i: Nye buldre på lørdag</p></div></div></div>`;
+  return `<h2 style="margin-top:18px">RPE og intensitet</h2><p class="small muted">RPE = hvor hardt det kjennes, 1–10. Hver økt har et RPE-tall. Hold deg på det. Kjennes det hardere: lettere buldre eller lengre pause.</p>
+  <div class="card"><h3 style="margin-top:0">RPE-skala</h3><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">3–4</div><div><div class="small"><b>Buldring, styrke:</b> Lette buldre, flytende.</div><div class="small"><b>Lange buldre:</b> Rolig pust, lett varme i underarmene.</div><p class="small">Brukes i: Oppvarming, teknikk</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">6–7</div><div><div class="small"><b>Buldring, styrke:</b> Krevende, kontrollert. Styrke: 3–4 reps igjen.</div><div class="small"><b>Lange buldre:</b> Merkbar pump som går tilbake i pausen.</div><p class="small">Brukes i: Lange buldre til uke 3, styrke</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">7–8</div><div><div class="small"><b>Buldring, styrke:</b> Må ta i på nøkkelflyttet.</div><div class="small"><b>Lange buldre:</b> Tydelig pump, føttene krever jobb.</div><p class="small">Brukes i: Vanskelige og nye buldre til uke 2, board, lange buldre fra uke 4</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">8–9</div><div><div class="small"><b>Buldring, styrke:</b> Full kraft, treffer og holder.</div><p class="small">Brukes i: Vanskelige og nye buldre fra uke 3, konkurranseuker</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">9</div><div><div class="small"><b>Buldring, styrke:</b> Alt du har, treffer så vidt.</div><p class="small">Brukes i: Bare i konkurranse</p></div></div></div>`;
 }
 function vRegler(){
   return `<h2 style="margin-top:18px">Regler</h2>
   <div class="card"><h3 style="margin-top:0">Fingre</h3><ul><li><b>Ingen campusbrett og ingen fingerbrett</b> denne vinteren.</li><li><b>Full crimp:</b> bare uthvilt, ikke de siste 30 minuttene av en økt.</li>
    <li><b>Smerte i et fingerledd:</b> stopp lister og crimp samme økt, si fra samme dag. Over 3 dager, hovent ledd eller smerte ved bøy: lege.</li></ul></div>
   <div class="card"><h3 style="margin-top:0">Det som ligger fast</h3><ul><li><b>Hviledager:</b> tirsdag, torsdag og søndag.</li><li><b>Fredag er valgfri.</b> Sliten → dropp den, uten å ta den igjen.</li>
-   <li><b>Sluttpunkt:</b> forsøkstaket, eller to forsøk på rad med tydelig teknikkfall.</li><li><b>Tapt økt tas ikke igjen.</b></li><li><b>Supersett:</b> aldri samme muskelgruppe.</li></ul></div>
+   <li><b>RPE:</b> hver økt har et RPE-tall. Kjennes det hardere: lettere buldre eller lengre pause.</li><li><b>Sluttpunkt:</b> forsøkstaket, eller to forsøk på rad med tydelig teknikkfall.</li><li><b>Tapt økt tas ikke igjen.</b></li><li><b>Supersett:</b> aldri samme muskelgruppe.</li></ul></div>
   <div class="card"><h3 style="margin-top:0">Når uka blir annerledes</h3><ul><li><b>Sliten fredag:</b> dropp board.</li><li><b>Bare 2 økter:</b> mandag og lørdag.</li>
    <li><b>Klatret ute i helga:</b> erstatter lørdag. Styrken tas etter buldringen mandag, eller utgår.</li><li><b>To oransje dager på rad:</b> neste økt bare teknikk og lett buldring.</li><li><b>Etter ≥ 5 dager fri:</b> første uke på fase 1-nivå.</li></ul></div>
   <div class="card"><h3 style="margin-top:0">Fargen på dagen</h3><p><span class="dot f-gronn"></span> <b>Grønn</b> uthvilt, god kvalitet, neste økt føles sterkere<br><span class="dot f-gul"></span> <b>Gul</b> vedlikehold<br><span class="dot f-oransje"></span> <b>Oransje</b> trente for sliten, lav kvalitet<br><span class="dot f-rod"></span> <b>Rød</b> trenger flere hviledager → hvile neste dag, si fra<br><span class="dot f-svart"></span> <b>Svart</b> skade → stopp, si fra samme dag</p></div>`;
@@ -664,7 +664,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-175526";
+const APP_VERSION="2026-11-05-175740";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
