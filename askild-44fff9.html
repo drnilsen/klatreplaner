@@ -643,7 +643,7 @@ const TEKNIKK=[
    "Lange flytt: hofta inn i stedet for lock-off.","3×10: overdrevet vridning i runde 1."],
   feil:["Brystet mot veggen av vane på bratt vegg.","Lock-off der hofta kunne gjort jobben."],prog:"Lengre flytt, mindre tak."},
  {id:"lese",n:"Lese før du klatrer",mal:"Første forsøk etter plan.",slik:[],
-  drill:["Si sekvensen høyt til partner før forsøket – hender, føtter, nøkkelflytt. Sammenlign etterpå.","Konkurransetid: 30 s per buldre, eller fast lesetid for ruta.",
+  drill:["Si sekvensen høyt til partner før forsøket – hender, føtter, nøkkelflytt. Sammenlign etterpå.","Lesing på tid: maks 30 s lesing per buldre før første forsøk, eller fast lesetid for ruta.",
    "Flash-forsøk på nye buldre: ikke se andre klatre dem før du har lest og prøvd selv.","Rute: merk hvilestillinger og klippestillinger under lesing, klatre etter planen.",
    "Etter forsøket: hvor avvek du fra planen, og hvorfor."],
   feil:["Leser bare hendene.","Ingen plan for føttene på nøkkelflyttet."],prog:"Kortere lesetid, lengre buldre og ruter."},
@@ -762,7 +762,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-085056";
+const APP_VERSION="2026-11-05-085256";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
