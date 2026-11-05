@@ -303,7 +303,7 @@ function session(date,noTheme){
 const TEMA_GEN=[["Stille føtter","Ingen lyd fra føttene. Se på taket til foten står."],
  ["Hofta inn","Hofta på samme side roteres inn før hånden flyttes."],
  ["Lese før du klatrer","1 min foran buldret eller ruta, pek ut hvert flytt, klatre uten å stoppe."],
- ["Flagg og dropknee","Lett klatring uten fotbytte."],
+ ["Flagg og dropknee","Ingen fotbytte – flagg eller dropknee i stedet."],
  ["Rette armer","Albuene strake mellom hvert flytt."]];
 const TEMA_TAU=[["Klipping","Riktig fot, begge hender."],["Hvile på tau","Tre hvilestillinger på en rute, 10 pust i hver, rist ut."],
  ["Stille føtter","Ingen lyd fra føttene på de lette rutene."],["Rette armer","Albuene strake mellom hvert flytt."]];
@@ -641,10 +641,12 @@ const TEKNIKK=[
   slik:["1 min foran buldret eller ruta.","Pek ut hvert håndtak og hvert fottak – også føttene.","Finn nøkkelflyttet og hvilestillingene.","Se for deg sekvensen i riktig tempo."],
   drill:["Les, klatre uten å stoppe.","Etterpå: hvor skilte planen seg fra det du gjorde?"],
   feil:["Leser bare hendene.","Planlegger for få flytt framover."],prog:"Lengre buldre og ruter, kortere lesetid."},
- {id:"flagg",n:"Flagg og dropknee",mal:"Balanse uten fotbytte.",
-  slik:["Flagg: den frie foten strekkes ut som motvekt – bak eller foran den andre foten.","Dropknee: kneet vris ned og inn, hofta mot veggen, låser stillingen i bratt vegg.","Velg flagg der du ellers ville byttet fot."],
-  drill:["Lette buldre uten fotbytte – hvert flytt med flagg eller dropknee.","Samme buldre med flagg på begge sider."],
-  feil:["Flagger med bøyd bein uten spenn.","Dropknee som kjennes i kneet – da ut av stillingen."],prog:"Brattere vegg, mindre fottak."},
+ {id:"flagg",n:"Flagg og dropknee",mal:"Flagg og dropknee som førstevalg der du ellers ville byttet fot.",slik:[],
+  drill:["4–6 lette buldre der fotbytte er naturlig. Ingen fotbytte tillatt – hvert bytte erstattes med flagg eller dropknee.",
+   "Samme buldre en gang til med flagg på motsatt side.","Bratt vegg: minst ett dropknee per buldre.",
+   "Spraywall: partner peker ut håndtakene, du velger føttene selv – ingen fotbytte.",
+   "3×10: runde 1 flagg eller dropknee på hvert flytt det går, runde 2 normalt, runde 3 bare der det sparer kraft."],
+  feil:["Fotbytte av vane på lette flytt.","Dropknee som kjennes i kneet – ut av stillingen."],prog:"Brattere vegg, mindre fottak, lengre flytt."},
  {id:"rette-armer",n:"Rette armer",mal:"Spare kraft i underarmene.",
   slik:["Heng i rette armer mellom flyttene.","Flytt med beina og hofta, ikke ved å trekke.","Armen bøyes først når hånden skal videre."],
   drill:["Lett klatring: sjekk albuene mellom hvert flytt.","Stopp og rett ut armen hvis den er bøyd."],
@@ -663,7 +665,7 @@ function vTeknikk(){
   <p class="small muted">Ett tema per økt i oppvarmingen og i 3×10. Temaet roterer og står under <a href="#idag">I dag</a>.</p>
   ${TEKNIKK.map(t=>`<div class="card" id="tema-${t.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${t.n}</h3>
    <p style="margin:0 0 6px"><b>Mål:</b> ${t.mal}</p>
-   <div class="blk"><h4>Slik</h4><ul>${t.slik.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+   ${t.slik.length?`<div class="blk"><h4>Slik</h4><ul>${t.slik.map(x=>`<li>${x}</li>`).join("")}</ul></div>`:""}
    <div class="blk"><h4>Øvelse</h4><ul>${t.drill.map(x=>`<li>${x}</li>`).join("")}</ul></div>
    <div class="blk"><h4>Typiske feil</h4><ul>${t.feil.map(x=>`<li>${x}</li>`).join("")}</ul></div>
    <p class="small" style="margin:10px 0 0"><b>Vanskeligere:</b> ${t.prog}</p></div>`).join("")}`;
