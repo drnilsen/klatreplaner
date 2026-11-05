@@ -259,19 +259,22 @@ function session(date,noTheme){
     break; }
   case 5: {
     if(c||i.light){ s.blocks=[B("Hviledag",[c?"Ingen board i konkurranseuka.":"Lett uke: ingen fredagsøkt."])]; break; }
-    s.key="fre"; s.title="Board – valgfri"; s.time="ca. 1 t 15";
+    s.key="fre"; s.title="Board + fri buldring – valgfri"; s.time="ca. 1 t 30";
     s.notes.push(["acc","Sliten → dropp økta, uten å ta den igjen."]);
     s.blocks=[B("Oppvarming",[OPPV,"Avslutt med noen lette boardproblemer."],"25 min"),
-      B("Board",["Problemer du har lyst til å prøve, ikke brattere enn 40°, RPE 7–8.",`<span class="key">3 problemer, maks 3 forsøk på hvert.</span>`,"Går problemene på 1–2 forsøk: ta ett problem til (maks 4).","God pause mellom forsøkene.","Ingen full crimp.","Resten av tida: lette problemer, eller lek med flytt du ikke får til."],"40 min"),B("Nedtrapping",["Store tak."],"10 min")];
+      B("Board",["Problemer du har lyst til å prøve, ikke brattere enn 40°, RPE 7–8.",`<span class="key">4 problemer, maks 3 forsøk på hvert.</span>`,"Går problemene på 1–2 forsøk: ta ett eller to problemer til (maks 6).","God pause mellom forsøkene.","Ingen full crimp."],"40 min"),
+      B("Fri buldring",["Vanlig vegg, buldre du har lyst til å klatre, RPE 5–6. Lek med flytt, prøv nye ting."],"20 min"),
+      B("Nedtrapping",["Store tak."],"5 min")];
     s.fields=[["antBuldre","Problemer"]];
     break; }
   case 6: {
     s.key="lor";
     if(c){ s.title=`${c.navn}${c.sted?" "+c.sted:""}`; s.time=""; s.blocks=[B("Konkurranse",[PUST+". Første fot.",`Sjekk <a href="#hodet" data-anchor="format">formatet</a> i innbydelsen.`])]; s.fields=[["resultat","Resultat / plassering"]]; break; }
-    const f=i.light?3:5, fb=i.light?2:3;
-    s.title="Nye buldre + styrke"; s.time="ca. 1 t 40";
+    const f=i.light?4:8, fb=i.light?3:6;
+    s.title="Nye buldre + styrke"; s.time="ca. 2 t 15";
     s.blocks=[B("Oppvarming",[OPPV],"25 min"),
-      B("Nye buldre",["Buldre du ikke har prøvd før. Se på buldret, lag en plan, prøv.",i.mb===1?"RPE 7–8.":"RPE 8–9.",`<span class="key">${f} buldre, maks 3 forsøk på hvert</span> – ${fb} buldre hvis du klatret board fredag.`,i.light?"Ingen ekstra buldre i lett uke.":"Går buldrene på 1–2 forsøk: ta ett eller to buldre til (maks 7). Bruker du alle tre forsøkene på de fleste: hold deg til antallet over.","Vil du øve på konkurranse: 4 min på hvert buldre, 4 min pause."],"40 min"),
+      B("Nye buldre",["Buldre du ikke har prøvd før. Se på buldret, lag en plan, prøv.",i.mb===1?"RPE 7–8.":"RPE 8–9.",`<span class="key">${f} buldre, maks 3 forsøk på hvert</span> – ${fb} buldre hvis du klatret board fredag.`,i.light?"Ingen ekstra buldre i lett uke.":"Går buldrene på 1–2 forsøk: ta ett eller to buldre til (maks 10). Bruker du alle tre forsøkene på de fleste: hold deg til antallet over.","Vil du øve på konkurranse: 4 min på hvert buldre, 4 min pause."],"60 min"),
+      B("Fri buldring",["Buldre du har lyst til å klatre, RPE 5–6. Gjerne sammen med andre."],"15 min"),
       B("Nedtrapping",["Lett buldring."],"5 min")];
     s.extra=styrkeHtml(i);
     s.notes.push(["acc","Klatret ute i helga: erstatter lørdag. Styrken tas etter buldringen mandag, eller utgår."]);
@@ -412,7 +415,7 @@ function refCard(title,date){ const s=session(date,true); return `<div class="ca
 const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Buldring + teknikk</h2>${curLabel()}${refCard("Fase 1 og uke 2",D(2026,46,1))}${refCard("Fra uke 3",D(2027,3,1))}${refCard("Konkurranseuke",D(2027,5,1))}`,
  ons:()=>`<h2 style="margin-top:18px">Onsdag · Lange buldre</h2>${curLabel()}${refCard("Fase 1 til uke 3",D(2026,46,3))}${refCard("Fra uke 4",D(2027,4,3))}`,
- fre:()=>`<h2 style="margin-top:18px">Fredag · Board – valgfri</h2>${curLabel()}${refCard("Board",D(2026,46,5))}`,
+ fre:()=>`<h2 style="margin-top:18px">Fredag · Board + fri buldring – valgfri</h2>${curLabel()}${refCard("Board",D(2026,46,5))}`,
  lor:()=>`<h2 style="margin-top:18px">Lørdag · Nye buldre + styrke</h2>${curLabel()}${refCard("Vanlig lørdag",D(2026,46,6))}`,
 };
 function vStyrke(){
@@ -664,7 +667,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-180037";
+const APP_VERSION="2026-11-05-180352";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
