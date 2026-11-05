@@ -560,10 +560,10 @@ const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,1))}${refCard("Fase 2 og etter NM",D(2027,4,1))}${refCard("Topping",D(2027,7,1))}${refCard("Konkurranseuke",D(2027,9,1))}`,
  tir:()=>`<h2 style="margin-top:18px">Tirsdag · Styrke A</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,49,2)))}${refCard("Topping",D(2027,7,2))}`,
  ons:()=>`<h2 style="margin-top:18px">Onsdag · Linked boulders</h2>${curLabel()}
-   <div class="card"><h3 style="margin-top:0">Linked boulders per uke</h3><p class="small muted" style="margin:0 0 6px">1–3 buldre. Hvert sett = 4 ganger med 2 min pause, 5 min mellom settene.</p><div class="tscroll"><table><thead><tr><th>Uker</th><th>Sett × 4</th><th>Nivå</th></tr></thead><tbody>
-   <tr><td>45–46, 1</td><td>2</td><td>ca. 14–16 flytt, 2–3 grader under flash-graden, RPE 6</td></tr>
+   <div class="card"><h3 style="margin-top:0">Linked boulders per uke</h3><p class="small muted" style="margin:0 0 6px">Ett langt buldre av 2–3 vanlige buldre koblet sammen. Hvert sett = 4 ganger med 2 min pause, 5 min mellom settene.</p><div class="tscroll"><table><thead><tr><th>Uker</th><th>Sett × 4</th><th>Nivå</th></tr></thead><tbody>
+   <tr><td>45–46, 1</td><td>2</td><td>Til sammen ca. 14–16 flytt, 2–3 grader under flash-graden, RPE 6</td></tr>
    <tr><td>47–51, 2</td><td>3 (lett uke 48: 2)</td><td>samme</td></tr>
-   <tr><td>3–6, 11–14, 18</td><td>3 (lett uke 10: 2)</td><td>ca. 12 flytt på flash-graden, RPE 7–8</td></tr>
+   <tr><td>3–6, 11–14, 18</td><td>3 (lett uke 10: 2)</td><td>Til sammen ca. 12 flytt på flash-graden, RPE 7–8</td></tr>
    <tr><td>7–8, 15–16</td><td>2</td><td>samme</td></tr>
    <tr><td>9, 17, 19</td><td>–</td><td>hvile eller 20 min lett</td></tr>
    <tr><td>20</td><td colspan="2">Rutedag på led: 6–8 ruter 2–3 under onsight, RPE 6</td></tr></tbody></table></div></div>${refCard("Denne uka",nowOr(3,D(2026,47,3)))}`,
@@ -884,10 +884,10 @@ function lightRpe(root){
 function lbItems(sets,lvl,enkel){
   const fl=lvl===1?"ca. 14–16 flytt":"ca. 12 flytt";
   const grad=lvl===1?"2–3 grader under flash-graden, RPE 6":"på flash-graden, RPE 7–8";
-  const it=[enkel?`Velg 1–3 buldre på ${fl}, ${grad}. For få flytt: legg 2–4 traversflytt til starten.`:`Velg 1–3 buldre på ${fl}, jevnt vanskelige hele veien, ${grad}. For få flytt: legg 2–4 harde traversflytt til starten.`,
-    `<span class="key">${sets} sett × 4</span>: klatre buldret 4 ganger med 2 min pause før hver gang. 5 min pause mellom settene.`,
-    "Greit å falle på de siste flyttene på slutten av et sett. Faller du jevnlig før halvveis: lettere buldre. Alt uten fall: hardere neste økt.",
-    "Bytt buldre med noen økters mellomrom."];
+  const it=[enkel?`Lag ett langt buldre ved å koble sammen 2–3 vanlige buldre: til sammen ${fl}, ${grad}. For få flytt: legg 2–4 traversflytt til starten.`:`Lag ett langt buldre ved å koble sammen 2–3 vanlige buldre: til sammen ${fl}, jevnt vanskelig hele veien, ${grad}. For få flytt: legg 2–4 harde traversflytt til starten.`,
+    `<span class="key">${sets} sett × 4</span>: klatre det lange buldret 4 ganger med 2 min pause før hver gang. 5 min pause mellom settene.`,
+    "Greit å falle på de siste flyttene på slutten av et sett. Faller du jevnlig før halvveis: lettere kombinasjon. Alt uten fall: hardere neste økt.",
+    "Lag en ny kombinasjon med noen økters mellomrom."];
   return it;
 }
 function lbDur(sets){ return sets>=3?"ca. 45 min":sets===2?"ca. 30 min":"ca. 15 min"; }
@@ -940,7 +940,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-220621";
+const APP_VERSION="2026-11-05-220958";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
