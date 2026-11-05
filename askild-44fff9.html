@@ -128,6 +128,14 @@ a{color:var(--accent)}
 .upd[hidden]{display:none}
 .upd p{margin:0;flex:1;font-size:14.5px}.upd .btn{background:var(--accent-ink);color:var(--accent);font-weight:700}
 .ver{font-size:12px;color:var(--muted);text-align:center;margin:28px 0 0}
+.trinn{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:12px 0 0}
+.tbtn{border:2px solid var(--line);background:var(--card);border-radius:10px;min-width:40px;min-height:38px;font-weight:700}
+.tbtn.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chk{display:flex;align-items:center;gap:8px;margin:12px 0 0;font-size:15px}
+.chk input{width:20px;height:20px}
+.exlist .ex{grid-template-columns:118px minmax(0,1fr);gap:12px}
+@media (min-width:560px){.exlist .ex{grid-template-columns:200px minmax(0,1fr)}}
+.grid.g6{grid-template-columns:52px repeat(5,1fr)}
 @media (min-width:640px){ .brand h1{font-size:20px} h2{font-size:26px} }
 </style>
 
@@ -142,6 +150,7 @@ a{color:var(--accent)}
 </div>
 
 <script>
+const NAVN="Askild", KEY="askild";
 /* ============ KALENDER ============ */
 const DAY = ["", "Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag","Søndag"];
 const DAYS = ["", "Man","Tir","Ons","Tor","Fre","Lør","Søn"];
@@ -393,8 +402,8 @@ function summary(scope){
   let keys=Object.keys(LOG).sort();
   if(scope==="uke"){ const {y,w}=isoWeek(cur); const m=mondayOf(y,w); const a=ymd(m), z=ymd(addDays(m,6));
     keys=keys.filter(k=>k>=a&&k<=z);
-    return `Askild – logg uke ${w}\n`+(keys.length?keys.map(entryLine).join("\n"):"Ingen økter logget."); }
-  let out="Askild – logg vinteren 2026/27", lastW=null;
+    return `Treningslogg ${initialer()} – uke ${w}\n${"Personlig treningsinformasjon – slettes etter vurdering."}\n`+(keys.length?keys.map(entryLine).join("\n"):"Ingen økter logget."); }
+  let out=`Treningslogg ${initialer()} – vinteren 2026/27\n${"Personlig treningsinformasjon – slettes etter vurdering."}`, lastW=null;
   keys.forEach(k=>{ const w=isoWeek(parseYmd(k)).w; if(w!==lastW){ out+=`\n\nUke ${w}`; lastW=w; } out+="\n"+entryLine(k); });
   return keys.length?out:out+"\nIngen økter logget.";
 }
@@ -701,11 +710,13 @@ function vLogg(){
   return `<h2 style="margin-top:18px">Logg</h2>
   <p class="small muted">Loggen lagres bare på denne telefonen, i denne nettleseren. Logg en økt fra <a href="#idag">I dag</a> – bla til riktig dag med pilene.</p>
   <div class="card"><h3 style="margin-top:0">Send til trener</h3>
-   <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn pri" data-share="uke">Del denne uka</button><button class="btn" data-share="alt">Del hele loggen</button></div>
+   <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn pri" data-share="uke">Del denne uka</button><button class="btn" data-share="alt">Del hele sesongen</button><button class="btn sm" data-sharetext="uke">Bare tekst</button></div>
+   <p class="small muted" style="margin:6px 0 0">Sendes som bilde med grafer og tekst. Bare initialene dine står i rapporten.</p>
    <p class="small muted" style="margin:8px 0 0" id="shareMsg"></p><textarea id="shareFallback" hidden readonly style="margin-top:8px;min-height:140px"></textarea>
    <h3>Sikkerhetskopi</h3>
    <p class="small muted" style="margin:0 0 8px">Ta en kopi av og til, og før du bytter telefon eller sletter nettleserdata.</p>
    <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" data-backup="1">Last ned kopi</button><label class="btn" style="display:inline-flex;align-items:center">Hent inn kopi<input type="file" accept=".json,application/json" id="restoreFile" hidden></label></div></div>
+  ${progressCard()}${settingsCard()}
   <div class="card"><h3 style="margin-top:0">Sesongen</h3>${grid}
    <p class="small muted" style="margin-bottom:0">${Object.keys(names).filter(k=>counts[k]).map(k=>`<span class="dot f-${k}"></span> ${counts[k]} ${names[k]}`).join(" &nbsp; ")||"Ingen økter logget ennå."}</p></div>
   <div class="card"><h3 style="margin-top:0">Økter</h3>${keys.length?keys.map(k=>{ const e=LOG[k], d=parseYmd(k);
@@ -714,6 +725,8 @@ function vLogg(){
       ${e.kommentar?`<p class="muted">${esc(e.kommentar)}</p>`:""}<p><a href="#idag" data-go="${k}" class="small">Åpne</a></p></div>`; }).join(""):'<p class="muted">Ingen økter logget ennå.</p>'}</div>`;
 }
 
+const METRIC={title:"Høyde (cm)",series:[{k:"hoyde",name:"høyde",color:"#0f6b5f"}]};
+function reportDetail(e){ const t=[]; if(e.antall!=null&&e.antall!=="") t.push(`${e.antall} ${(e.antallNavn||"").toLowerCase()}`); if(e.topper!=null&&e.topper!=="") t.push(`${e.topper} topper`); if(e.hoyde) t.push(`høyde ${e.hoyde} cm`); if(e.kommentar) t.push(e.kommentar); return t.join(" · "); }
 /* ============ RUTING ============ */
 function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
 function render(){
@@ -752,7 +765,8 @@ document.addEventListener("click",async ev=>{
   }
   if(el.dataset.anchor){ ev.preventDefault(); const go=()=>{ const t=document.getElementById(el.dataset.anchor); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); };
     const tab=el.getAttribute("href")||"#regler"; if(location.hash!==tab){ location.hash=tab; setTimeout(go,150); } else go(); return; }
-  if(el.dataset.share){ shareText(summary(el.dataset.share),document.getElementById("shareMsg")); return; }
+  if(el.dataset.share){ const m=document.getElementById("shareMsg"); m.textContent="Lager rapport …"; shareReport(el.dataset.share,m).then(()=>{ if(m.textContent==="Lager rapport …") m.textContent=""; }); return; }
+  if(el.dataset.sharetext){ shareText(summary(el.dataset.sharetext),document.getElementById("shareMsg")); return; }
   if(el.dataset.backup){ downloadBackup(); return; }
   if(el.id==="fDel"){ await deleteEntry(ymd(selDate)); render(); return; }
 });
@@ -761,8 +775,139 @@ document.addEventListener("change",ev=>{ if(ev.target.id==="restoreFile"&&ev.tar
 initDb();
 render();
 
+/* ============ RAPPORT OG GRAFER (felles) ============ */
+const FARGER={gronn:"#2f9e44",gul:"#e9b92f",oransje:"#ec7d10",rod:"#d62f2f",svart:"#1b1b1b"};
+const FORDER=["gronn","gul","oransje","rod","svart"];
+const INIT_KEY=KEY+"-initialer";
+function initialer(){ const v=(lsGet(INIT_KEY)||"").trim(); return v||(NAVN[0]+"."); }
+function weeksUpTo(d){ return SEASON.filter(({y,w})=>mondayOf(y,w)<=d); }
+function weekColors(y,w){ const m=mondayOf(y,w), c={}; for(let k=0;k<7;k++){ const e=LOG[ymd(addDays(m,k))]; if(e&&e.farge) c[e.farge]=(c[e.farge]||0)+1; } return c; }
+function metricPoints(){ // [{d, values{key:num}}]
+  return Object.keys(LOG).sort().map(k=>{ const e=LOG[k], v={}; let any=false;
+    METRIC.series.forEach(s=>{ if(e[s.k]!=null&&e[s.k]!==""&&!isNaN(+e[s.k])){ v[s.k]=+e[s.k]; any=true; } });
+    return any?{d:parseYmd(k),v}:null; }).filter(Boolean);
+}
+/* SVG: farger per uke */
+function svgColorBars(weeks,opts={}){
+  const W=opts.w||360,H=opts.h||150,pl=24,pb=22,pt=8,bw=(W-pl-6)/Math.max(weeks.length,1);
+  const max=Math.max(4,...weeks.map(({y,w})=>Object.values(weekColors(y,w)).reduce((a,b)=>a+b,0)));
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Fargen på dagen per uke" style="width:100%;height:auto;display:block">`;
+  for(let t=0;t<=max;t+=2){ const y=H-pb-(H-pb-pt)*t/max; s+=`<line x1="${pl}" x2="${W}" y1="${y}" y2="${y}" stroke="currentColor" stroke-opacity=".12"/><text x="${pl-6}" y="${y+4}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".6">${t}</text>`; }
+  weeks.forEach(({y,w},ix)=>{ const c=weekColors(y,w); let acc=0; const x=pl+ix*bw+bw*0.15, bwi=bw*0.7;
+    FORDER.forEach(f=>{ const n=c[f]||0; if(!n) return; const h=(H-pb-pt)*n/max, yy=H-pb-(H-pb-pt)*(acc+n)/max; s+=`<rect x="${x}" y="${yy}" width="${bwi}" height="${h}" fill="${FARGER[f]}" rx="2"/>`; acc+=n; });
+    if(weeks.length<=12||ix%2===0) s+=`<text x="${x+bwi/2}" y="${H-6}" font-size="11" text-anchor="middle" fill="currentColor" fill-opacity=".6">${w}</text>`; });
+  return s+`</svg>`;
+}
+/* SVG: målinger over tid */
+function svgMetric(points,opts={}){
+  const W=opts.w||360,H=opts.h||150,pl=26,pb=22,pt=10,pr=8;
+  if(points.length<1) return `<p class="small muted">Ingen målinger ennå.</p>`;
+  const t0=+points[0].d, t1=Math.max(+points[points.length-1].d, t0+864e5*7);
+  const vals=points.flatMap(p=>Object.values(p.v));
+  let lo=METRIC.fixed?METRIC.fixed[0]:Math.floor(Math.min(...vals)-1), hi=METRIC.fixed?METRIC.fixed[1]:Math.ceil(Math.max(...vals)+1);
+  const X=d=>pl+(W-pl-pr)*((+d-t0)/(t1-t0)), Y=v=>H-pb-(H-pb-pt)*((v-lo)/(hi-lo));
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${METRIC.title}" style="width:100%;height:auto;display:block">`;
+  const step=(hi-lo)>12?Math.ceil((hi-lo)/5):((hi-lo)>6?2:1);
+  for(let v=lo;v<=hi;v+=step){ s+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="currentColor" stroke-opacity=".12"/><text x="${pl-6}" y="${Y(v)+4}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".6">${v}</text>`; }
+  if(METRIC.limit!=null) s+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(METRIC.limit)}" y2="${Y(METRIC.limit)}" stroke="#d62f2f" stroke-dasharray="5 4" stroke-width="1.5"/><text x="${W-pr}" y="${Y(METRIC.limit)-4}" font-size="11" text-anchor="end" fill="#d62f2f">grense ${METRIC.limit}</text>`;
+  METRIC.series.forEach(se=>{ const pts=points.filter(p=>p.v[se.k]!=null);
+    if(pts.length>1) s+=`<path d="${pts.map((p,i)=>(i?"L":"M")+X(p.d).toFixed(1)+" "+Y(p.v[se.k]).toFixed(1)).join(" ")}" fill="none" stroke="${se.color}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    pts.forEach(p=>{ s+=`<circle cx="${X(p.d).toFixed(1)}" cy="${Y(p.v[se.k]).toFixed(1)}" r="3.5" fill="${se.color}"/>`; }); });
+  s+=`<text x="${pl}" y="${H-6}" font-size="11" fill="currentColor" fill-opacity=".6">${fmt(points[0].d)}</text><text x="${W-pr}" y="${H-6}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".6">${fmt(new Date(t1))}</text>`;
+  return s+`</svg>`;
+}
+function legendHtml(){ return `<div class="meta">${METRIC.series.map(se=>`<span class="tag"><span class="dot" style="background:${se.color}"></span> ${se.name}</span>`).join("")}</div>`; }
+function progressCard(){
+  const weeks=weeksUpTo(cur);
+  return `<div class="card"><h3 style="margin-top:0">Utvikling</h3>
+   <h4 class="small muted" style="margin:6px 0 2px">Fargen på dagen per uke</h4>${svgColorBars(weeks)}
+   <div class="meta">${FORDER.map(f=>`<span class="tag"><span class="dot f-${f}"></span> ${FN[f]}</span>`).join("")}</div>
+   <h4 class="small muted" style="margin:14px 0 2px">${METRIC.title}</h4>${svgMetric(metricPoints())}${legendHtml()}</div>`;
+}
+function settingsCard(){
+  return `<div class="card"><h3 style="margin-top:0">Rapport til trener</h3>
+   <label class="f">Initialer i rapporten</label><input type="text" id="initInput" maxlength="6" value="${esc(initialer())}">
+   <p class="small muted" style="margin:6px 0 0">Rapporten viser bare initialene dine. Treneren sletter den etter vurdering.</p></div>`;
+}
+
+/* Bilde-rapport (canvas → PNG) */
+function reportCanvas(scope){
+  const Wd=1080, pad=56, cv=document.createElement("canvas"), ctx=cv.getContext("2d");
+  const {y:cy,w:cw}=isoWeek(cur), mon=mondayOf(cy,cw);
+  const rows=[];
+  if(scope==="uke") for(let k=0;k<7;k++){ const d=addDays(mon,k), e=LOG[ymd(d)]; const s=session(d,true); if(e||s.key!=="hvile") rows.push({d,e,s}); }
+  const weeks=weeksUpTo(cur).slice(scope==="uke"?-8:0);
+  const H=pad*2+150+(scope==="uke"?rows.length*92+40:0)+300+300+120;
+  cv.width=Wd; cv.height=H; const S=(f,c)=>{ ctx.font=f; ctx.fillStyle=c||"#1d2321"; };
+  ctx.fillStyle="#ffffff"; ctx.fillRect(0,0,Wd,H);
+  ctx.fillStyle="#0f6b5f"; ctx.fillRect(0,0,Wd,12);
+  let y=pad+30;
+  S("700 44px system-ui,sans-serif"); ctx.fillText(`Treningslogg · ${initialer()}`,pad,y);
+  y+=46; S("400 28px system-ui,sans-serif","#5f6a66");
+  ctx.fillText(scope==="uke"?`Uke ${cw} · ${fmt(mon)} – ${fmt(addDays(mon,6))}`:`Vinteren 2026/27 · til ${fmt(cur)}`,pad,y);
+  y+=50;
+  if(scope==="uke"){
+    rows.forEach(({d,e,s})=>{
+      ctx.fillStyle="#f4f3ef"; ctx.fillRect(pad,y-8,Wd-pad*2,80);
+      ctx.beginPath(); ctx.arc(pad+36,y+32,20,0,7); ctx.fillStyle=e&&e.farge?FARGER[e.farge]:"#dedbd2"; ctx.fill();
+      S("700 28px system-ui,sans-serif"); ctx.fillText(`${DAYS[isoWeek(d).dow]} ${d.getDate()}.`,pad+72,y+24);
+      S("400 26px system-ui,sans-serif"); ctx.fillText(((e&&e.okt)||s.title).slice(0,34),pad+200,y+24);
+      S("400 23px system-ui,sans-serif","#5f6a66"); ctx.fillText(e?reportDetail(e).slice(0,64):"ikke logget",pad+200,y+56);
+      y+=92; });
+    y+=20;
+  }
+  // farger per uke
+  S("700 28px system-ui,sans-serif"); ctx.fillText("Fargen på dagen per uke",pad,y); y+=20;
+  y=drawBars(ctx,weeks,pad,y,Wd-pad*2,220)+40;
+  // måling
+  S("700 28px system-ui,sans-serif"); ctx.fillText(METRIC.title,pad,y); y+=20;
+  const pts=metricPoints().filter(p=>scope!=="uke"||p.d>=addDays(mon,-49));
+  y=drawLine(ctx,pts,pad,y,Wd-pad*2,220)+50;
+  S("400 22px system-ui,sans-serif","#9a5b00");
+  ctx.fillText("Personlig treningsinformasjon. Treneren sletter rapporten etter vurdering.",pad,Math.min(y,H-pad));
+  return cv;
+}
+function drawBars(ctx,weeks,x0,y0,W,H){
+  const max=Math.max(4,...weeks.map(({y,w})=>Object.values(weekColors(y,w)).reduce((a,b)=>a+b,0))), bw=W/Math.max(weeks.length,1);
+  ctx.strokeStyle="#e6e3da"; ctx.lineWidth=1; for(let t=0;t<=max;t+=2){ const yy=y0+H-H*t/max; ctx.beginPath(); ctx.moveTo(x0,yy); ctx.lineTo(x0+W,yy); ctx.stroke(); }
+  weeks.forEach(({y,w},ix)=>{ const c=weekColors(y,w); let acc=0; const x=x0+ix*bw+bw*0.15;
+    FORDER.forEach(f=>{ const n=c[f]||0; if(!n) return; ctx.fillStyle=FARGER[f]; ctx.fillRect(x,y0+H-H*(acc+n)/max,bw*0.7,H*n/max-2); acc+=n; });
+    if(weeks.length<=14||ix%2===0){ ctx.font="400 20px system-ui,sans-serif"; ctx.fillStyle="#5f6a66"; ctx.textAlign="center"; ctx.fillText(String(w),x+bw*0.35,y0+H+26); ctx.textAlign="left"; } });
+  return y0+H+30;
+}
+function drawLine(ctx,pts,x0,y0,W,H){
+  ctx.font="400 22px system-ui,sans-serif"; ctx.fillStyle="#5f6a66";
+  if(!pts.length){ ctx.fillText("Ingen målinger i perioden.",x0,y0+40); return y0+60; }
+  const t0=+pts[0].d, t1=Math.max(+pts[pts.length-1].d,t0+864e5*7), vals=pts.flatMap(p=>Object.values(p.v));
+  const lo=METRIC.fixed?METRIC.fixed[0]:Math.floor(Math.min(...vals)-1), hi=METRIC.fixed?METRIC.fixed[1]:Math.ceil(Math.max(...vals)+1);
+  const X=d=>x0+40+(W-40)*((+d-t0)/(t1-t0)), Y=v=>y0+H-H*((v-lo)/(hi-lo));
+  ctx.strokeStyle="#e6e3da"; const step=(hi-lo)>12?Math.ceil((hi-lo)/5):((hi-lo)>6?2:1);
+  for(let v=lo;v<=hi;v+=step){ ctx.beginPath(); ctx.moveTo(x0+40,Y(v)); ctx.lineTo(x0+W,Y(v)); ctx.stroke(); ctx.fillText(String(v),x0,Y(v)+8); }
+  if(METRIC.limit!=null){ ctx.setLineDash([10,8]); ctx.strokeStyle="#d62f2f"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x0+40,Y(METRIC.limit)); ctx.lineTo(x0+W,Y(METRIC.limit)); ctx.stroke(); ctx.setLineDash([]); ctx.lineWidth=1; }
+  METRIC.series.forEach((se,si)=>{ const p=pts.filter(q=>q.v[se.k]!=null); ctx.strokeStyle=se.color; ctx.fillStyle=se.color; ctx.lineWidth=4;
+    ctx.beginPath(); p.forEach((q,i)=>{ i?ctx.lineTo(X(q.d),Y(q.v[se.k])):ctx.moveTo(X(q.d),Y(q.v[se.k])); }); ctx.stroke();
+    p.forEach(q=>{ ctx.beginPath(); ctx.arc(X(q.d),Y(q.v[se.k]),6,0,7); ctx.fill(); });
+    ctx.font="400 22px system-ui,sans-serif"; ctx.fillText("● "+se.name,x0+40+si*260,y0+H+34); });
+  ctx.lineWidth=1;
+  return y0+H+40;
+}
+async function shareReport(scope,msgEl){
+  const text=summary(scope);
+  const cv=reportCanvas(scope);
+  const blob=await new Promise(r=>cv.toBlob(r,"image/png"));
+  const name=`logg-${initialer().replace(/[^A-Za-zÆØÅæøå]/g,"")}-${scope==="uke"?"uke"+isoWeek(cur).w:"sesong"}.png`;
+  try{
+    const file=new File([blob],name,{type:"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],text,title:"Treningslogg"}); return; }
+  }catch(e){ if(e&&e.name==="AbortError") return; }
+  try{ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
+    msgEl.textContent="Bildet er lastet ned. Teksten er kopiert – legg begge ved i meldingen til trener."; }catch(e){}
+  try{ await navigator.clipboard.writeText(text); }catch(e){ const ta=document.getElementById("shareFallback"); ta.value=text; ta.hidden=false; }
+}
+document.addEventListener("change",ev=>{ if(ev.target.id==="initInput"){ lsSet(INIT_KEY,ev.target.value.trim()); } });
+
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-104207";
+const APP_VERSION="2026-11-05-110104";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
@@ -778,6 +923,7 @@ document.getElementById("updBtn").addEventListener("click",()=>location.reload()
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") checkUpdate(); });
 setInterval(checkUpdate,30*60*1000);
 checkUpdate();
+
 
 </script>
 
