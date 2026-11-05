@@ -292,8 +292,7 @@ function session(date,noTheme){
     s.title="Hard buldring"; s.time="ca. 1 t 50";
     let mx=i.L===1?20:15; if(i.light) mx=half(mx);
     const hov=i.L===1?"6–8 buldre 2 grader under maks, RPE 7, maks 3 forsøk per buldre, 3 min pause.":"4–6 buldre nær maks, RPE 8–9, maks 4 forsøk per buldre, 4 min pause.";
-    s.blocks=[warm("25–30 min"),B("Hoveddel",[hov,`<span class="key">Maks ${mx} forsøk.</span>`,"Les ferdig før første forsøk. <a href='#teknikk' data-anchor='rutine'>Rutinen</a> før hvert forsøk. Sitt ned mellom forsøk.",
-      "Board (Kilter/Tension): maks halvparten av forsøkene, vinkel 40°.","Sluttpunkt: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"60–75 min"),B("Nedtrapping",["Volumvegg."],"10 min")];
+    s.blocks=[warm("25–30 min"),B("Hoveddel",[hov,`<span class="key">Maks ${mx} forsøk.</span>`,"Board/spraywall (40°) og skrudde buldre – fordel som du vil.","Stopp: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"60–75 min"),B("Nedtrapping",["Volumvegg."],"10 min")];
     s.count={label:"Forsøk",max:mx};
     if((i.y===2027&&w===13)||(i.y===2027&&w===20)) s.notes.push(["warn",`${w===13?"2. påskedag":"17. mai"}: mandagsøkta utgår hvis hallen er stengt.`]);
     break; }
@@ -1003,7 +1002,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-224428";
+const APP_VERSION="2026-11-05-225915";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

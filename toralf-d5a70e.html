@@ -247,7 +247,7 @@ function session(date,noTheme){
     s.title="Buldring + teknikk"; s.time="ca. 1 t 35";
     s.blocks=[B("Oppvarming",[OPPV],"25 min"),
       B("Teknikk",["Lette buldre med ukas tema, RPE 3–4."],"15 min"),
-      B("Vanskelige buldre",["Buldre du har lyst til å få til – vanskelige for deg.",i.mb===1?"RPE 7: du må ta i, men har kontroll. Ikke hardere.":"RPE 8–9: full kraft, men flyttene sitter. Ikke hardere.",`<span class="key">${i.light?"3 buldre":i.mb===1?"6 buldre":"4 buldre"}, maks 3 forsøk på hvert.</span>`,i.light?"Ingen ekstra buldre i lett uke.":`Går buldrene på 1–2 forsøk: ta ett eller to buldre til (maks ${i.mb===1?8:6}). Bruker du alle tre forsøkene på de fleste: hold deg til ${i.mb===1?6:4}.`,"God pause mellom forsøkene, gjerne sittende.",PUST+".","Stopp når du bommer på ting du klarte tidligere i økta."],"45 min"),
+      B("Vanskelige buldre",[i.mb===1?"RPE 7: du må ta i, men har kontroll. Ikke hardere.":"RPE 8–9: full kraft, men flyttene sitter. Ikke hardere.",`<span class="key">${i.light?"3 buldre":i.mb===1?"6 buldre":"4 buldre"} du har lyst til å få til, maks 3 forsøk på hvert.</span>`,"Board/spraywall (40°) og skrudde buldre – fordel som du vil.",...(i.light?[]:[`Går de på 1–2 forsøk: ta ett eller to til (maks ${i.mb===1?8:6}).`]),"Stopp når du bommer på ting du klarte tidligere i økta."],"45 min"),
       B("Nedtrapping",["Lett buldring."],"10 min")];
     if(!noTheme){ s.blocks[1].items.unshift(tLink(t)); s.theme=t.n; }
     s.fields=[["antBuldre","Buldre"],["topper","Topper"]];
@@ -799,7 +799,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-224428";
+const APP_VERSION="2026-11-05-225915";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

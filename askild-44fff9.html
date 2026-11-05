@@ -226,15 +226,14 @@ function session(date,noTheme){
   switch(i.dow){
   case 1: { // MANDAG
     s.key="man"; s.title="Hard buldring"; s.time="ca. 2 t";
-    let max=[0,20,15,12][L], hov={1:"6–8 buldre 2 grader under maks · RPE 7 · 3 min pause",
-      2:"5–6 buldre nær maks · RPE 8 · 3–4 min pause",3:"4–5 buldre nær maks · RPE 8 · 4–5 min pause"}[L];
-    const stopp={1:"Bom to ganger på et flytt du har klart før.",2:"Første forsøk med tydelig teknikkfall.",3:"Oppvarmingsbuldre begynner å kreve noe."}[L];
+    let max=[0,20,15,12][L], hov={1:"6–8 buldre 2 grader under maks, RPE 7, 3 min pause.",
+      2:"5–6 buldre nær maks, RPE 8, 3–4 min pause.",3:"4–5 buldre nær maks, RPE 8, 4–5 min pause."}[L];
+    const stopp="forsøkstaket, eller to forsøk på rad med tydelig teknikkfall.";
     if(i.phase==="nm") max=8; else if(i.light) max=half(max);
     s.count={label:"Forsøk",max};
     s.blocks=[
       B("Oppvarming",["5 min puls, mobilitet skulder/hofte.","20 min lett klatring med teknikktemaet – pyramide lett → middels, 10–12 buldre."],"30 min"),
-      B("Hoveddel",[hov, `<span class="key">Maks ${max} forsøk.</span>`,"Les hele buldret før første forsøk. <a href='#teknikk' data-anchor='rutine'>Rutinen før hvert forsøk</a>. Sitt ned i pausene.","Stopp: "+stopp,
-        "Spraywall eller board. Board: maks 6 forsøk, vinkel 40°."],"60–70 min"),
+      B("Hoveddel",[hov, `<span class="key">Maks ${max} forsøk.</span>`,"Board/spraywall (40°) og skrudde buldre – fordel som du vil.","Stopp: "+stopp],"60–70 min"),
       B("Nedtrapping",["Lett klatring, rist ut."],"10–15 min")];
     s.notes.push(["acc","Helgeregel: klatret i går (søndag) → i dag blir 3×10 med teknikktema."]);
     if(date.getDate()<=7) s.notes.push(["acc","Første mandag i måneden: mål høyde (samme tidspunkt, uten sko) og skriv i loggen."]);
@@ -1050,7 +1049,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-224428";
+const APP_VERSION="2026-11-05-225915";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
