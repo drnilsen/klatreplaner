@@ -234,7 +234,7 @@ function session(date,noTheme){
     s.blocks=[
       B("Oppvarming",["5 min puls, mobilitet skulder/hofte.","20 min lett klatring med teknikktemaet – pyramide lett → middels, 10–12 buldre."],"30 min"),
       B("Hoveddel",[hov, `<span class="key">Maks ${max} forsøk.</span>`,"Les hele buldret før første forsøk. <a href='#teknikk' data-anchor='rutine'>Rutinen før hvert forsøk</a>. Sitt ned i pausene.","Stopp: "+stopp,
-        "Spraywall eller board. Board: maks 6 forsøk, vinkel ≤ 35°."],"60–70 min"),
+        "Spraywall eller board. Board: maks 6 forsøk, vinkel 40°."],"60–70 min"),
       B("Nedtrapping",["Lett klatring, rist ut."],"10–15 min")];
     s.notes.push(["acc","Helgeregel: klatret i går (søndag) → i dag blir 3×10 med teknikktema."]);
     if(date.getDate()<=7) s.notes.push(["acc","Første mandag i måneden: mål høyde (samme tidspunkt, uten sko) og skriv i loggen."]);
@@ -1050,7 +1050,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-224055";
+const APP_VERSION="2026-11-05-224428";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

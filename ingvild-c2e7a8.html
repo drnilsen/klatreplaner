@@ -254,7 +254,7 @@ function session(date,noTheme){
   if(i.phase==="før"||i.phase==="etter"){ s.title=i.label; s.key="utenfor"; return s; }
   if(i.phase==="jul"){ s.key="jul"; s.title="Jul – fri"; s.title="Jul – valgfri lett økt"; s.blocks=[B("I dag",["Valgfri lett økt – maks 3 denne uka. RPE 3–4."])];
     const md=date.getMonth()===11?date.getDate():0; if(md>=24&&md<=27) s.notes.push(["stop","24.–27. des: ingen harde økter."]); return s; }
-  if(i.light) s.notes.push(["warn","Lett uke: halvt antall forsøk/runder/sett og ett RPE-trinn lavere. Board maks 40°. Torsdag som vanlig."]);
+  if(i.light) s.notes.push(["warn","Lett uke: halvt antall forsøk/runder/sett og ett RPE-trinn lavere. Board 40°. Torsdag som vanlig."]);
   if(c) s.notes.push(["warn",`Konkurranseuke – ${c.navn} ${c.dato}: ca. ${c.vol} % volum, samme intensitet. Ingen linked, ingen styrke siste 5 dager.`]);
   s.notes.push(["acc","Prosessmål i dag: ett mål du selv bestemmer over – skriv det i loggen."]);
   const koord=pick(KOORD,i);
@@ -338,9 +338,9 @@ function session(date,noTheme){
       s.blocks=[B("Oppvarming",["På led."],"25 min"),main,B("Sluttpunkt",["Fall på en rute du har klart tidligere i økta."]),B("Nedtrapping",["Lett klatring."],"10 min")];
       s.fields=[["antall","Runder"]]; break; }
     let mx, txt;
-    if(i.phase==="led"){ mx=8; txt=i.light?"3–4 problemer 1–2 grader under maks, maks 40°, RPE 7–8, 5 min pause.":"4–5 problemer nær maks, Kilter 40–45° / Tension maks 40°, RPE 8–9, 5 min pause."; }
-    else if(i.y===2027&&w>=4){ mx=(w===6?8:12); txt=w===6?"4–5 problemer nær maks, maks 40°, RPE 8–9, 5 min pause.":"4–5 problemer nær maks, Kilter 40–45° / Tension maks 40°, RPE 8–9, 5 min pause."; }
-    else { mx=18; txt=i.light?"3–4 problemer 2–3 grader under maks, Kilter 35–40°, RPE 6, 4 min pause.":"6–7 problemer 2 grader under maks, Kilter 35–40°, RPE 7, 4 min pause."; }
+    if(i.phase==="led"){ mx=8; txt=i.light?"3–4 problemer 1–2 grader under maks, 40°, RPE 7–8, 5 min pause.":"4–5 problemer nær maks, Kilter 40–45° / Tension 40°, RPE 8–9, 5 min pause."; }
+    else if(i.y===2027&&w>=4){ mx=(w===6?8:12); txt=w===6?"4–5 problemer nær maks, 40°, RPE 8–9, 5 min pause.":"4–5 problemer nær maks, Kilter 40–45° / Tension 40°, RPE 8–9, 5 min pause."; }
+    else { mx=18; txt=i.light?"3–4 problemer 2–3 grader under maks, Kilter 40°, RPE 6, 4 min pause.":"6–7 problemer 2 grader under maks, Kilter 40°, RPE 7, 4 min pause."; }
     if(i.light) mx=half(mx);
     s.title="Hard buldring på board"; s.time=i.light?"ca. 1 t 30":"ca. 2 t";
     s.blocks=[B("Oppvarming",["Puls og mobilitet 10 min, 8–10 buldre pyramide på vanlig vegg, 3 lette boardproblemer."],"40 min"),
@@ -888,7 +888,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-224055";
+const APP_VERSION="2026-11-05-224428";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
