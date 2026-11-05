@@ -174,7 +174,7 @@ function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; 
 const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
 const COMP={5:{navn:"NC buldring",sted:"Kristiansund",dato:"lør 6. feb"},7:{navn:"NC2 buldring",sted:"",dato:"lør 20. feb"},9:{navn:"NM senior",sted:"Kristiansand",dato:"lør 6.–søn 7. mars"},
   17:{navn:"Europe Series",sted:"Göteborg",dato:"lør 1.–søn 2. mai"},19:{navn:"Europe Series",sted:"Wien",dato:"lør 15.–søn 16. mai"}};
-const NYTT={46:"",48:"Lett uke",2:"Fase 2 · november-nivå",3:"Hardere buldring mandag",4:"Hardere linked, board og styrke",6:"Belastningsuke",8:"Topping",10:"Lett uke",11:"Skulder 4 sett på A og B",15:"Topping",16:"Topping",18:"Fase 2-nivå",20:"Tau starter"};
+const NYTT={46:"",48:"Lett uke",2:"Fase 2 · november-nivå",3:"Hardere buldring, linked og board",4:"Styrke RPE 8",6:"Belastningsuke",8:"Topping",10:"Lett uke",11:"Skulder 4 sett på A og B",15:"Topping",16:"Topping",18:"Fase 2-nivå",20:"Tau starter"};
 function info(date){
   const {y,w,dow}=isoWeek(date);
   const i={date,y,w,dow,light:false,phase:"utenfor",label:"Utenfor planen",M:1,comp:null,top:false};
@@ -813,7 +813,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-223543";
+const APP_VERSION="2026-11-05-223559";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
