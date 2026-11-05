@@ -275,7 +275,7 @@ function session(date,noTheme){
       s.key="lor"; s.time="ca. 1 t 40";
       const w=i.w, y=i.y; let main, title, dur;
       if(y===2026 || (y===2027&&w<=2)){ title="Tau · ledvolum"; const n=i.light?"3–4":"6–8"; s.count={label:"Ruter",max:null};
-        main=[`${n} ruter 3–4 grader under onsight, RPE 5.`,"Sikringsbyttet er pausen.","Tema: klipp fra riktig fot, hvilestillinger."]; dur="60 min"; }
+        main=[`${n} ruter 3–4 grader under onsight, RPE 5.`,"Sikringsbyttet er pausen.","Fokus: hvilestillinger og klipp i vanskelige posisjoner."]; dur="60 min"; }
       else if(w<=7){ title="Tau · onsight"; const n=i.light?"2–3":"4–5"; s.count={label:"Ruter",max:null};
         main=[`${n} nye ruter 1–2 grader under onsight, RPE 7.`,"6 min lesing, 8–10 min pause.","<a href='#regler' data-anchor='rutine'>Rutinen før hvert forsøk</a>."]; dur="60 min"; }
       else if(w<=14){ title="Tau · 4 × 4"; const r=(i.light||i.comp)?2:3; s.count={label:"Runder",max:r};
@@ -528,7 +528,7 @@ function vOns(){ return `<h2 style="margin-top:18px">Onsdag</h2>${curPhaseLabel(
   ${phaseCard("NM-uka (uke 8)",D(2027,8,3))}${phaseCard("Rutedag på led · uke 9–20",D(2027,9,3))}`; }
 function vTor(){ return `<h2 style="margin-top:18px">Torsdag · 3×10 + Styrke A</h2>${curPhaseLabel()}
   ${phaseCard("Vanlig torsdag",D(2026,46,4))}${phaseCard("NM-uka (uke 8)",D(2027,8,4))}
-  <div class="card small">3×10 er regenerering: topptau eller autobelay, aldri hardt. Konkurranseuker og lette uker: 2 runder.</div>`; }
+  <div class="card small">3×10 er regenerering: topptau med nedklatring eller traversering, ikke autobelay. Aldri hardt. Konkurranseuker og lette uker: 2 runder.</div>`; }
 function vLor(){ return `<h2 style="margin-top:18px">Lørdag</h2>${curPhaseLabel()}
   <p class="small">Oddetallsuker: buldring i jam-format · partallsuker: tau, alt på led.</p>
   ${phaseCard("Oddetallsuker · jam-format",D(2026,45,6))}${phaseCard("Partall uke 46–50 og 2 · ledvolum",D(2026,50,6))}
