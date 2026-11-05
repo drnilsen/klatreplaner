@@ -621,18 +621,18 @@ function vid(name){ const t=(typeof VID!=="undefined")&&VID[name]; return t?` <a
 /* ============ RPE PÅ ALLE DELØKTER ============ */
 const RPE_DEF=[
  [/^(SLUTTPUNKT|OVERGANG|HVILEDAG|INGEN )/i,null],
- [/OPPVARMING/i,"RPE 2–5, gradvis opp."],
+ [/OPPVARMING/i,"__OPPV__"],
  [/^NEDTRAPPING/i,"RPE 1–2."],
  [/PILATES/i,"RPE 4–5."],
  [/MOBILITET|^PAUSE/i,"RPE 2–3."],
  [/FALLTRENING/i,"RPE 3–4."],
  [/AKTIVERING/i,"RPE 5–6."],
- [/^KONKURRANSE$/i,"RPE 9–10."],
+ [/^KONKURRANSE$/i,"Full innsats."],
  [/^LETT BULDRING/i,"RPE 3–4."],
- [/^SPENST/i,"RPE 7: full fart og høyde på hver kontakt, stopp når høyden faller."],
+ [/^SPENST/i,"Maks innsats per kontakt, full pause. Stopp øvelsen når høyden faller, kontakten blir lang eller landingen dyp eller ustabil. Økta samlet: RPE 4–6."],
  [/^TEST/i,"Siste løft RPE 10 – tyngste du klarer med god teknikk."],
  [/^SVA/i,"RPE 3–5."],
- [/^JAM/i,"RPE 5–9, fra lett til grensen."],
+ [/^JAM/i,"RPE 5–8."],
  [/KONKURRANSEUKE/i,"RPE 7."],
  [/NYE BULDRE|^HOVEDDEL|KONKURRANSEFORMAT|^DEL 2|REDPOINT|ONSIGHT/i,"RPE 8–9."],
  [/^STYRKE/i,"RPE 7–8."],
@@ -645,7 +645,9 @@ function fillRpe(root){
     let t=bl.innerText||bl.textContent; const nx=bl.nextElementSibling; if(nx&&nx.classList.contains("exlist")) t+=nx.textContent;
     if(/RPE/.test(t)) return;
     const r=RPE_DEF.find(x=>x[0].test(head)); if(!r||!r[1]) return;
-    const txt=typeof r[1]==="function"?r[1](t):r[1]; if(!txt) return;
+    let txt=typeof r[1]==="function"?r[1](t):r[1]; if(!txt) return;
+    if(txt==="__OPPV__"){ const card=bl.closest(".card")||root; const nums=[...(card.textContent.matchAll(/RPE (\d+)(?:–(\d+))?/g))].map(m=>+(m[2]||m[1])); const mx=nums.length?Math.max(...nums):0;
+      txt=mx>=8?"RPE 2 → 6–7, gradvis opp. Siste 1–2 buldre rett under øktas arbeidsintensitet.":"RPE 2–5, gradvis opp."; }
     const html=txt.replace(/RPE \d+(–\d+)?/,m=>`<a href="#rpe">${m}</a>`);
     const ul=bl.querySelector("ul");
     if(ul) ul.insertAdjacentHTML("afterbegin",`<li>${html}</li>`); else h4.insertAdjacentHTML("afterend",`<ul><li>${html}</li></ul>`);
@@ -701,7 +703,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-202652";
+const APP_VERSION="2026-11-05-203110";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

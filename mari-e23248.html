@@ -223,7 +223,7 @@ function strAHtml(i){
   if(i.comp) return `<div class="blk"><h4>Konkurranseuke<span class="dur">30 min</span></h4><ul><li>Oppvarming, A1/A2 2 sett, 20 min mobilitet.</li></ul></div>
     <div class="exlist">${STYRKE_A.slice(0,2).map(e=>exRow(e[0],e[1],e[2],setsOf(e[3][0],true),e[4],e[5],"")).join("")}</div>`;
   const note=(i.y===2026&&i.w<=46)?"Uke 45–46: uten eller med lett vekt – lær øvelsene.":(i.y===2026&&i.w===47)?"Uke 47: vekt på.":([11,13,15].includes(i.w)&&i.y===2027)?"Tyngre kettlebell denne uka (maks +4 kg, tak 16–20 kg).":"";
-  return `<div class="blk"><h4>Hoveddel</h4><ul><li>RPE 7: lav rep, hver rep rask og presis. Supersett A1/A2 osv. Aldri til svikt – stopp settet idet farten faller.${i.light?" Lett uke: 2 sett.":""}</li>${note?`<li><b>${note}</b></li>`:""}</ul></div>
+  return `<div class="blk"><h4>Hoveddel</h4><ul><li>RPE ≤ 7: lav rep, hver rep rask og presis. Turkish get-up: RPE 6–7. Supersett A1/A2 osv. Aldri til svikt – stopp settet idet farten faller.${i.light?" Lett uke: 2 sett.":""}</li>${note?`<li><b>${note}</b></li>`:""}</ul></div>
    <div class="exlist">${STYRKE_A.map(e=>exRow(e[0],e[1],e[2],setsOf(e[3][col],i.light),e[4],e[5],"")).join("")}</div>
    <div class="blk"><ul><li>Avslutt med 10 min mobilitet.</li><li><b>Progresjon:</b> teknikk → vekt → vanskeligere variant. Bare i uker uten annen ny ting.</li></ul></div>`;
 }
@@ -238,7 +238,7 @@ function strBHtml(i){
   rows.push([STYRKE_B.D,"2 × 5",""]);
   return `<div class="blk"><h4>Styrke B · eksplosiv drastyrke<span class="dur">${camp?"60":"50"} min</span></h4><ul>
     <li>Oppvarming 20 min: 5 min puls · mobilitet 8 min · scapula pull-ups 2 × 6 · strikk utadrotasjon 2 × 12 · 3 lette heng · 2 × 3 kjedeflytt på stang (svikt – skyv – trekk, sakte).</li>
-    ${onlyAD?"<li>Konkurranseformat-lørdag: bare A og D.</li>":""}<li>Progresjon: først fart/høyde, så vekt, så campus. Aldri flere reps. Stopp: én rep uten «smell».</li></ul></div>
+    ${onlyAD?"<li>Konkurranseformat-lørdag: bare A og D.</li>":""}<li>Eksplosive pull-ups og scapula pull-ups: RPE 6–7, stopp når farten faller. Vektet pull-up: RPE 7–8.</li><li>Progresjon: først fart/høyde, så vekt, så campus. Aldri flere reps. Stopp: én rep uten «smell».</li></ul></div>
     <div class="exlist">${rows.map(([e,dose,tag])=>exRow(e[0],e[1],e[2],i.light?setsOf(dose,true):dose,e[3],e[4],tag)).join("")}</div>`;
 }
 
@@ -738,18 +738,18 @@ function vid(name){ const t=(typeof VID!=="undefined")&&VID[name]; return t?` <a
 /* ============ RPE PÅ ALLE DELØKTER ============ */
 const RPE_DEF=[
  [/^(SLUTTPUNKT|OVERGANG|HVILEDAG|INGEN )/i,null],
- [/OPPVARMING/i,"RPE 2–5, gradvis opp."],
+ [/OPPVARMING/i,"__OPPV__"],
  [/^NEDTRAPPING/i,"RPE 1–2."],
  [/PILATES/i,"RPE 4–5."],
  [/MOBILITET|^PAUSE/i,"RPE 2–3."],
  [/FALLTRENING/i,"RPE 3–4."],
  [/AKTIVERING/i,"RPE 5–6."],
- [/^KONKURRANSE$/i,"RPE 9–10."],
+ [/^KONKURRANSE$/i,"Full innsats."],
  [/^LETT BULDRING/i,"RPE 3–4."],
- [/^SPENST/i,"RPE 7: full fart og høyde på hver kontakt, stopp når høyden faller."],
+ [/^SPENST/i,"Maks innsats per kontakt, full pause. Stopp øvelsen når høyden faller, kontakten blir lang eller landingen dyp eller ustabil. Økta samlet: RPE 4–6."],
  [/^TEST/i,"Siste løft RPE 10 – tyngste du klarer med god teknikk."],
  [/^SVA/i,"RPE 3–5."],
- [/^JAM/i,"RPE 5–9, fra lett til grensen."],
+ [/^JAM/i,"RPE 5–8."],
  [/KONKURRANSEUKE/i,"RPE 7."],
  [/NYE BULDRE|^HOVEDDEL|KONKURRANSEFORMAT|^DEL 2|REDPOINT|ONSIGHT/i,"RPE 8–9."],
  [/^STYRKE/i,"RPE 7–8."],
@@ -762,7 +762,9 @@ function fillRpe(root){
     let t=bl.innerText||bl.textContent; const nx=bl.nextElementSibling; if(nx&&nx.classList.contains("exlist")) t+=nx.textContent;
     if(/RPE/.test(t)) return;
     const r=RPE_DEF.find(x=>x[0].test(head)); if(!r||!r[1]) return;
-    const txt=typeof r[1]==="function"?r[1](t):r[1]; if(!txt) return;
+    let txt=typeof r[1]==="function"?r[1](t):r[1]; if(!txt) return;
+    if(txt==="__OPPV__"){ const card=bl.closest(".card")||root; const nums=[...(card.textContent.matchAll(/RPE (\d+)(?:–(\d+))?/g))].map(m=>+(m[2]||m[1])); const mx=nums.length?Math.max(...nums):0;
+      txt=mx>=8?"RPE 2 → 6–7, gradvis opp. Siste 1–2 buldre rett under øktas arbeidsintensitet.":"RPE 2–5, gradvis opp."; }
     const html=txt.replace(/RPE \d+(–\d+)?/,m=>`<a href="#rpe">${m}</a>`);
     const ul=bl.querySelector("ul");
     if(ul) ul.insertAdjacentHTML("afterbegin",`<li>${html}</li>`); else h4.insertAdjacentHTML("afterend",`<ul><li>${html}</li></ul>`);
@@ -817,7 +819,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-202652";
+const APP_VERSION="2026-11-05-203110";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
