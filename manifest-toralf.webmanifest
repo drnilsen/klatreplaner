@@ -1,0 +1,23 @@
+{
+ "name": "Tor Alf – trening",
+ "short_name": "Tor Alf",
+ "start_url": "./toralf-d5a70e.html",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#f4f3ef",
+ "theme_color": "#0f6b5f",
+ "lang": "no",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any maskable"
+  }
+ ]
+}

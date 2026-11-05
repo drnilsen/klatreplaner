@@ -1,0 +1,690 @@
+<!doctype html><html lang="no"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tor Alf">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icon.png"><link rel="manifest" href="manifest-toralf.webmanifest"><meta name="theme-color" content="#0f6b5f"><link rel="icon" href="icon.svg">
+</head><body>
+<title>Tor Alf – treningsplan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{
+  --bg:#f4f3ef; --card:#ffffff; --ink:#1d2321; --muted:#5f6a66; --line:#dedbd2;
+  --accent:#0f6b5f; --accent-ink:#ffffff; --accent-soft:#dcefe9;
+  --warn:#9a5b00; --warn-soft:#fff1d6; --stop:#a61e1e; --stop-soft:#fde4e4;
+  --chip:#ecebe5;
+  --c-gronn:#2f9e44; --c-gul:#e9b92f; --c-oransje:#ec7d10; --c-rod:#d62f2f; --c-svart:#1b1b1b;
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121615; --card:#1b2120; --ink:#e8ece9; --muted:#9aa6a1; --line:#2c3533;
+    --accent:#4cc2ac; --accent-ink:#0b1513; --accent-soft:#1d3531;
+    --warn:#f2b45a; --warn-soft:#3a2c14; --stop:#ff8a8a; --stop-soft:#3c1d1d;
+    --chip:#252d2b; --c-svart:#000000;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121615; --card:#1b2120; --ink:#e8ece9; --muted:#9aa6a1; --line:#2c3533;
+  --accent:#4cc2ac; --accent-ink:#0b1513; --accent-soft:#1d3531;
+  --warn:#f2b45a; --warn-soft:#3a2c14; --stop:#ff8a8a; --stop-soft:#3c1d1d;
+  --chip:#252d2b; --c-svart:#000000;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:760px;margin:0 auto;
+  padding:0 max(16px,env(safe-area-inset-right)) 48px max(16px,env(safe-area-inset-left))}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding-top:env(safe-area-inset-top);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:12px 0 6px}
+.brand h1{font-size:18px;margin:0;letter-spacing:.01em}
+.brand .sub{font-size:12.5px;color:var(--muted);white-space:nowrap}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{flex:0 0 auto;text-decoration:none;color:var(--ink);background:var(--chip);
+  padding:7px 13px;border-radius:999px;font-size:14px;font-weight:500;white-space:nowrap}
+nav.tabs a.on{background:var(--accent);color:var(--accent-ink)}
+.banner{margin:18px 0 4px;font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--accent)}
+h2{font-size:22px;margin:4px 0 10px;line-height:1.25}
+h3{font-size:16px;margin:18px 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin:12px 0}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.tag{font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--chip);color:var(--ink);white-space:nowrap}
+.tag.acc{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.tag.warn{background:var(--warn-soft);color:var(--warn);font-weight:600}
+.tag.stop{background:var(--stop-soft);color:var(--stop);font-weight:600}
+.daynav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
+.daynav .d{font-weight:600;text-align:center;flex:1}
+.daynav .d small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{background:var(--chip);border:0;border-radius:10px;padding:9px 14px;min-height:42px}
+.btn.pri{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.sm{min-height:34px;padding:5px 11px;font-size:14px}
+.blk{margin:14px 0 0}
+#rutine{scroll-margin-top:110px}
+.blk h4{margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.blk .dur{float:right;font-weight:500;text-transform:none;letter-spacing:0}
+ul{margin:4px 0 0;padding-left:20px}
+li{margin:3px 0}
+.key{font-weight:700}
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:9px 12px;border-radius:0 10px 10px 0;margin:10px 0;font-size:14.5px}
+.note.stop{border-color:var(--stop);background:var(--stop-soft)}
+.note.acc{border-color:var(--accent);background:var(--accent-soft)}
+.rest{color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:7px 6px;border-bottom:1px solid var(--line)}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.tscroll{overflow-x:auto;margin:0 -4px}
+tr.now td{background:var(--accent-soft)}
+.week-row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:flex-start;text-decoration:none;color:inherit}
+.week-row:last-child{border-bottom:0}
+.week-row .wd{width:46px;flex:0 0 46px;font-weight:600}
+.week-row .wd small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.week-row .wt{flex:1}
+.week-row .wt small{color:var(--muted)}
+.week-row.today{background:var(--accent-soft);border-radius:10px;padding-left:8px;padding-right:8px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;border:1px solid rgba(0,0,0,.15)}
+.f-gronn{background:var(--c-gronn)} .f-gul{background:var(--c-gul)} .f-oransje{background:var(--c-oransje)}
+.f-rod{background:var(--c-rod)} .f-svart{background:var(--c-svart)}
+/* logg form */
+.colors{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0 12px}
+.colors button{border:2px solid transparent;border-radius:10px;padding:9px 2px 7px;background:var(--chip);font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.colors button .dot{width:20px;height:20px}
+.colors button.on{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+input[type=number],input[type=text],textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+textarea{min-height:76px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.saved{font-size:13px;color:var(--muted);margin-left:10px}
+.grid{display:grid;grid-template-columns:52px repeat(4,1fr);gap:4px;font-size:12.5px;align-items:center}
+.grid .h{color:var(--muted);text-align:center;font-weight:600}
+.grid .wk{color:var(--muted)}
+.grid .cell{height:22px;border-radius:6px;background:var(--chip)}
+.grid .cell.f-gronn{background:var(--c-gronn)} .grid .cell.f-gul{background:var(--c-gul)} .grid .cell.f-oransje{background:var(--c-oransje)} .grid .cell.f-rod{background:var(--c-rod)} .grid .cell.f-svart{background:var(--c-svart)}
+a{color:var(--accent)}
+.grid .cur{color:var(--accent);font-weight:700}
+.entry{padding:10px 0;border-bottom:1px solid var(--line)}
+.entry:last-child{border-bottom:0}
+.entry .eh{display:flex;justify-content:space-between;gap:8px;font-weight:600}
+.entry .eh small{color:var(--muted);font-weight:400}
+.entry p{margin:4px 0 0;font-size:14.5px}
+.muted{color:var(--muted)}
+.small{font-size:13.5px}
+.ex{padding:12px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-items:start}
+.ex .fig{max-width:340px;background:#fbfbf8;border-radius:10px;border:1px solid var(--line);line-height:0}
+.ex .fig svg{width:100%;height:auto;display:block}
+@media (min-width:560px){.ex{grid-template-columns:220px minmax(0,1fr);gap:14px}}
+.ex:last-child{border-bottom:0}
+.ex .exh{display:flex;flex-direction:column;gap:2px;font-weight:600}
+.ex .exh span.code{color:var(--accent);margin-right:6px}
+.ex .exh .sets{white-space:nowrap;font-weight:600;color:var(--accent)}
+.ex p{margin:3px 0 0;font-size:14.5px;color:var(--muted)}
+.ok{color:var(--accent)}
+.upd{position:fixed;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));z-index:20;
+  background:var(--accent);color:var(--accent-ink);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:736px;margin:0 auto}
+.upd[hidden]{display:none}
+.upd p{margin:0;flex:1;font-size:14.5px}.upd .btn{background:var(--accent-ink);color:var(--accent);font-weight:700}
+.ver{font-size:12px;color:var(--muted);text-align:center;margin:28px 0 0}
+.trinn{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:12px 0 0}
+.tbtn{border:2px solid var(--line);background:var(--card);border-radius:10px;min-width:40px;min-height:38px;font-weight:700}
+.tbtn.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chk{display:flex;align-items:center;gap:8px;margin:12px 0 0;font-size:15px}
+.chk input{width:20px;height:20px}
+.exlist .ex{grid-template-columns:118px minmax(0,1fr);gap:12px}
+@media (min-width:560px){.exlist .ex{grid-template-columns:200px minmax(0,1fr)}}
+.grid.g6{grid-template-columns:52px repeat(5,1fr)}
+.vid{font-size:12.5px;font-weight:500;white-space:nowrap;margin-left:4px}
+@media (min-width:640px){ .brand h1{font-size:20px} h2{font-size:26px} }
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="brand"><h1>Tor Alf <span style="font-weight:400;color:var(--muted)">· 2026/27</span></h1><span class="sub" id="syncState"></span></div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main id="view"></main>
+<p class="ver" id="ver"></p>
+<div class="upd" id="upd" hidden><p id="updTxt">Ny versjon av planen.</p><button class="btn sm" id="updBtn">Oppdater</button></div>
+</div>
+
+<script>
+/* ============ KALENDER ============ */
+const NAVN="Tor Alf", KEY="toralf";
+const DAY = ["", "Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag","Søndag"];
+const DAYS = ["", "Man","Tir","Ons","Tor","Fre","Lør","Søn"];
+const MON = ["jan","feb","mars","april","mai","juni","juli","aug","sep","okt","nov","des"];
+function ymd(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function parseYmd(s){ const [y,m,dd]=s.split("-").map(Number); return new Date(y,m-1,dd); }
+function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function fmt(d){ return d.getDate()+". "+MON[d.getMonth()]; }
+function isoWeek(d){
+  const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  const dow=t.getUTCDay()||7; t.setUTCDate(t.getUTCDate()+4-dow);
+  const y=t.getUTCFullYear(); const y0=new Date(Date.UTC(y,0,1));
+  return {y, w:Math.ceil(((t-y0)/864e5+1)/7), dow};
+}
+function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; return addDays(jan4,(w-1)*7-(dow-1)); }
+
+const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
+const COMP={5:{navn:"NC buldring",sted:"Kristiansund",dato:"lør 6. feb",mx:12},7:{navn:"NC2 buldring",sted:"",dato:"lør 20. feb",mx:12},8:{navn:"NM junior",sted:"Trondheim",dato:"lør 27. feb",mx:8}};
+const NYTT={48:"Lett uke",1:"Lett uke",2:"Fase 1-nivå",3:"Maksbuldring nær maks",4:"Linked kortere og hardere",6:"Styrke 3 sett",9:"Lett uke",12:"Påske, lett uke",16:"Lett uke"};
+function info(date){
+  const {y,w,dow}=isoWeek(date);
+  const i={date,y,w,dow,light:false,phase:"utenfor",label:"Utenfor planen",comp:null,mb:1,lk:1,st:2};
+  const inSeason=(y===2026&&w>=45)||(y===2027&&w<=20);
+  if(!inSeason){ i.phase=(y<2026||(y===2026&&w<45))?"før":"etter"; i.label=i.phase==="før"?"Før sesongstart":"Planen er ferdig"; return i; }
+  i.phase="tr";
+  if(y===2026&&w<=51){ i.label="Fase 1 · Grunnlag"; i.light=w===48; }
+  else if(y===2026){ i.phase="jul"; i.label="Jul"; }
+  else if(w===1){ i.label="Jul · lett uke"; i.light=true; }
+  else { i.mb=w>=3?2:1; i.lk=w>=4?2:1; i.st=w>=6?3:2;
+    if(w<=6) i.label="Fase 2 · Intensitet"; else if(w===7) i.label="Topping"; else if(w===8) i.label="NM-uka"; else { i.label="Fase 3"; i.light=[9,12,16].includes(w); } }
+  if(y===2027&&COMP[w]) i.comp=COMP[w];
+  return i;
+}
+const half=n=>Math.max(1,Math.floor(n/2));
+function weekIndex(i){ return SEASON.findIndex(x=>x.y===i.y&&x.w===i.w); }
+
+/* ============ STYRKE ============ */
+const STYRKE=[
+ ["A1","Push-ups med «plus»","Rett kropp. På toppen: skulderbladene fram. Lettere: hender på benk. Tyngre: føtter hevet.","8–12","","pushup_plus"],
+ ["A2","Hengende knehev","Hele hånden rundt stanga. Knærne til hoftehøyde, ingen sving, rolig ned. Tyngre: rette bein.","8–12","60 s","knee_raise"],
+ ["B1","Ringroing","Ringer lavt, rett kropp, brystet til ringene, 2 s hold. Lettere: mer oppreist. Tyngre: føtter på kasse.","8–12","","ringrow"],
+ ["B2","Sideplanke","Underarm i gulvet, kroppen rett, hofta høyt. Tyngre: løft øverste bein.","20–40 s /side","60 s","side_plank"],
+ ["C1","Utadrotasjon i kabel","Albue 90° inntil kroppen, håndkle under albuen. Roter ut, rolig tilbake. Lett vekt.","12–15 /side","","cable_er",2],
+ ["C2","Dead bug","Korsryggen mot gulvet. Motsatt arm og bein sakte ut, tilbake, bytt.","8–10 /side","45 s","dead_bug",2],
+ ["D","Y-T-W på benk","Magen på skrå benk. Rette armer i Y, T, W, tommel opp. Uten vekt eller 0,5–1 kg.","8+8+8","45 s","ytw",2]];
+const VID={"Push-ups med «plus»":"push up plus serratus","Hengende knehev":"hanging knee raise","Ringroing":"ring row","Sideplanke":"side plank","Utadrotasjon i kabel":"cable external rotation shoulder","Dead bug":"dead bug exercise","Y-T-W på benk":"prone YTW incline bench"};
+const FIG={"knee_raise": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"70\" y1=\"20\" x2=\"170\" y2=\"20\" stroke=\"#8a97a8\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M120.0 60.0 L120.0 104.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M120.0 104.0 L121.0 126.0 L122.0 148.0 L130.0 150.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"120\" cy=\"48\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M120.0 60.0 L118.0 42.0 L118.0 22.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M119.0 60.0 L121.0 104.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M121.0 104.0 L152.0 104.0 L152.0 132.0 L160.0 134.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"118\" cy=\"48\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M119.0 60.0 L117.0 42.0 L118.0 22.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"172\" y1=\"128\" x2=\"172.0\" y2=\"109.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M172.0 106.0 L178.0 115.6 L166.0 115.6 Z\" fill=\"#d9534f\"/></svg>", "pushup_plus": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M66.0 112.0 L98.0 116.0 L138.0 121.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M138.0 121.0 L170.0 133.0 L204.0 144.0 L212.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"54\" cy=\"100.0\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M68.0 114.0 L68.0 131.0 L70.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M66.0 112.0 L98.0 104.0 L138.0 121.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M138.0 121.0 L170.0 133.0 L204.0 144.0 L212.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"54\" cy=\"96.4\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M68.0 114.0 L68.0 131.0 L70.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"98\" y1=\"92\" x2=\"98.0\" y2=\"79.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M98.0 76.0 L104.0 85.6 L92.0 85.6 Z\" fill=\"#d9534f\"/><text x=\"120\" y=\"22\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">skulderbladene fram på toppen</text></svg>", "ringrow": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><line x1=\"40\" y1=\"6\" x2=\"120\" y2=\"6\" stroke=\"#8a97a8\" stroke-width=\"4\"/><line x1=\"76\" y1=\"6\" x2=\"76\" y2=\"83\" stroke=\"#8a97a8\" stroke-width=\"2.5\" opacity=\"0.22\"/><circle cx=\"76\" cy=\"90\" r=\"7\" fill=\"none\" stroke=\"#8a97a8\" stroke-width=\"3.5\" opacity=\"0.22\"/><path d=\"M76.0 126.0 L140.0 135.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M140.0 135.0 L172.0 140.0 L204.0 144.0 L206.0 138.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"62\" cy=\"124\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M76.0 126.0 L76.0 108.0 L76.0 90.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><line x1=\"76\" y1=\"6\" x2=\"86\" y2=\"89\" stroke=\"#8a97a8\" stroke-width=\"2.5\" opacity=\"1\"/><circle cx=\"86\" cy=\"96\" r=\"7\" fill=\"none\" stroke=\"#8a97a8\" stroke-width=\"3.5\" opacity=\"1\"/><path d=\"M84.0 92.0 L140.0 119.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M140.0 119.0 L172.0 131.0 L204.0 144.0 L206.0 136.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"70\" cy=\"84\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M84.0 92.0 L100.0 112.0 L86.0 96.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"124\" y1=\"92\" x2=\"124.0\" y2=\"79.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M124.0 76.0 L130.0 85.6 L118.0 85.6 Z\" fill=\"#d9534f\"/></svg>", "side_plank": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M52.0 108.0 L52.0 146.0 L78.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M52.0 108.0 L130.0 138.0 L206.0 144.0\" stroke=\"#1f3a5f\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M205.0 140.0 L210.0 130.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"40\" cy=\"96\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M60.0 106.0 L88.0 92.0 L128.0 130.0\" stroke=\"#1f3a5f\" stroke-width=\"6.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M52.0 108.0 L52.0 146.0 L78.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M52.0 108.0 L130.0 126.0 L206.0 144.0\" stroke=\"#1f3a5f\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M205.0 140.0 L210.0 130.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"40\" cy=\"96\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M60.0 106.0 L88.0 92.0 L128.0 118.0\" stroke=\"#1f3a5f\" stroke-width=\"6.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"150\" y1=\"104\" x2=\"150.0\" y2=\"93.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M150.0 90.0 L156.0 99.6 L144.0 99.6 Z\" fill=\"#d9534f\"/><text x=\"232\" y=\"16\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"end\">forfra</text></svg>", "cable_er": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"14\" y=\"94\" width=\"22\" height=\"40\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><circle cx=\"34\" cy=\"114\" r=\"4\" fill=\"#8a97a8\"/><text x=\"25\" y=\"150\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">kabel</text><path d=\"M158.0 92.0 L130.0 114.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><line x1=\"34\" y1=\"114\" x2=\"130\" y2=\"114\" stroke=\"#8a97a8\" stroke-width=\"2.5\" opacity=\"0.32\"/><rect x=\"146\" y=\"80\" width=\"10\" height=\"9\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\"/><ellipse cx=\"120\" cy=\"70\" rx=\"40\" ry=\"15\" fill=\"#1f3a5f\"/><circle cx=\"120\" cy=\"70\" r=\"11\" fill=\"#2c4f7c\" opacity=\"1\"/><path d=\"M156.0 74.0 L158.0 92.0\" stroke=\"#1f3a5f\" stroke-width=\"8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M158.0 92.0 L186.0 116.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"34\" y1=\"114\" x2=\"186\" y2=\"116\" stroke=\"#8a97a8\" stroke-width=\"2.5\"/><rect x=\"182\" y=\"112\" width=\"9\" height=\"8\" rx=\"2\" fill=\"#8a97a8\"/><path d=\"M140 128 Q166 138 181.4 129.5\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M184.0 128.0 L178.5 137.9 L172.7 127.4 Z\" fill=\"#d9534f\"/><text x=\"130\" y=\"150\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">albuen inntil kroppen</text><text x=\"232\" y=\"16\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"end\">ovenfra</text></svg>", "dead_bug": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M54.0 138.0 L110.0 138.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M110.0 138.0 L112.0 106.0 L144.0 104.0 L150.0 100.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"40\" cy=\"136\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M56.0 138.0 L58.0 112.0 L60.0 90.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M110.0 138.0 L112.0 106.0 L144.0 104.0 L150.0 100.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M56.0 138.0 L58.0 112.0 L60.0 90.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M54.0 138.0 L110.0 138.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M110.0 138.0 L146.0 130.0 L186.0 124.0 L192.0 118.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"40\" cy=\"136\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M56.0 138.0 L34.0 124.0 L14.0 116.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"30\" y1=\"100\" x2=\"18.6\" y2=\"106.5\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M16.0 108.0 L21.4 98.0 L27.3 108.4 Z\" fill=\"#d9534f\"/><line x1=\"170\" y1=\"108\" x2=\"187.1\" y2=\"113.1\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M190.0 114.0 L179.1 117.0 L182.5 105.5 Z\" fill=\"#d9534f\"/><text x=\"120\" y=\"22\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">motsatt arm og bein · korsryggen i gulvet</text></svg>", "ytw": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"26\" y=\"58\" width=\"28\" height=\"70\" rx=\"5\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><path d=\"M30.0 66.0 L17.4 40.0 L10.2 22.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M50.0 66.0 L62.6 40.0 L69.8 22.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M40.0 66.0 L40.0 112.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M36.0 112.0 L34.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M44.0 112.0 L46.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"40\" cy=\"54\" r=\"8\" fill=\"#2c4f7c\" opacity=\"1\"/><text x=\"40\" y=\"152\" font-family=\"system-ui,sans-serif\" font-size=\"15\" font-weight=\"700\" fill=\"#0f6b5f\" text-anchor=\"middle\">Y</text><rect x=\"106\" y=\"58\" width=\"28\" height=\"70\" rx=\"5\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><path d=\"M110.0 66.0 L94.7 66.0 L81.2 66.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M130.0 66.0 L145.3 66.0 L158.8 66.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M120.0 66.0 L120.0 112.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M116.0 112.0 L114.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M124.0 112.0 L126.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"120\" cy=\"54\" r=\"8\" fill=\"#2c4f7c\" opacity=\"1\"/><text x=\"120\" y=\"152\" font-family=\"system-ui,sans-serif\" font-size=\"15\" font-weight=\"700\" fill=\"#0f6b5f\" text-anchor=\"middle\">T</text><rect x=\"186\" y=\"58\" width=\"28\" height=\"70\" rx=\"5\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><path d=\"M190.0 66.0 L172.0 74.0 L166.6 54.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M210.0 66.0 L228.0 74.0 L233.4 54.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M200.0 66.0 L200.0 112.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M196.0 112.0 L194.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M204.0 112.0 L206.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"200\" cy=\"54\" r=\"8\" fill=\"#2c4f7c\" opacity=\"1\"/><text x=\"200\" y=\"152\" font-family=\"system-ui,sans-serif\" font-size=\"15\" font-weight=\"700\" fill=\"#0f6b5f\" text-anchor=\"middle\">W</text></svg>"};
+function exRow(e,sets){
+  return `<div class="ex"><div class="fig" role="img" aria-label="${e[1]}">${FIG[e[5]]||""}</div><div>
+   <div class="exh"><span><span class="code">${e[0]}</span>${e[1]}${vid(e[1])}</span><span class="sets">${sets} × ${e[3]}</span></div><p>${e[2]}${e[4]?` · Pause ${e[4]}`:""}</p></div></div>`;
+}
+function styrkeHtml(i){
+  return `<div class="blk"><h4>Styrke – skulder og kjerne<span class="dur">30 min</span></h4><ul><li>Kroppsvekt og kabel. <span class="key">${i.st} sett</span>, RPE 7 (3 reps igjen), 2 s senkefase, supersett A1/A2 osv.</li>
+   <li>Stopp i et sett: 3 reps igjen, eller teknikken endres. Progresjon: alle sett på toppen av rep-området → vanskeligere variant, ikke flere reps.</li></ul></div>
+   <div class="exlist">${STYRKE.map(e=>exRow(e,e[6]?Math.min(e[6],i.st):i.st)).join("")}</div>`;
+}
+
+/* ============ TEKNIKK ============ */
+const TEMA=[
+ {id:"stille",n:"Stille føtter",d:["Ingen lyd fra føttene – lyd betyr start på nytt."]},
+ {id:"hofte",n:"Hofta inn",d:["Volumvegg: hofta inn før hånden går, hvert flytt."]},
+ {id:"lese",n:"Lese før du klatrer",d:["1 min foran buldret, pek ut hvert flytt. Klatre, og sammenlign med det du leste."]},
+ {id:"flagg",n:"Flagg og dropknee",d:["Lette buldre uten fotbytte – hvert flytt løses med flagg eller dropknee."]},
+ {id:"deadpoint",n:"Deadpoint",d:["Lette dynamiske flytt til gode tak, økende avstand."]},
+ {id:"kompresjon",n:"Kompresjon",d:["Klem mellom volumer, hælkrok + press."]}];
+const pick=i=>TEMA[Math.max(0,weekIndex(i))%TEMA.length];
+function tLink(t){ return `Teknikktema: <a class="key" href="#teknikk" data-anchor="tema-${t.id}">${t.n}</a> – ${t.d[0]}`; }
+
+/* ============ ØKTENE ============ */
+const B=(h,items,dur)=>({h,items,dur});
+const OPPV="5 min puls, mobilitet skulder/hofte, pyramide lett → middels, 8–10 buldre.";
+const LB="Lange buldre: så mange flytt at det tilsvarer 2–3 vanlige buldre satt sammen (45–90 s). Fullfør hvert.";
+const RUT=`<a href="#hodet" data-anchor="rutine">Rutinen</a> før hvert forsøk`;
+function session(date,noTheme){
+  const i=info(date), w=i.w, c=i.comp;
+  const s={i,key:"hvile",title:"Hvile",time:"–",blocks:[],notes:[],fields:[],checks:[],extra:""};
+  if(i.phase==="før"||i.phase==="etter"){ s.title=i.label; s.key="utenfor"; return s; }
+  if(i.phase==="jul"){ s.key="jul"; s.title="Jul – fri"; s.blocks=[B("I dag",["Fri, lett buldring etter lyst."])]; return s; }
+  if(i.light) s.notes.push(["warn","Lett uke: mandag og lørdag med halvt antall forsøk, onsdag 3 lange buldre, ingen fredag."]);
+  if(c) s.notes.push(["warn",`Konkurranseuke – ${c.navn}${c.sted?" "+c.sted:""} ${c.dato}: samme intensitet, ingen linked, ingen board, ingen styrke siste 5 dager.`]);
+  const t=pick(i);
+  switch(i.dow){
+  case 1: {
+    s.key="man";
+    if(i.y===2027&&w===13) s.notes.push(["warn","2. påskedag: sjekk åpningstider i hallen."]);
+    if(i.y===2027&&w===20) s.notes.push(["warn","17. mai: sjekk åpningstider i hallen."]);
+    if(c){ s.title="Nye buldre – siste harde økt"; s.time="ca. 1 t 15";
+      s.blocks=[B("Oppvarming",[OPPV],"25 min"),B("Konkurranseformat",[`4 nye buldre, 4 min klatretid, 4 min pause, <span class="key">maks ${c.mx} forsøk</span>.`,RUT+"."],"35 min"),B("Nedtrapping",["Lett buldring."],"10 min")];
+      s.fields=[["forsok",`Forsøk (maks ${c.mx})`],["topper","Topper"]]; break; }
+    let mx=i.mb===1?14:12; if(i.light) mx=half(mx);
+    s.title="Maksbuldring + teknikk"; s.time="ca. 1 t 45";
+    s.blocks=[B("Oppvarming",[OPPV],"25 min"),
+      B("Maksbuldring",[i.mb===1?"5–6 buldre 1–2 grader under maks, RPE 7–8, 3 min pause.":"4–5 buldre nær maks, RPE 8–9, 3–4 min pause.",`<span class="key">Maks ${mx} forsøk.</span>`,"Les hele buldret før første forsøk. "+RUT+". Sitt ned i pausene.","Sluttpunkt: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"50 min"),
+      B("Teknikk",["Lette buldre 3–4 grader under maks, ett tema."],"20 min"),B("Nedtrapping",["Lett buldring."],"10 min")];
+    if(!noTheme){ s.blocks[2].items.unshift(tLink(t)); s.theme=t.n; }
+    s.fields=[["forsok",`Forsøk (maks ${mx})`],["topper","Topper"]];
+    break; }
+  case 3: {
+    s.key="ons";
+    if(c){ s.title="Kort, hard buldring"; s.time="45 min"; s.blocks=[B("Økt",["Oppvarming 20 min.","3 buldre på RPE 8, maks 2 forsøk hver, 4 min pause."],"45 min")]; s.fields=[["topper","Topper"]]; break; }
+    const n=i.light?3:6;
+    s.title="Linked boulders"; s.time="ca. 1 t 05";
+    s.blocks=[B("Oppvarming",["Som mandag."],"20 min"),B("Linked boulders",[LB,i.lk===1?"12–20 flytt, 3–4 grader under maks, RPE 6–7, 3–4 min pause mellom hvert.":"10–14 flytt, 2–3 grader under maks, RPE 7–8, 3 min pause mellom hvert.",
+      `<span class="key">${n} lange buldre</span>${n===6?": 3, så 8 min ekstra pause, 3 til":""}.`,"Volumvegg, slopere og pinch – ikke bare lister. Fall → neste lange buldre én grad lettere."],"35 min"),B("Nedtrapping",["Lett buldring."],"10 min")];
+    s.fields=[["antall","Lange buldre"]];
+    break; }
+  case 5: {
+    if(c||i.light){ s.blocks=[B("Hviledag",[c?"Ingen board i konkurranseuka.":"Lett uke: ingen fredag."])]; break; }
+    s.key="fre"; s.title="Kort boardøkt – valgfri"; s.time="ca. 55 min";
+    s.notes.push(["acc","Sliten → dropp økta, uten å ta den igjen."]);
+    s.blocks=[B("Oppvarming",["Som mandag, avslutt med 2–3 lette boardproblemer."],"25 min"),
+      B("Board",["4 problemer 1–2 grader under maks, maks 40°, RPE 7–8, 4 min pause.",`<span class="key">Maks 6 forsøk.</span> Ingen full crimp.`],"25 min"),B("Nedtrapping",["Store tak."],"5 min")];
+    s.fields=[["forsok","Forsøk (maks 6)"]];
+    break; }
+  case 6: {
+    s.key="lor";
+    if(c){ s.title=`${c.navn}${c.sted?" "+c.sted:""}`; s.time=""; s.blocks=[B("Konkurranse",[RUT+". I 4-min-format: én lang utpust, første fot.",`Sjekk <a href="#hodet" data-anchor="format">formatet</a> i innbydelsen.`])]; s.fields=[["resultat","Resultat / plassering"]]; break; }
+    const ko=date.getDate()<=7;
+    const f=i.light?half(15):15, fb=i.light?5:10;
+    s.title=ko?"Kø-format + styrke":"Nye buldre + styrke"; s.time="ca. 1 t 40";
+    const main=ko?B("Kø-format",["Én lørdag i måneden: 8 buldre, 45 min, fri rekkefølge, ett forsøk per tur. Maks 5 forsøk på et buldre uten framgang.","Ingen beta fra andre. Registrer topp, sone og forsøk."],"45 min")
+      :B("Nye buldre",[`<a href="#hodet" data-anchor="format">Konkurranseformat</a>: 5 buldre, 4 min klatretid, 4 min pause, maks 3 forsøk per buldre (<span class="key">maks ${f}</span>).${i.mb===2?" RPE 9.":""}`,`Board på fredag gjennomført: 4 buldre, <span class="key">maks ${fb} forsøk</span>.`,"Ingen beta fra andre. Registrer topp, sone og forsøk.",`Uten nye buldre: prosjekter, maks ${i.light?6:12} forsøk (${i.light?5:10} etter board).`],"40 min");
+    s.blocks=[B("Oppvarming",[OPPV],"25 min"),main,B("Nedtrapping",["Lett buldring."],"5 min")];
+    s.extra=styrkeHtml(i);
+    s.notes.push(["acc","Klatret ute i helga: erstatter lørdag. Styrken tas etter maksbuldringen mandag, eller utgår."]);
+    s.fields=[["lorTopper","Topper"],["soner","Soner"]];
+    break; }
+  default: s.blocks=[B("Hviledag",["Tapt økt tas ikke igjen."])];
+  }
+  if(!["hvile","jul","utenfor"].includes(s.key)) s.checks.push(["finger","Smerte i finger"]);
+  return s;
+}
+
+/* ============ LOGG ============ */
+let LOG={};
+const LS_KEY=KEY+"-logg-v1";
+function lsGet(k){ try{ return localStorage.getItem(k);}catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v);}catch(e){} }
+function loadLocal(){ try{ LOG=JSON.parse(lsGet(LS_KEY)||"{}")||{}; }catch(e){ LOG={}; } }
+function initDb(){ loadLocal(); document.getElementById("syncState").textContent="Logg på denne telefonen"; }
+async function saveEntry(date,entry){ LOG[date]=entry; lsSet(LS_KEY,JSON.stringify(LOG)); return lsGet(LS_KEY)?"Lagret på denne telefonen.":"Kunne ikke lagre – nettleseren blokkerer lagring."; }
+async function deleteEntry(date){ delete LOG[date]; lsSet(LS_KEY,JSON.stringify(LOG)); }
+
+const FN={gronn:"grønn",gul:"gul",oransje:"oransje",rod:"rød",svart:"svart"};
+const has=v=>v!=null&&v!=="";
+const FIELDS=["forsok","topper","lorTopper","soner","antall","resultat"];
+function reportDetail(e){ const t=[]; for(const f of FIELDS) if(has(e[f])) t.push(`${e[f+"Navn"]||f} ${e[f]}`); if(e.finger) t.push("SMERTE I FINGER"); if(e.kommentar) t.push(e.kommentar); return t.join(" · "); }
+function entryLine(k){ const e=LOG[k], d=parseYmd(k); const det=reportDetail(e); return `${DAYS[isoWeek(d).dow]} ${fmt(d)}: ${FN[e.farge]||"–"} · ${e.okt||""}${det?" · "+det:""}`; }
+function summary(scope){
+  let keys=Object.keys(LOG).sort();
+  const head=`Treningslogg ${initialer()}\nPersonlig treningsinformasjon – slettes etter vurdering.`;
+  if(scope==="uke"){ const {y,w}=isoWeek(cur); const m=mondayOf(y,w); const a=ymd(m), z=ymd(addDays(m,6));
+    keys=keys.filter(k=>k>=a&&k<=z); return `${head}\nUke ${w}\n`+(keys.length?keys.map(entryLine).join("\n"):"Ingen økter logget."); }
+  let out=`${head}\nVinteren 2026/27`, lastW=null;
+  keys.forEach(k=>{ const w=isoWeek(parseYmd(k)).w; if(w!==lastW){ out+=`\n\nUke ${w}`; lastW=w; } out+="\n"+entryLine(k); });
+  return keys.length?out:out+"\nIngen økter logget.";
+}
+async function shareText(t,msgEl){
+  try{ if(navigator.share){ await navigator.share({title:"Treningslogg",text:t}); return; } }catch(e){ if(e&&e.name==="AbortError") return; }
+  try{ await navigator.clipboard.writeText(t); msgEl.textContent="Kopiert – lim inn i en melding til trener."; return; }catch(e){}
+  const ta=document.getElementById("shareFallback"); ta.value=t; ta.hidden=false; ta.select(); msgEl.textContent="Kopier teksten under.";
+}
+function downloadBackup(){
+  const blob=new Blob([JSON.stringify({utover:NAVN,versjon:1,logg:LOG},null,1)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=KEY+"-logg-"+ymd(cur)+".json";
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
+}
+function restoreBackup(file,msgEl){
+  const r=new FileReader();
+  r.onload=()=>{ try{ const o=JSON.parse(r.result); const l=o&&o.logg; if(!l||typeof l!=="object") throw 0;
+      let n=0; for(const k in l){ if(/^\d{4}-\d\d-\d\d$/.test(k)&&!LOG[k]){ LOG[k]=l[k]; n++; } }
+      lsSet(LS_KEY,JSON.stringify(LOG)); render(); const m=document.getElementById("shareMsg"); if(m) m.textContent=`Hentet inn ${n} økter.`; }
+    catch(e){ msgEl.textContent="Fant ingen logg i filen."; } };
+  r.readAsText(file);
+}
+
+function alerts(date){
+  const out=[]; const ds=ymd(date);
+  const prev=Object.keys(LOG).filter(k=>k<ds).sort(); const lastK=prev[prev.length-1];
+  const last2=prev.slice(-2).map(k=>LOG[k].farge);
+  if(last2.length===2&&last2.every(f=>f==="oransje"||f==="rod")) out.push(["stop","To oransje/røde dager på rad → neste økt bare teknikk og lett buldring."]);
+  if(lastK&&LOG[lastK].finger) out.push(["warn","Smerte i finger sist: stopp lister og crimp hvis det kommer igjen, si fra samme dag. Over 3 dager, hovent ledd eller smerte ved bøy: lege."]);
+  if(lastK&&LOG[lastK].farge==="rod") out.push(["stop","Sist logget rød: hvile neste dag, si fra."]);
+  if(lastK&&LOG[lastK].farge==="svart") out.push(["stop","Sist logget svart: stopp, si fra samme dag."]);
+  return out;
+}
+const METRIC={title:"Topper lørdag",series:[{k:"lorTopper",name:"topper i konkurranseformat",color:"#0f6b5f"}]};
+
+/* ============ VISNINGER ============ */
+const TABS=[["idag","I dag"],["uka","Uka"],["man","Mandag"],["ons","Onsdag"],["fre","Fredag"],["lor","Lørdag"],["styrke","Styrke"],["hodet","Hodet"],["teknikk","Teknikk"],["plan","Plan"],["rpe","RPE"],["regler","Regler"],["logg","Logg"]];
+let cur=new Date(); cur=new Date(cur.getFullYear(),cur.getMonth(),cur.getDate());
+let selDate=new Date(cur), weekRef=new Date(cur);
+function tabsHtml(t){ return TABS.map(([k,n])=>`<a href="#${k}" class="${k===t?"on":""}">${n}</a>`).join(""); }
+function notesHtml(n){ return n.map(([c,t])=>`<div class="note ${c==="warn"?"":c}">${t}</div>`).join(""); }
+function rpeLink(t){ return t.replace(/RPE \d+(–\d+)?(?![^<]*<\/a>)/g,m=>`<a href="#rpe">${m}</a>`); }
+function blkHtml(b){ return `<div class="blk"><h4>${b.h}${b.dur?`<span class="dur">${b.dur}</span>`:""}</h4><ul>${b.items.map(x=>`<li>${rpeLink(x)}</li>`).join("")}</ul></div>`; }
+function tagsHtml(i){
+  let t=`<span class="tag">Uke ${i.w}</span><span class="tag acc">${i.label}</span>`;
+  if(i.light) t+=`<span class="tag warn">Lett uke</span>`;
+  if(i.comp) t+=`<span class="tag stop">${i.comp.navn} ${i.comp.dato}</span>`;
+  if(i.dow===6&&i.phase==="led") t+=`<span class="tag">${i.odd?"Oddetallsuke · tau":"Partallsuke · board"}</span>`;
+  if(NYTT[i.w]&&!["før","etter","jul"].includes(i.phase)&&!i.light&&!i.comp&&!(i.y===2026&&i.w<45)) t+=`<span class="tag">Nytt: ${NYTT[i.w]}</span>`;
+  return `<div class="meta">${t}</div>`;
+}
+function sessionCard(s,withAlerts){
+  const i=s.i;
+  let h=`<div class="card"><h2>${s.title}</h2>${tagsHtml(i)}${s.time&&s.time!=="–"?`<div class="small muted">Tid: ${s.time}</div>`:""}
+   ${withAlerts?notesHtml(alerts(i.date)):""}${notesHtml(s.notes.filter(n=>n[0]!=="acc"))}`;
+  h+=s.blocks.map(blkHtml).join("");
+  if(s.extra) h+=s.extra;
+  h+=s.notes.filter(n=>n[0]==="acc").map(n=>`<p class="small muted">${n[1]}</p>`).join("")+`</div>`;
+  return h;
+}
+function vIdag(){
+  const s=session(selDate), i=s.i, isToday=ymd(selDate)===ymd(cur);
+  let h=`<div class="banner">HVA SKAL JEG ØVE PÅ I DAG?</div>
+  <div class="daynav"><button class="btn sm" data-nav="-1" aria-label="Forrige dag">◀</button>
+   <div class="d">${isToday?"I dag":DAY[i.dow]} · ${fmt(selDate)}<small>${isToday?DAY[i.dow]:'<a href="#" data-today="1">Tilbake til i dag</a>'}</small></div>
+   <button class="btn sm" data-nav="1" aria-label="Neste dag">▶</button></div>`;
+  h+=sessionCard(s,true);
+  if(s.key==="hvile"){ let d=addDays(selDate,1), n=session(d,true), k=0; while(n.key==="hvile"&&k<6){ d=addDays(d,1); n=session(d,true); k++; }
+    if(n.key!=="hvile") h+=`<div class="card small"><span class="muted">Neste økt:</span> <b>${DAY[n.i.dow]} ${fmt(d)}</b> – ${n.title}</div>`; }
+  if(!["hvile","utenfor"].includes(s.key)) h+=formHtml(selDate,s);
+  return h;
+}
+let draft={};
+function formHtml(date,s){
+  const ds=ymd(date), e=LOG[ds]||{}; draft={...e};
+  const colors=[["gronn","Grønn"],["gul","Gul"],["oransje","Oransje"],["rod","Rød"],["svart","Svart"]];
+  return `<div class="card" id="logform"><h3 style="margin-top:0">Logg økta</h3>
+   <label class="f">Fargen på dagen</label>
+   <div class="colors">${colors.map(([k,n])=>`<button type="button" data-farge="${k}" class="${e.farge===k?"on":""}"><span class="dot f-${k}"></span>${n}</button>`).join("")}</div>
+   ${s.fields.length?`<div class="row2">${s.fields.map(([k,l])=>`<div><label class="f">${l}</label><input type="text" data-field="${k}" data-label="${l.replace(/ \(.*/,"")}" value="${esc(e[k]??"")}"></div>`).join("")}</div>`:""}
+   ${s.checks.map(([k,l])=>`<label class="chk"><input type="checkbox" data-check="${k}" ${e[k]?"checked":""}> ${l}</label>`).join("")}
+   <label class="f">Kommentar</label><textarea id="fKom" placeholder="Hva gikk bra, hva kjentes?">${esc(e.kommentar||"")}</textarea>
+   <div style="margin-top:12px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+     <button class="btn pri" id="fSave">${LOG[ds]?"Oppdater":"Lagre"}</button>${LOG[ds]?'<button class="btn" id="fDel">Slett</button>':""}
+     <span class="saved" id="fMsg">${LOG[ds]?"Logget "+fmtTime(e.lagret):""}</span></div></div>`;
+}
+function esc(t){ return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function fmtTime(t){ if(!t) return ""; const d=new Date(t); return isNaN(d)?"":fmt(d)+" kl. "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
+function vUka(){
+  const {y,w}=isoWeek(weekRef); const mon=mondayOf(y,w); const i=info(mon);
+  let h=`<div class="daynav" style="margin-top:18px"><button class="btn sm" data-wk="-7">◀</button>
+   <div class="d">Uke ${w}<small>${fmt(mon)} – ${fmt(addDays(mon,6))}</small></div><button class="btn sm" data-wk="7">▶</button></div>
+   <div class="card">${tagsHtml({...i,dow:0})}<div style="margin-top:8px">`;
+  for(let k=0;k<7;k++){ const d=addDays(mon,k), s=session(d,true), e=LOG[ymd(d)], today=ymd(d)===ymd(cur);
+    h+=`<a class="week-row ${today?"today":""}" href="#idag" data-go="${ymd(d)}"><div class="wd">${DAYS[k+1]}<small>${d.getDate()}.</small></div>
+      <div class="wt"><span class="${s.key==="hvile"?"rest":""}">${s.title}</span>${s.time&&s.time!=="–"?` <small>· ${s.time}</small>`:""}</div>
+      ${e&&e.farge?`<span class="dot f-${e.farge}"></span>`:""}</a>`; }
+  h+=`</div></div>`;
+  if(weekRef.getTime()!==cur.getTime()) h+=`<p><button class="btn sm" data-wkreset="1">Denne uka</button></p>`;
+  return h;
+}
+
+const D=(y,w,dow)=>addDays(mondayOf(y,w),dow-1);
+function curLabel(){ const i=info(cur); return `<p class="small muted">Nå: uke ${i.w} · ${i.label}</p>`; }
+function refCard(title,date){ const s=session(date,true); return `<div class="card"><h3 style="margin-top:0">${title}</h3>${s.blocks.map(blkHtml).join("")}${s.extra||""}</div>`; }
+const VIEWS={
+ man:()=>`<h2 style="margin-top:18px">Mandag · Maksbuldring + teknikk</h2>${curLabel()}${refCard("Fase 1 og uke 2",D(2026,46,1))}${refCard("Fra uke 3",D(2027,3,1))}${refCard("Konkurranseuke",D(2027,5,1))}`,
+ ons:()=>`<h2 style="margin-top:18px">Onsdag · Linked boulders</h2>${curLabel()}${refCard("Fase 1 til uke 3",D(2026,46,3))}${refCard("Fra uke 4",D(2027,4,3))}`,
+ fre:()=>`<h2 style="margin-top:18px">Fredag · Kort boardøkt – valgfri</h2>${curLabel()}${refCard("Board",D(2026,46,5))}`,
+ lor:()=>`<h2 style="margin-top:18px">Lørdag · Nye buldre + styrke</h2>${curLabel()}${refCard("Vanlig lørdag",D(2026,46,6))}<div class="card small">Første lørdag i måneden: kø-format i stedet – 8 buldre, 45 min, ett forsøk per tur.</div>`,
+};
+function vStyrke(){
+  const i=info(cur), ref=["før","etter","jul"].includes(i.phase)?info(D(2026,46,6)):i;
+  return `<h2 style="margin-top:18px">Styrke – skulder og kjerne</h2><p class="small muted">Lørdag etter buldringen. Fase 1: 2 sett · fra uke 6: 3 sett. Står også i dagens økt.</p><div class="card">${styrkeHtml(ref)}</div>`;
+}
+function vHodet(){
+  return `<h2 style="margin-top:18px">Hodet</h2>
+  <div class="card" id="rutine" style="scroll-margin-top:110px"><h3 style="margin-top:0">Rutine før hvert forsøk</h3><ul><li>Pust ut langsomt, tre ganger.</li><li>Si de tre første flyttene for deg selv.</li><li>Første fot.</li><li>Etter et fall: snu deg bort, tre pust, én setning om neste forsøk.</li><li>I 4-min-format: én lang utpust, første fot.</li></ul></div>
+  <div class="card" id="format" style="scroll-margin-top:110px"><h3 style="margin-top:0">Konkurranseformat</h3><ul>
+   <li><b>NC-kvalik (kø):</b> 12 buldre, 90 min, fri rekkefølge, ett forsøk per tur. I trening: 8 buldre, 45 min. Maks 5 forsøk på et buldre uten framgang.</li>
+   <li><b>NM junior (EYC, to runder):</b> kvalik 5 buldre og finale 4 buldre, 4 min klatretid, 4 min pause, ingen observasjon utenom klatretiden.</li>
+   <li><b>NC-finale:</b> 4 buldre × 4 min klatretid, 8 min felles observasjon før start.</li><li>Sjekk formatet i innbydelsene.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Konkurranser</h3><ul>${Object.entries(COMP).map(([w,c])=>`<li><b>${c.navn}${c.sted?" "+c.sted:""}</b> ${c.dato} (uke ${w})</li>`).join("")}</ul>
+   <p class="small muted">Konkurranseuker: mandag 4 nye buldre i konkurranseformat (maks 12, NM-uka maks 8) · onsdag 3 buldre RPE 8, maks 2 forsøk hver · ingen board, ingen styrke.</p></div>`;
+}
+function vTeknikk(){
+  return `<h2 style="margin-top:18px">Teknikk</h2><p class="small muted">Ett tema per uke, mandag. Roterer under <a href="#idag">I dag</a>.</p>
+  ${TEMA.map(x=>`<div class="card" id="tema-${x.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${x.n}</h3><ul>${x.d.map(y=>`<li>${y}</li>`).join("")}</ul></div>`).join("")}`;
+}
+function vPlan(){
+  const {w:cw,y:cy}=isoWeek(cur);
+  const rows=SEASON.map(({y,w})=>{ const m=mondayOf(y,w), i=info(m);
+    return `<tr class="${y===cy&&w===cw?"now":""}"><td><a href="#uka" data-week="${ymd(m)}">${w}</a></td><td>${fmt(m)}</td><td>${i.label}</td><td>${i.phase==="jul"?"":(i.comp?i.comp.navn:(NYTT[w]||""))}</td></tr>`; }).join("");
+  return `<h2 style="margin-top:18px">Plan</h2>
+  <div class="card small"><ul>
+   <li><b>Uka:</b> man maksbuldring + teknikk · ons linked boulders · fre kort boardøkt (valgfri) · lør nye buldre + styrke. Tir, tor og søn hvile.</li>
+   <li><b>Bare 2 økter:</b> mandag og lørdag.</li>
+   <li><b>Fase 1 (45–51)</b>, uke 48 lett · <b>jul (52, 53, 1)</b> fri, uke 1 lett · <b>fase 2 (2–6)</b> · <b>topping (7)</b> · <b>NM-uka (8)</b> · <b>fase 3 (9–20)</b>, lette uker 9, 12, 16.</li></ul></div>
+  <div class="card"><div class="tscroll"><table><thead><tr><th>Uke</th><th>Fra</th><th>Periode</th><th>Nytt</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+function vRpe(){
+  return `<h2 style="margin-top:18px">RPE</h2><p class="small muted">RPE = hvor hardt det kjennes, 1–10.</p>
+  <div class="card"><div class="tscroll"><table><thead><tr><th>RPE</th><th>Buldring, styrke</th><th>Linked</th><th>Brukes i</th></tr></thead><tbody>
+   <tr><td>6–7</td><td>Krevende, kontrollert. Styrke: 3–4 reps igjen.</td><td>Merkbar pump som går tilbake i pausen.</td><td>Linked fase 1, styrke</td></tr>
+   <tr><td>7–8</td><td>Må ta i på nøkkelflyttet.</td><td>Tydelig pump, føttene krever jobb.</td><td>Maksbuldring fase 1, board, linked fra uke 4</td></tr>
+   <tr><td>8–9</td><td>Full kraft, treffer og holder.</td><td>–</td><td>Maksbuldring fra uke 3</td></tr>
+   <tr><td>9</td><td>Alt du har, treffer så vidt.</td><td>–</td><td>Nye buldre fra uke 3</td></tr></tbody></table></div></div>`;
+}
+function vRegler(){
+  return `<h2 style="margin-top:18px">Regler</h2>
+  <div class="card"><h3 style="margin-top:0">Fingre</h3><ul><li><b>Ingen campusbrett og ingen fingerbrett</b> denne vinteren.</li><li><b>Full crimp:</b> bare uthvilt, ikke de siste 30 minuttene av en økt.</li>
+   <li><b>Smerte i et fingerledd:</b> stopp lister og crimp samme økt, si fra samme dag. Over 3 dager, hovent ledd eller smerte ved bøy: lege.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Det som ligger fast</h3><ul><li><b>Hviledager:</b> tirsdag, torsdag og søndag.</li><li><b>Fredag er valgfri.</b> Sliten → dropp den, uten å ta den igjen.</li>
+   <li><b>Sluttpunkt:</b> forsøkstaket, eller to forsøk på rad med tydelig teknikkfall.</li><li><b>Tapt økt tas ikke igjen.</b></li><li><b>Supersett:</b> aldri samme muskelgruppe.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Når uka blir annerledes</h3><ul><li><b>Sliten fredag:</b> dropp board.</li><li><b>Bare 2 økter:</b> mandag og lørdag.</li>
+   <li><b>Klatret ute i helga:</b> erstatter lørdag. Styrken tas etter maksbuldringen mandag, eller utgår.</li><li><b>To oransje dager på rad:</b> neste økt bare teknikk og lett buldring.</li><li><b>Etter ≥ 5 dager fri:</b> første uke på fase 1-nivå.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Fargen på dagen</h3><p><span class="dot f-gronn"></span> <b>Grønn</b> uthvilt, god kvalitet, neste økt føles sterkere<br><span class="dot f-gul"></span> <b>Gul</b> vedlikehold<br><span class="dot f-oransje"></span> <b>Oransje</b> trente for sliten, lav kvalitet<br><span class="dot f-rod"></span> <b>Rød</b> trenger flere hviledager → hvile neste dag, si fra<br><span class="dot f-svart"></span> <b>Svart</b> skade → stopp, si fra samme dag</p></div>`;
+}
+function vLogg(){
+  const keys=Object.keys(LOG).sort().reverse(), {y:cy,w:cw}=isoWeek(cur);
+  let grid=`<div class="grid"><div></div>${["Man","Ons","Fre","Lør"].map(d=>`<div class="h">${d}</div>`).join("")}`;
+  for(const {y,w} of SEASON){ const m=mondayOf(y,w); if(m>addDays(cur,7)) break;
+    grid+=`<div class="wk ${y===cy&&w===cw?"cur":""}">Uke ${w}</div>`;
+    for(const k of [0,2,4,5]){ const e=LOG[ymd(addDays(m,k))]; grid+=`<div class="cell ${e&&e.farge?"f-"+e.farge:""}"></div>`; } }
+  grid+="</div>";
+  return `<h2 style="margin-top:18px">Logg</h2>
+  <p class="small muted">Loggen lagres bare på denne telefonen, i denne nettleseren. Logg en økt fra <a href="#idag">I dag</a> – bla til riktig dag med pilene.</p>
+  <div class="card"><h3 style="margin-top:0">Send til trener</h3>
+   <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn pri" data-share="uke">Del denne uka</button><button class="btn" data-share="alt">Del hele sesongen</button><button class="btn sm" data-sharetext="uke">Bare tekst</button></div>
+   <p class="small muted" style="margin:6px 0 0">Sendes som bilde med grafer og tekst. Bare initialene dine står i rapporten.</p>
+   <p class="small muted" style="margin:8px 0 0" id="shareMsg"></p><textarea id="shareFallback" hidden readonly style="margin-top:8px;min-height:140px"></textarea>
+   <h3>Sikkerhetskopi</h3><p class="small muted" style="margin:0 0 8px">Ta en kopi av og til, og før du bytter telefon eller sletter nettleserdata.</p>
+   <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" data-backup="1">Last ned kopi</button><label class="btn" style="display:inline-flex;align-items:center">Hent inn kopi<input type="file" accept=".json,application/json" id="restoreFile" hidden></label></div></div>
+  ${progressCard()}${typeof LOGG_EKSTRA!=="undefined"?LOGG_EKSTRA:""}${settingsCard()}
+  <div class="card"><h3 style="margin-top:0">Sesongen</h3>${grid}</div>
+  <div class="card"><h3 style="margin-top:0">Økter</h3>${keys.length?keys.map(k=>{ const e=LOG[k], d=parseYmd(k);
+    return `<div class="entry"><div class="eh"><span>${e.farge?`<span class="dot f-${e.farge}"></span> `:""}${DAY[isoWeek(d).dow]} ${fmt(d)}</span><small>uke ${isoWeek(d).w}</small></div>
+      <p>${esc(e.okt||"")}${reportDetail(e)?" · "+esc(reportDetail(e)):""}</p><p><a href="#idag" data-go="${k}" class="small">Åpne</a></p></div>`; }).join(""):'<p class="muted">Ingen økter logget ennå.</p>'}</div>`;
+}
+
+
+/* ============ RAPPORT OG GRAFER (felles) ============ */
+const FARGER={gronn:"#2f9e44",gul:"#e9b92f",oransje:"#ec7d10",rod:"#d62f2f",svart:"#1b1b1b"};
+const FORDER=["gronn","gul","oransje","rod","svart"];
+const INIT_KEY=KEY+"-initialer";
+function initialer(){ const v=(lsGet(INIT_KEY)||"").trim(); return v||(NAVN[0]+"."); }
+function weeksUpTo(d){ return SEASON.filter(({y,w})=>mondayOf(y,w)<=d); }
+function weekColors(y,w){ const m=mondayOf(y,w), c={}; for(let k=0;k<7;k++){ const e=LOG[ymd(addDays(m,k))]; if(e&&e.farge) c[e.farge]=(c[e.farge]||0)+1; } return c; }
+function metricPoints(){ // [{d, values{key:num}}]
+  return Object.keys(LOG).sort().map(k=>{ const e=LOG[k], v={}; let any=false;
+    METRIC.series.forEach(s=>{ if(e[s.k]!=null&&e[s.k]!==""&&!isNaN(+e[s.k])){ v[s.k]=+e[s.k]; any=true; } });
+    return any?{d:parseYmd(k),v}:null; }).filter(Boolean);
+}
+/* SVG: farger per uke */
+function svgColorBars(weeks,opts={}){
+  const W=opts.w||360,H=opts.h||150,pl=24,pb=22,pt=8,bw=(W-pl-6)/Math.max(weeks.length,1);
+  const max=Math.max(4,...weeks.map(({y,w})=>Object.values(weekColors(y,w)).reduce((a,b)=>a+b,0)));
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Fargen på dagen per uke" style="width:100%;height:auto;display:block">`;
+  for(let t=0;t<=max;t+=2){ const y=H-pb-(H-pb-pt)*t/max; s+=`<line x1="${pl}" x2="${W}" y1="${y}" y2="${y}" stroke="currentColor" stroke-opacity=".12"/><text x="${pl-6}" y="${y+4}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".6">${t}</text>`; }
+  weeks.forEach(({y,w},ix)=>{ const c=weekColors(y,w); let acc=0; const x=pl+ix*bw+bw*0.15, bwi=bw*0.7;
+    FORDER.forEach(f=>{ const n=c[f]||0; if(!n) return; const h=(H-pb-pt)*n/max, yy=H-pb-(H-pb-pt)*(acc+n)/max; s+=`<rect x="${x}" y="${yy}" width="${bwi}" height="${h}" fill="${FARGER[f]}" rx="2"/>`; acc+=n; });
+    if(weeks.length<=12||ix%2===0) s+=`<text x="${x+bwi/2}" y="${H-6}" font-size="11" text-anchor="middle" fill="currentColor" fill-opacity=".6">${w}</text>`; });
+  return s+`</svg>`;
+}
+/* SVG: målinger over tid */
+function svgMetric(points,opts={}){
+  const W=opts.w||360,H=opts.h||150,pl=26,pb=22,pt=10,pr=8;
+  if(points.length<1) return `<p class="small muted">Ingen målinger ennå.</p>`;
+  const t0=+points[0].d, t1=Math.max(+points[points.length-1].d, t0+864e5*7);
+  const vals=points.flatMap(p=>Object.values(p.v));
+  let lo=METRIC.fixed?METRIC.fixed[0]:Math.floor(Math.min(...vals)-1), hi=METRIC.fixed?METRIC.fixed[1]:Math.ceil(Math.max(...vals)+1);
+  const X=d=>pl+(W-pl-pr)*((+d-t0)/(t1-t0)), Y=v=>H-pb-(H-pb-pt)*((v-lo)/(hi-lo));
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${METRIC.title}" style="width:100%;height:auto;display:block">`;
+  const step=(hi-lo)>12?Math.ceil((hi-lo)/5):((hi-lo)>6?2:1);
+  for(let v=lo;v<=hi;v+=step){ s+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="currentColor" stroke-opacity=".12"/><text x="${pl-6}" y="${Y(v)+4}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".6">${v}</text>`; }
+  if(METRIC.limit!=null) s+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(METRIC.limit)}" y2="${Y(METRIC.limit)}" stroke="#d62f2f" stroke-dasharray="5 4" stroke-width="1.5"/><text x="${W-pr}" y="${Y(METRIC.limit)-4}" font-size="11" text-anchor="end" fill="#d62f2f">grense ${METRIC.limit}</text>`;
+  METRIC.series.forEach(se=>{ const pts=points.filter(p=>p.v[se.k]!=null);
+    if(pts.length>1) s+=`<path d="${pts.map((p,i)=>(i?"L":"M")+X(p.d).toFixed(1)+" "+Y(p.v[se.k]).toFixed(1)).join(" ")}" fill="none" stroke="${se.color}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    pts.forEach(p=>{ s+=`<circle cx="${X(p.d).toFixed(1)}" cy="${Y(p.v[se.k]).toFixed(1)}" r="3.5" fill="${se.color}"/>`; }); });
+  s+=`<text x="${pl}" y="${H-6}" font-size="11" fill="currentColor" fill-opacity=".6">${fmt(points[0].d)}</text><text x="${W-pr}" y="${H-6}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".6">${fmt(new Date(t1))}</text>`;
+  return s+`</svg>`;
+}
+function legendHtml(){ return `<div class="meta">${METRIC.series.map(se=>`<span class="tag"><span class="dot" style="background:${se.color}"></span> ${se.name}</span>`).join("")}</div>`; }
+function progressCard(){
+  const weeks=weeksUpTo(cur);
+  return `<div class="card"><h3 style="margin-top:0">Utvikling</h3>
+   <h4 class="small muted" style="margin:6px 0 2px">Fargen på dagen per uke</h4>${svgColorBars(weeks)}
+   <div class="meta">${FORDER.map(f=>`<span class="tag"><span class="dot f-${f}"></span> ${FN[f]}</span>`).join("")}</div>
+   <h4 class="small muted" style="margin:14px 0 2px">${METRIC.title}</h4>${svgMetric(metricPoints())}${legendHtml()}</div>`;
+}
+function settingsCard(){
+  return `<div class="card"><h3 style="margin-top:0">Rapport til trener</h3>
+   <label class="f">Initialer i rapporten</label><input type="text" id="initInput" maxlength="6" value="${esc(initialer())}">
+   <p class="small muted" style="margin:6px 0 0">Rapporten viser bare initialene dine. Treneren sletter den etter vurdering.</p></div>`;
+}
+
+/* Bilde-rapport (canvas → PNG) */
+function reportCanvas(scope){
+  const Wd=1080, pad=56, cv=document.createElement("canvas"), ctx=cv.getContext("2d");
+  const {y:cy,w:cw}=isoWeek(cur), mon=mondayOf(cy,cw);
+  const rows=[];
+  if(scope==="uke") for(let k=0;k<7;k++){ const d=addDays(mon,k), e=LOG[ymd(d)]; const s=session(d,true); if(e||s.key!=="hvile") rows.push({d,e,s}); }
+  const weeks=weeksUpTo(cur).slice(scope==="uke"?-8:0);
+  const H=pad*2+150+(scope==="uke"?rows.length*92+40:0)+300+300+120;
+  cv.width=Wd; cv.height=H; const S=(f,c)=>{ ctx.font=f; ctx.fillStyle=c||"#1d2321"; };
+  ctx.fillStyle="#ffffff"; ctx.fillRect(0,0,Wd,H);
+  ctx.fillStyle="#0f6b5f"; ctx.fillRect(0,0,Wd,12);
+  let y=pad+30;
+  S("700 44px system-ui,sans-serif"); ctx.fillText(`Treningslogg · ${initialer()}`,pad,y);
+  y+=46; S("400 28px system-ui,sans-serif","#5f6a66");
+  ctx.fillText(scope==="uke"?`Uke ${cw} · ${fmt(mon)} – ${fmt(addDays(mon,6))}`:`Vinteren 2026/27 · til ${fmt(cur)}`,pad,y);
+  y+=50;
+  if(scope==="uke"){
+    rows.forEach(({d,e,s})=>{
+      ctx.fillStyle="#f4f3ef"; ctx.fillRect(pad,y-8,Wd-pad*2,80);
+      ctx.beginPath(); ctx.arc(pad+36,y+32,20,0,7); ctx.fillStyle=e&&e.farge?FARGER[e.farge]:"#dedbd2"; ctx.fill();
+      S("700 28px system-ui,sans-serif"); ctx.fillText(`${DAYS[isoWeek(d).dow]} ${d.getDate()}.`,pad+72,y+24);
+      S("400 26px system-ui,sans-serif"); ctx.fillText(((e&&e.okt)||s.title).slice(0,34),pad+200,y+24);
+      S("400 23px system-ui,sans-serif","#5f6a66"); ctx.fillText(e?reportDetail(e).slice(0,64):"ikke logget",pad+200,y+56);
+      y+=92; });
+    y+=20;
+  }
+  // farger per uke
+  S("700 28px system-ui,sans-serif"); ctx.fillText("Fargen på dagen per uke",pad,y); y+=20;
+  y=drawBars(ctx,weeks,pad,y,Wd-pad*2,220)+40;
+  // måling
+  S("700 28px system-ui,sans-serif"); ctx.fillText(METRIC.title,pad,y); y+=20;
+  const pts=metricPoints().filter(p=>scope!=="uke"||p.d>=addDays(mon,-49));
+  y=drawLine(ctx,pts,pad,y,Wd-pad*2,220)+50;
+  S("400 22px system-ui,sans-serif","#9a5b00");
+  ctx.fillText("Personlig treningsinformasjon. Treneren sletter rapporten etter vurdering.",pad,Math.min(y,H-pad));
+  return cv;
+}
+function drawBars(ctx,weeks,x0,y0,W,H){
+  const max=Math.max(4,...weeks.map(({y,w})=>Object.values(weekColors(y,w)).reduce((a,b)=>a+b,0))), bw=W/Math.max(weeks.length,1);
+  ctx.strokeStyle="#e6e3da"; ctx.lineWidth=1; for(let t=0;t<=max;t+=2){ const yy=y0+H-H*t/max; ctx.beginPath(); ctx.moveTo(x0,yy); ctx.lineTo(x0+W,yy); ctx.stroke(); }
+  weeks.forEach(({y,w},ix)=>{ const c=weekColors(y,w); let acc=0; const x=x0+ix*bw+bw*0.15;
+    FORDER.forEach(f=>{ const n=c[f]||0; if(!n) return; ctx.fillStyle=FARGER[f]; ctx.fillRect(x,y0+H-H*(acc+n)/max,bw*0.7,H*n/max-2); acc+=n; });
+    if(weeks.length<=14||ix%2===0){ ctx.font="400 20px system-ui,sans-serif"; ctx.fillStyle="#5f6a66"; ctx.textAlign="center"; ctx.fillText(String(w),x+bw*0.35,y0+H+26); ctx.textAlign="left"; } });
+  return y0+H+30;
+}
+function drawLine(ctx,pts,x0,y0,W,H){
+  ctx.font="400 22px system-ui,sans-serif"; ctx.fillStyle="#5f6a66";
+  if(!pts.length){ ctx.fillText("Ingen målinger i perioden.",x0,y0+40); return y0+60; }
+  const t0=+pts[0].d, t1=Math.max(+pts[pts.length-1].d,t0+864e5*7), vals=pts.flatMap(p=>Object.values(p.v));
+  const lo=METRIC.fixed?METRIC.fixed[0]:Math.floor(Math.min(...vals)-1), hi=METRIC.fixed?METRIC.fixed[1]:Math.ceil(Math.max(...vals)+1);
+  const X=d=>x0+40+(W-40)*((+d-t0)/(t1-t0)), Y=v=>y0+H-H*((v-lo)/(hi-lo));
+  ctx.strokeStyle="#e6e3da"; const step=(hi-lo)>12?Math.ceil((hi-lo)/5):((hi-lo)>6?2:1);
+  for(let v=lo;v<=hi;v+=step){ ctx.beginPath(); ctx.moveTo(x0+40,Y(v)); ctx.lineTo(x0+W,Y(v)); ctx.stroke(); ctx.fillText(String(v),x0,Y(v)+8); }
+  if(METRIC.limit!=null){ ctx.setLineDash([10,8]); ctx.strokeStyle="#d62f2f"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x0+40,Y(METRIC.limit)); ctx.lineTo(x0+W,Y(METRIC.limit)); ctx.stroke(); ctx.setLineDash([]); ctx.lineWidth=1; }
+  METRIC.series.forEach((se,si)=>{ const p=pts.filter(q=>q.v[se.k]!=null); ctx.strokeStyle=se.color; ctx.fillStyle=se.color; ctx.lineWidth=4;
+    ctx.beginPath(); p.forEach((q,i)=>{ i?ctx.lineTo(X(q.d),Y(q.v[se.k])):ctx.moveTo(X(q.d),Y(q.v[se.k])); }); ctx.stroke();
+    p.forEach(q=>{ ctx.beginPath(); ctx.arc(X(q.d),Y(q.v[se.k]),6,0,7); ctx.fill(); });
+    ctx.font="400 22px system-ui,sans-serif"; ctx.fillText("● "+se.name,x0+40+si*260,y0+H+34); });
+  ctx.lineWidth=1;
+  return y0+H+40;
+}
+async function shareReport(scope,msgEl){
+  const text=summary(scope);
+  const cv=reportCanvas(scope);
+  const blob=await new Promise(r=>cv.toBlob(r,"image/png"));
+  const name=`logg-${initialer().replace(/[^A-Za-zÆØÅæøå]/g,"")}-${scope==="uke"?"uke"+isoWeek(cur).w:"sesong"}.png`;
+  try{
+    const file=new File([blob],name,{type:"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],text,title:"Treningslogg"}); return; }
+  }catch(e){ if(e&&e.name==="AbortError") return; }
+  try{ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
+    msgEl.textContent="Bildet er lastet ned. Teksten er kopiert – legg begge ved i meldingen til trener."; }catch(e){}
+  try{ await navigator.clipboard.writeText(text); }catch(e){ const ta=document.getElementById("shareFallback"); ta.value=text; ta.hidden=false; }
+}
+document.addEventListener("change",ev=>{ if(ev.target.id==="initInput"){ lsSet(INIT_KEY,ev.target.value.trim()); } });
+
+/* Videolenke: YouTube-søk på øvelsen */
+function vid(name){ const t=(typeof VID!=="undefined")&&VID[name]; return t?` <a class="vid" href="https://www.youtube.com/results?search_query=${encodeURIComponent(t)}" target="_blank" rel="noopener">Video ↗</a>`:""; }
+
+/* ============ RUTING ============ */
+function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
+function render(){
+  const t=route();
+  document.getElementById("tabs").innerHTML=tabsHtml(t);
+  const v=({idag:vIdag,uka:vUka,styrke:vStyrke,hodet:vHodet,plan:vPlan,regler:vRegler,rpe:vRpe,teknikk:vTeknikk,logg:vLogg}[t]||VIEWS[t])();
+  const focus=document.activeElement;
+  if(t==="idag"&&focus&&focus.closest&&focus.closest("#logform")&&focus.tagName!=="BUTTON") return;
+  document.getElementById("view").innerHTML=v;
+  const on=document.querySelector("nav.tabs a.on"); if(on&&on.scrollIntoView) on.scrollIntoView({block:"nearest",inline:"nearest"});
+}
+window.addEventListener("hashchange",()=>{ render(); window.scrollTo(0,0); });
+document.addEventListener("click",async ev=>{
+  const el=ev.target.closest("button,a"); if(!el) return;
+  if(el.dataset.nav){ selDate=addDays(selDate,+el.dataset.nav); render(); return; }
+  if(el.dataset.today){ ev.preventDefault(); selDate=new Date(cur); render(); return; }
+  if(el.dataset.wk){ weekRef=addDays(weekRef,+el.dataset.wk); render(); return; }
+  if(el.dataset.wkreset){ weekRef=new Date(cur); render(); return; }
+  if(el.dataset.week){ ev.preventDefault(); weekRef=parseYmd(el.dataset.week); if(location.hash!=="#uka") location.hash="#uka"; else render(); return; }
+  if(el.dataset.go){ ev.preventDefault(); selDate=parseYmd(el.dataset.go); if(location.hash!=="#idag") location.hash="#idag"; else { render(); window.scrollTo(0,0);} return; }
+  if(el.dataset.farge){ draft.farge=el.dataset.farge; document.querySelectorAll(".colors button").forEach(b=>b.classList.toggle("on",b===el)); return; }
+  if(el.id==="fSave"){
+    const msg=document.getElementById("fMsg");
+    if(!draft.farge){ msg.textContent="Velg fargen på dagen."; return; }
+    const s=session(selDate,true);
+    const entry={dato:ymd(selDate),uke:s.i.w,okt:s.title,farge:draft.farge,kommentar:(document.getElementById("fKom").value||"").trim(),lagret:new Date().toISOString()};
+    document.querySelectorAll("#logform [data-field]").forEach(x=>{ if(x.value.trim()!==""){ entry[x.dataset.field]=x.value.trim(); entry[x.dataset.field+"Navn"]=x.dataset.label; } });
+    document.querySelectorAll("#logform [data-check]").forEach(x=>{ entry[x.dataset.check]=x.checked; });
+    if(entry.lorTopper!=null){ const n=parseFloat(String(entry.lorTopper).replace(",",".")); if(!isNaN(n)) entry.lorTopper=n; }
+    if(entry.kalk!=null){ const n=parseFloat(String(entry.kalk).replace(",",".")); if(!isNaN(n)) entry.kalk=n; }
+    el.disabled=true; msg.textContent="Lagrer …";
+    const r=await saveEntry(ymd(selDate),entry);
+    document.activeElement&&document.activeElement.blur&&document.activeElement.blur();
+    render(); const m2=document.getElementById("fMsg"); if(m2) m2.textContent=r; return;
+  }
+  if(el.dataset.anchor){ ev.preventDefault(); const go=()=>{ const t=document.getElementById(el.dataset.anchor); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); };
+    const tab=el.getAttribute("href")||"#idag"; if(location.hash!==tab){ location.hash=tab; setTimeout(go,150); } else go(); return; }
+  if(el.dataset.share){ const m=document.getElementById("shareMsg"); m.textContent="Lager rapport …"; shareReport(el.dataset.share,m).then(()=>{ if(m.textContent==="Lager rapport …") m.textContent=""; }); return; }
+  if(el.dataset.sharetext){ shareText(summary(el.dataset.sharetext),document.getElementById("shareMsg")); return; }
+  if(el.dataset.backup){ downloadBackup(); return; }
+  if(el.id==="fDel"){ await deleteEntry(ymd(selDate)); render(); return; }
+});
+document.addEventListener("change",ev=>{ if(ev.target.id==="restoreFile"&&ev.target.files[0]) restoreBackup(ev.target.files[0],document.getElementById("shareMsg")); });
+initDb();
+render();
+
+
+/* ============ OPPDATERING ============ */
+const APP_VERSION="2026-11-05-152757";
+function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
+async function checkUpdate(){
+  if(APP_VERSION.startsWith("__")) return;
+  try{ const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"}); if(!r.ok) return;
+    const j=await r.json(); const v=j&&j[KEY]; if(!v||!v.versjon||v.versjon===APP_VERSION) return;
+    document.getElementById("updTxt").textContent="Ny versjon av planen."+(v.melding?" "+v.melding:"");
+    document.getElementById("upd").hidden=false; }catch(e){}
+}
+document.getElementById("ver").textContent=verLabel(APP_VERSION);
+document.getElementById("updBtn").addEventListener("click",()=>location.reload());
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") checkUpdate(); });
+setInterval(checkUpdate,30*60*1000);
+checkUpdate();
+
+
+</script>
+
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}</script>
+</body></html>
