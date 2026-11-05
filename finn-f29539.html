@@ -308,7 +308,7 @@ function session(date,noTheme){
     s.key="ons";
     if(c){ s.title="Hvile eller lett klatring"; s.time="20 min"; s.blocks=[B("I dag",["Hvile, eller 20 min lett klatring."])]; break; }
     if(i.phase==="tau"){ s.title="Rutedag på led"; s.time="ca. 1 t 30"; s.blocks=[B("Oppvarming",["Lette ruter."],"20 min"),B("Ruter",["6–8 ruter 2–3 grader under onsight, RPE 6."],"60 min"),B("Nedtrapping",["Lett klatring."],"10 min")]; s.fields=[["antall","Ruter"]]; break; }
-    const f2=i.M===2&&!(i.y===2027&&i.w===3);
+    const f2=i.M===2;
     let sets=3; if((i.y===2026&&w<=46)||(i.y===2027&&w===1)) sets=2; if(i.y===2027&&(w===8||w===16)) sets=1; else if(i.y===2027&&w===15) sets=2; else if(i.light) sets=2;
     s.title="Linked boulders"; s.time="ca. 1 t 25";
     s.blocks=[B("Oppvarming",["Som mandag."],"25 min"),B("Linked boulders",[...lbItems(sets,f2?2:1),"Volumvegg, slopere og pinch, kompresjonsflytt."],lbDur(sets)),
@@ -331,12 +331,12 @@ function session(date,noTheme){
     s.key="lor";
     if(c){ s.title=`${c.navn}${c.sted?" "+c.sted:""}`; s.time=""; s.blocks=[B("Konkurranse",["Oppvarming 30–40 min før isolasjon/start.",`Sjekk <a href='#konk' data-anchor='format'>formatet</a> i innbydelsen.`])]; s.fields=[["resultat","Resultat / plassering"]]; break; }
     if(i.phase==="tau"){ s.title="Enkel ledøkt"; s.time="ca. 1 t 45"; s.blocks=[B("Oppvarming",["Lette ruter."],"20 min"),B("Ruter",["8–10 ruter 3–4 grader under onsight, RPE 5–6.","4 × 4 på led fra juni."],"75 min"),B("Nedtrapping",["Lett klatring."],"10 min")]; s.fields=[["antall","Ruter"]]; break; }
-    const w3=i.y===2027&&i.w===3; const d1=(i.M===1||w3)?"Tension board 2 grader under maks, RPE 7":"Tension board nær maks, RPE 8";
+    const d1=i.M===1?"Tension board 2 grader under maks, RPE 7":"Tension board nær maks, RPE 8";
     const m1=i.light?5:10;
     s.title=i.top?"Board – bare del 1":"Hard buldring – board og prosjekter"; s.time=i.top?"ca. 1 t 30":"ca. 2 t 15";
     s.blocks=[B("Oppvarming",["Som mandag."],"30 min"),
       B("Del 1 · uthvilt",[`${d1}, maks 5 forsøk per problem, 4 min pause.`,`<span class="key">Maks ${m1} forsøk.</span>`,"Kjerne, kompresjon, statiske posisjoner. Ikke to crimp-problemer på rad.",...(i.M===2?["Stopp: grepet åpner seg på et kjent flytt."]:[])],"45 min")];
-    if(!i.top) s.blocks.push(B("Del 2",[(i.M===1||w3)?"RPE 7.":"RPE 8.","Det du ikke fikk på mandag, eller nye buldre i konkurranseformat.",`<span class="key">Maks ${i.light?5:10} forsøk.</span>`],"45 min"));
+    if(!i.top) s.blocks.push(B("Del 2",[i.M===1?"RPE 7.":"RPE 8.","Det du ikke fikk på mandag, eller nye buldre i konkurranseformat.",`<span class="key">Maks ${i.light?5:10} forsøk.</span>`],"45 min"));
     s.blocks.push(B("Nedtrapping",["Store tak."],"15 min"));
     s.notes.push(["acc","Ute-lørdag: erstatter hele lørdagsøkta. Board flyttes til del 1 på mandag."]);
     if(!noTheme&&kd){ s.blocks[0].items.unshift(tLink(kd)); s.theme=kd.n; }
@@ -523,7 +523,7 @@ function vPlan(){
 function vRpe(){
   return `<h2 style="margin-top:18px">RPE og intensitet</h2><p class="small muted">RPE = hvor hardt det kjennes, 1–10. Nå: uke ${info(cur).w} · ${info(cur).label}.</p>
   <div class="card"><h3 style="margin-top:0">RPE-skala</h3><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">1–2</div><div><div class="small"><b>Buldring:</b> Ingen flytt krever noe.</div><div class="small"><b>Styrke:</b> Oppvarmingssett, langt fra slitsomt.</div><div class="small"><b>Linked, tau:</b> Kan snakke hele setninger.</div><p class="small">Brukes i: Oppvarming, nedtrapping</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">3–4</div><div><div class="small"><b>Buldring:</b> Lette buldre, flytende.</div><div class="small"><b>Styrke:</b> Lette oppvarmingssett.</div><div class="small"><b>Linked, tau:</b> Rolig pust, lett varme i underarmene.</div><p class="small">Brukes i: 3×10</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">5–6</div><div><div class="small"><b>Buldring:</b> Middels buldre.</div><div class="small"><b>Styrke:</b> 4 eller flere reps igjen.</div><div class="small"><b>Linked, tau:</b> Merkbar pump som går tilbake i pausen.</div><p class="small">Brukes i: Enkel ledøkt, rutedag</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">7</div><div><div class="small"><b>Buldring:</b> Må ta i på nøkkelflyttet, kontrollert.</div><div class="small"><b>Styrke:</b> 3 reps igjen.</div><div class="small"><b>Linked, tau:</b> Tydelig pump, føttene krever jobb.</div><p class="small">Brukes i: Buldring og board fase 1, linked fase 1</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">8</div><div><div class="small"><b>Buldring:</b> Full kraft, treffer og holder.</div><div class="small"><b>Styrke:</b> 2 reps igjen.</div><div class="small"><b>Linked, tau:</b> Hard pump, flyttene sitter.</div><p class="small">Brukes i: Buldring og linked fra uke 3, styrke</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">9</div><div><div class="small"><b>Buldring:</b> Alt du har, treffer så vidt.</div><div class="small"><b>Styrke:</b> 1 rep igjen – brukes ikke.</div><div class="small"><b>Linked, tau:</b> Kvaliteten holder akkurat.</div><p class="small">Brukes i: Konkurranseformat</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">10</div><div><div class="small"><b>Buldring:</b> Bom eller fall.</div><div class="small"><b>Styrke:</b> Svikt – brukes ikke.</div><div class="small"><b>Linked, tau:</b> Falt av pump.</div><p class="small">Brukes i: Grenseforsøk</p></div></div></div>
-  <div class="card"><h3 style="margin-top:0">Intensitet gjennom sesongen</h3><ul><li>Fase 1: mengde. Buldring 2 grader under maks, RPE 7. Styrke RPE 7–8.</li><li>Fra uke 3: mandag nær maks, RPE 8. Fra uke 4: linked, board og styrke RPE 8.</li><li>Topping og konkurranseuker: mindre volum, samme intensitet.</li><li>Lette uker (48, 1, 10): halvt volum og ett RPE-trinn lavere. 3×10 alltid RPE 3–4.</li></ul></div>`;
+  <div class="card"><h3 style="margin-top:0">Intensitet gjennom sesongen</h3><ul><li>Fase 1: mengde. Buldring 2 grader under maks, RPE 7. Styrke RPE 7–8.</li><li>Fra uke 3: mandag, linked og board nær maks, RPE 8. Fra uke 4: styrke RPE 8.</li><li>Topping og konkurranseuker: mindre volum, samme intensitet.</li><li>Lette uker (48, 1, 10): halvt volum og ett RPE-trinn lavere. 3×10 alltid RPE 3–4.</li></ul></div>`;
 }
 function vRegler(){
   return `<h2 style="margin-top:18px">Regler</h2>
@@ -812,7 +812,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-222434";
+const APP_VERSION="2026-11-05-222640";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
