@@ -442,10 +442,10 @@ function tagsHtml(i){
   if(NYTT[i.w]&&!["før","etter","jul"].includes(i.phase)&&!i.light&&!i.comp) t+=`<span class="tag">Nytt: ${NYTT[i.w]}</span>`;
   return `<div class="meta">${t}</div>`;
 }
-function mobRow(x){ return `<div class="ex"><div class="fig" role="img" aria-label="${x[0]}">${FIG[x[1]]||""}</div><div><div class="exh"><span>${x[0]}${vid(x[0])}</span></div><p>${x[2]}</p><p class="small" style="color:var(--ink)"><b>Klatredrill:</b> ${x[3]}</p></div></div>`; }
+function mobRow(x){ return `<div class="ex"><div class="fig" role="img" aria-label="${x[0]}">${FIG[x[1]]||""}</div><div><div class="exh"><span>${x[0]}${vid(x[0])}</span></div><p>${x[2]}</p></div></div>`; }
 function mobHtml(i){
   const m=mobFor(i);
-  return `<div class="blk"><h4>Mobilitet + klatredriller<span class="dur">25 min</span></h4><p class="small" style="margin:0 0 4px">Ukas tre øvelser, hver med tilhørende klatredrill. Driller på store tak og lett vegg, RPE 3–4. Alle sju under <a href="#mob">Mobilitet</a>.</p></div><div class="exlist">${m.map(mobRow).join("")}</div>`;
+  return `<div class="blk"><h4>Mobilitet<span class="dur">25 min</span></h4><p class="small" style="margin:0 0 4px">Ukas tre øvelser. Alle sju under <a href="#mob">Mobilitet</a>.</p></div><div class="exlist">${m.map(mobRow).join("")}</div>`;
 }
 function sessionCard(s,withAlerts){
   const i=s.i;
@@ -520,7 +520,7 @@ const VIEWS={
 };
 function vMob(){
   return `<h2 style="margin-top:18px">Mobilitet bekken og hofte</h2>
-  <p class="small muted">I oppvarmingene 2–3 øvelser, maks 30 s per hold · torsdag og hjemme: full dose · torsdag 25 min: 3 øvelser + tilhørende driller, roterer per uke.</p>
+  <p class="small muted">I oppvarmingene 2–3 øvelser, maks 30 s per hold · torsdag og hjemme: full dose · torsdag 25 min: 3 øvelser, roterer per uke.</p>
   <div class="card"><div class="exlist">${MOB.map(mobRow).join("")}</div></div>
   <div class="card small"><b>Test uke 45, 51, 7, 13 og 19:</b> dyp knebøy med hæler nede (ja/nei) og høyeste fot du kan sette på veggen uten armtrekk. Føres i loggen på torsdag.</div>`;
 }
@@ -783,7 +783,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-200032";
+const APP_VERSION="2026-11-05-200550";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
