@@ -271,7 +271,7 @@ function session(date,noTheme){
     if(md>=24&&md<=27) s.notes.push(["stop","24.–27. des: ingen harde økter."]);
     return s;
   }
-  if(i.light) s.notes.push(["warn","Lett uke: samme økter, halvt antall forsøk/runder/sett (avrund ned), samme intensitet."]);
+  if(i.light) s.notes.push(["warn","Lett uke: samme økter, halvt antall forsøk/runder/sett (avrund ned) og ett RPE-trinn lavere."]);
   if(i.comp) s.notes.push(["warn",`Konkurranseuke – ${i.comp.navn} ${i.comp.dato}: halvt volum, samme intensitet, ingen campus, ingen PE, ingen nye øvelser.`]);
   const warm=(mob)=>B("Oppvarming",["5 min puls"+(mob?", 8 min mobilitet (dyp knebøy, couch, 90/90, maks 30 s per hold)":", 5 min mobilitet")+".","15 min lett klatring med teknikktemaet – pyramide lett → middels."],mob?"28 min":"25 min");
   switch(i.dow){
@@ -279,7 +279,7 @@ function session(date,noTheme){
     s.key="man"; s.title="Hard buldring"; s.time="ca. 1 t 45";
     if(i.y===2027&&w===13) s.notes.push(["warn","2. påskedag: økta flyttes til tirsdag ved behov – da utgår Styrke A."]);
     let mx, hov;
-    if(i.M===1){ mx=(i.y===2027&&(w===2||w===3))?15:18; hov="5–6 buldre 1–2 grader under maks, RPE 7–8, 3 min pause."; }
+    if(i.M===1){ mx=(i.y===2027&&(w===2||w===3))?15:20; hov="6–7 buldre 2 grader under maks, RPE 7, 3 min pause."; }
     else if(i.M===2){ mx=15; hov="4–6 buldre på og over maks, RPE 9–10, 3–4 min pause."; }
     else { mx=12; hov="4–5 buldre på maks, RPE 9, 4–5 min pause."; }
     if(i.phase==="nm") mx=8; else if(i.comp||i.light) mx=halfDown(mx);
@@ -304,7 +304,7 @@ function session(date,noTheme){
       s.fields=[["antall","Runder"]]; break; }
     const f2=i.y===2027&&w>=2, n=i.light?4:8;
     s.title="Linked boulders"; s.time="ca. 1 t 20";
-    s.blocks=[warm(false),B("Linked boulders",[LB,f2?"10–14 hardere flytt, 2–3 grader under maks, RPE 7–8, 3 min pause mellom hvert.":"12–20 flytt, 3–4 grader under maks, RPE 6–7, 3–4 min pause mellom hvert.",
+    s.blocks=[warm(false),B("Linked boulders",[LB,f2?"10–14 hardere flytt, 2–3 grader under maks, RPE 7–8, 3 min pause mellom hvert.":"12–20 flytt, 3–4 grader under maks, RPE 6–7, 3 min pause mellom hvert.",
       `<span class="key">${n} lange buldre</span>${n===8?", 8 min ekstra pause etter de fire første":""}.`,"Nye buldre hver uke. Fall → neste lange buldre: bytt den vanskeligste delen med én grad lettere.","Tak: volumvegg, slopere og pinch – ikke bare lister."],"40 min"),
       B("Nedtrapping",["Lett klatring."],"15 min")];
     s.fields=[["antall","Lange buldre"]];
@@ -327,7 +327,7 @@ function session(date,noTheme){
     if(i.odd){
       s.title="Styrke B + buldring";
       let items, dur="50 min";
-      if(i.phase==="f1"){ const mx=i.light?6:12; items=[`5–6 koordinasjonsbuldre (dynamiske flytt, paddle, deadpoint) 1–2 grader under maks, RPE 7–8, <span class="key">maks ${mx} forsøk</span>, 3–4 min pause.`]; s.max=mx; }
+      if(i.phase==="f1"){ const mx=i.light?7:14; items=[`6–7 koordinasjonsbuldre (dynamiske flytt, paddle, deadpoint) 2 grader under maks, RPE 7, <span class="key">maks ${mx} forsøk</span>, 3–4 min pause.`]; s.max=mx; }
       else if(i.phase==="f2"){ const mx=i.light?5:10; items=[`4–5 harde buldre, RPE 8–9, <span class="key">maks ${mx} forsøk</span>, 5 min pause.`]; s.max=mx; }
       else { items=["<a href='#teknikk' data-anchor='format'>Konkurranseformat</a>, veksle kvalik og finale. RPE 9."]; dur="40–60 min"; }
       items.push("Et flytt tregere eller mer statisk enn forrige forsøk: ferdig med det buldret.");
@@ -564,7 +564,7 @@ function vPlan(){
 function vRpe(){
   return `<h2 style="margin-top:18px">RPE og intensitet</h2><p class="small muted">RPE = hvor hardt det kjennes, 1–10. Nå: uke ${info(cur).w} · ${info(cur).label}.</p>
   <div class="card"><h3 style="margin-top:0">RPE-skala</h3><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">1–2</div><div><div class="small"><b>Buldring:</b> Ingen flytt krever noe.</div><div class="small"><b>Styrke:</b> Oppvarmingssett, langt fra slitsomt.</div><div class="small"><b>Linked, tau:</b> Kan snakke hele setninger.</div><p class="small">Brukes i: Oppvarming, nedtrapping</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">3–4</div><div><div class="small"><b>Buldring:</b> Lette buldre, flytende.</div><div class="small"><b>Styrke:</b> Lette oppvarmingssett.</div><div class="small"><b>Linked, tau:</b> Rolig pust, lett varme i underarmene.</div><p class="small">Brukes i: 3×10, teknikkdriller, mobilitet</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">5–6</div><div><div class="small"><b>Buldring:</b> Middels buldre, første–andre forsøk.</div><div class="small"><b>Styrke:</b> 4 eller flere reps igjen.</div><div class="small"><b>Linked, tau:</b> Merkbar pump som går tilbake i pausen.</div><p class="small">Brukes i: Oppvarmingspyramide, ledvolum, styrke fase 1</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">7</div><div><div class="small"><b>Buldring:</b> Må ta i på nøkkelflyttet.</div><div class="small"><b>Styrke:</b> 3 reps igjen.</div><div class="small"><b>Linked, tau:</b> Tydelig pump, føttene krever jobb.</div><p class="small">Brukes i: Hard buldring fase 1, linked fase 1, 4 × 4</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">8</div><div><div class="small"><b>Buldring:</b> Full kraft, treffer og holder.</div><div class="small"><b>Styrke:</b> 2 reps igjen.</div><div class="small"><b>Linked, tau:</b> Hard pump, flyttene sitter.</div><p class="small">Brukes i: Linked fase 2, 2 × 4, vektet pull-up, buldring lør fase 2</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">9</div><div><div class="small"><b>Buldring:</b> Alt du har, treffer så vidt.</div><div class="small"><b>Styrke:</b> 1 rep igjen – brukes ikke.</div><div class="small"><b>Linked, tau:</b> Kvaliteten holder akkurat.</div><p class="small">Brukes i: Fase 3, onsight, redpoint</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">10</div><div><div class="small"><b>Buldring:</b> Grenseforsøk – fall er forventet over maks.</div><div class="small"><b>Styrke:</b> Svikt – brukes ikke.</div><div class="small"><b>Linked, tau:</b> Falt av pump.</div><p class="small">Brukes i: Buldring over maks (fra uke 4)</p></div></div></div>
-  <div class="card"><h3 style="margin-top:0">Intensitet gjennom sesongen</h3><ul><li>Fase 1: innlæring. Buldring 1–2 grader under maks, RPE 7–8. Styrke med lett vekt, fokus på teknikk.</li><li>Fase 2: belastning. Fra uke 4 buldring på og over maks. Styrke opp mot RPE 8, aldri til svikt.</li><li>Fase 3: konkurranseperiode. Konkurranseformat og onsight nær maks, mindre volum.</li><li>Lette uker: halvt volum, samme intensitet. 3×10 alltid RPE 3–4.</li></ul></div>`;
+  <div class="card"><h3 style="margin-top:0">Intensitet gjennom sesongen</h3><ul><li>Fase 1: innlæring. Buldring 2 grader under maks, RPE 7. Styrke med lett vekt, fokus på teknikk.</li><li>Fase 2: belastning. Fra uke 4 buldring på og over maks. Styrke opp mot RPE 8, aldri til svikt.</li><li>Fase 3: konkurranseperiode. Konkurranseformat og onsight nær maks, mindre volum.</li><li>Lette uker (48, 1, 5, 12, 16): halvt volum og ett RPE-trinn lavere. 3×10 alltid RPE 3–4.</li></ul></div>`;
 }
 function vRegler(){
   return `<h2 style="margin-top:18px">Regler</h2>
@@ -772,6 +772,22 @@ function fillRpe(root){
   });
 }
 
+/* ============ LETTE UKER: ETT RPE-TRINN NED ============ */
+function lightRpe(root){
+  try{
+    if(!root||KEY==="ingvild"||!["","#idag"].includes(location.hash)) return;
+    const s=session(selDate,true); if(!s||!s.i||!s.i.light) return;
+    const card=root.querySelector(".card"); if(!card) return;
+    card.querySelectorAll(".blk").forEach(bl=>{
+      const h=((bl.querySelector("h4")||{}).textContent||"").toUpperCase();
+      if(/OPPVARMING|NEDTRAPPING|STYRKE|MOBILITET/.test(h)) return;
+      const nx=bl.nextElementSibling; if(nx&&nx.classList.contains("exlist")) return;
+      if(/\b(sett|reps)\b/i.test(bl.textContent)) return;
+      bl.querySelectorAll("li").forEach(li=>{ li.innerHTML=li.innerHTML.replace(/RPE (\d+)(?:–(\d+))?/g,(m,a,b)=>{ a=+a; if(a<5) return m; return b?`RPE ${a-1}–${+b-1}`:`RPE ${a-1}`; }); });
+    });
+  }catch(e){}
+}
+
 /* ============ RUTING ============ */
 function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
 function render(){
@@ -780,7 +796,7 @@ function render(){
   const v=({idag:vIdag,uka:vUka,mob:vMob,konk:vKonk,plan:vPlan,regler:vRegler,rpe:vRpe,teknikk:vTeknikk,logg:vLogg}[t]||VIEWS[t])();
   const focus=document.activeElement;
   if(t==="idag"&&focus&&focus.closest&&focus.closest("#logform")&&focus.tagName!=="BUTTON") return;
-  document.getElementById("view").innerHTML=v; fillRpe(document.getElementById("view"));
+  document.getElementById("view").innerHTML=v; fillRpe(document.getElementById("view")); lightRpe(document.getElementById("view"));
   const on=document.querySelector("nav.tabs a.on"); if(on&&on.scrollIntoView) on.scrollIntoView({block:"nearest",inline:"nearest"});
 }
 window.addEventListener("hashchange",()=>{ render(); window.scrollTo(0,0); });
@@ -820,7 +836,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-210834";
+const APP_VERSION="2026-11-05-213437";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

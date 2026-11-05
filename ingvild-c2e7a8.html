@@ -750,6 +750,22 @@ function fillRpe(root){
   });
 }
 
+/* ============ LETTE UKER: ETT RPE-TRINN NED ============ */
+function lightRpe(root){
+  try{
+    if(!root||KEY==="ingvild"||!["","#idag"].includes(location.hash)) return;
+    const s=session(selDate,true); if(!s||!s.i||!s.i.light) return;
+    const card=root.querySelector(".card"); if(!card) return;
+    card.querySelectorAll(".blk").forEach(bl=>{
+      const h=((bl.querySelector("h4")||{}).textContent||"").toUpperCase();
+      if(/OPPVARMING|NEDTRAPPING|STYRKE|MOBILITET/.test(h)) return;
+      const nx=bl.nextElementSibling; if(nx&&nx.classList.contains("exlist")) return;
+      if(/\b(sett|reps)\b/i.test(bl.textContent)) return;
+      bl.querySelectorAll("li").forEach(li=>{ li.innerHTML=li.innerHTML.replace(/RPE (\d+)(?:–(\d+))?/g,(m,a,b)=>{ a=+a; if(a<5) return m; return b?`RPE ${a-1}–${+b-1}`:`RPE ${a-1}`; }); });
+    });
+  }catch(e){}
+}
+
 /* ============ RUTING ============ */
 function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
 function render(){
@@ -758,7 +774,7 @@ function render(){
   const v=({idag:vIdag,uka:vUka,hodet:vHodet,konk:vKonk,plan:vPlan,regler:vRegler,rpe:vRpe,teknikk:vTeknikk,logg:vLogg}[t]||VIEWS[t])();
   const focus=document.activeElement;
   if(t==="idag"&&focus&&focus.closest&&focus.closest("#logform")&&focus.tagName!=="BUTTON") return;
-  document.getElementById("view").innerHTML=v; fillRpe(document.getElementById("view"));
+  document.getElementById("view").innerHTML=v; fillRpe(document.getElementById("view")); lightRpe(document.getElementById("view"));
   const on=document.querySelector("nav.tabs a.on"); if(on&&on.scrollIntoView) on.scrollIntoView({block:"nearest",inline:"nearest"});
 }
 window.addEventListener("hashchange",()=>{ render(); window.scrollTo(0,0); });
@@ -797,7 +813,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-213116";
+const APP_VERSION="2026-11-05-213437";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
