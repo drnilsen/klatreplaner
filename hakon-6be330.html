@@ -276,6 +276,13 @@ const DRILL=[
  {id:"tempo",n:"Tempo-drill",d:"Samme rute to ganger – bevisst sakte, så naturlig tempo."},
  {id:"krux",n:"Hvil før krux",d:"Rist til pumpen synker."},
  {id:"setning",n:"Én setning",d:"Én setning før start, f.eks. «rolig til første hvil»."}];
+const BTEMA=[
+ {id:"blese",n:"Les buldret",d:"Pek ut hvert flytt før start, klatre som planlagt."},
+ {id:"bstille",n:"Stille føtter",d:"Ingen lyd fra føttene – lyd betyr start på nytt."},
+ {id:"bstopp",n:"Stopp-drill",d:"3 s stillstand med stille føtter etter hvert tredje flytt."},
+ {id:"btempo",n:"Tempo-drill",d:"Samme buldre to ganger – bevisst sakte, så naturlig tempo."},
+ {id:"bpust",n:"Pust før start",d:"Lang utpust, én setning, så første fot."},
+ {id:"bfot",n:"Presis fot",d:"Bare de minste fottakene, 3 s stillstand før hvert flytt."}];
 function drillList(i,n){ const s=Math.max(0,weekIndex(i)); const out=[]; for(let k=0;k<n;k++){ const d=DRILL[(s+k)%DRILL.length]; out.push(`Rute ${k+1}: <a href="#teknikk" data-anchor="tema-${d.id}">${d.n}</a> – ${d.d}`); } return out; }
 
 /* ============ ØKTENE ============ */
@@ -312,14 +319,13 @@ function session(date,noTheme){
     s.fields=[[ "hoved",i.blk==="E"?"B1 tung pull-up: kg × reps":"A1 vektet pull-up: kg × reps"],["antall","Forsøk maksbuldring"]];
     break; }
   case 2: {
-    s.key="tir"; s.title="Teknikk"; s.time="2 t";
-    const nR=i.post?7:5;
-    s.blocks=[B("Oppvarming",["Lett klatring."],"20 min"),
-      B("Buldring",[i.post?"Buldre 3–4 grader under maks.":"10–12 buldre 3–4 grader under maks.","Stille føtter, foten helt inn, ingen justering etter at foten er satt."],i.post?"20 min":"40 min"),
-      B("Led",[`${i.post?"6–7":"4–5"} ruter 2–3 grader under onsight, RPE 5–6.`,"Hvil og klipp merkes fra bakken.","Jagete → lettere rute.",...(noTheme?["Én drill per rute (Ro på ruta)."]:drillList(i,nR))],i.post?"70 min":"50 min"),
-      B("Nedtrapping",["Lett klatring."],"10 min")];
-    if(!noTheme) s.theme=DRILL[Math.max(0,weekIndex(i))%DRILL.length].n;
-    s.fields=[["drill","Drill som fungerte best"]];
+    s.key="tir"; s.title="Teknikk – buldring"; s.time="2 t";
+    const bt=BTEMA[Math.max(0,weekIndex(i))%BTEMA.length];
+    s.blocks=[B("Oppvarming",["Lett buldring."],"20 min"),
+      B("Teknikkbuldring",[...(noTheme?[]:[`Teknikktema: <a class="key" href="#teknikk" data-anchor="tema-${bt.id}">${bt.n}</a> – ${bt.d}`]),"15–20 buldre 3–4 grader under maks, RPE 5–6.","Alltid: stille føtter, foten helt inn, ingen justering etter at foten er satt.","Jagete → lettere buldre."],"90 min"),
+      B("Nedtrapping",["Lett buldring."],"10 min")];
+    if(!noTheme) s.theme=bt.n;
+    s.fields=[["drill","Hva fungerte best"]];
     break; }
   case 3: {
     s.key="ons";
@@ -355,7 +361,7 @@ function session(date,noTheme){
     if(i.post){
       const on=w%2===0, påske=i.y===2027&&w===12;
       s.title=påske?"Fingerstyrke + hard led":"Fingerstyrke + hard led + Styrke B kort"; s.time="ca. 2 t 20";
-      s.extra=fingerHtml(i)+`<div class="blk"><h4>Hard led · ${on?"onsight":"redpoint"}<span class="dur">60 min</span></h4><ul>${(on?["3–4 nye ruter nær onsight-nivå, 6 min lesing, 10–15 min pause."]:["Én prosjektrute, 3–4 forsøk, 15 min pause."]).concat(["Sluttpunkt: to fall på rad under eget onsight-nivå."]).map(x=>`<li>${x}</li>`).join("")}</ul></div>`
+      s.extra=fingerHtml(i)+`<div class="blk"><h4>Hard led · ${on?"onsight":"redpoint"}<span class="dur">60 min</span></h4><ul>${(on?["3–4 nye ruter nær onsight-nivå, 6 min lesing, 10–15 min pause.","Ro på ruta – én drill per rute:",...drillList(i,4)]:["Én prosjektrute, 3–4 forsøk, 15 min pause.",`Ro på ruta: <a href="#teknikk" data-anchor="tema-les">Les ruta</a> og <a href="#teknikk" data-anchor="tema-krux">Hvil før krux</a> på hvert forsøk.`]).concat(["Sluttpunkt: to fall på rad under eget onsight-nivå."]).map(x=>`<li>${x}</li>`).join("")}</ul></div>`
         +(påske?`<div class="note warn">Påske: ingen Styrke B denne uka.</div>`:styrkeHtml(i,"B",true));
       s.fields=[["heng","Fingerheng ekstravekt (kg)"],...(påske?[]:[["chin","Chin-up: kg × reps"]])];
       break; }
@@ -425,7 +431,7 @@ function alerts(date){
 const METRIC={title:"Ekstravekt (kg)",series:[{k:"rm",name:"1RM pull-up",color:"#0f6b5f"},{k:"heng",name:"fingerheng",color:"#ec7d10"}]};
 
 /* ============ VISNINGER ============ */
-const TABS=[["idag","I dag"],["uka","Uka"],["man","Mandag"],["tir","Tirsdag"],["ons","Onsdag"],["tor","Torsdag"],["lor","Lørdag"],["styrke","Styrke"],["test","Test"],["teknikk","Ro på ruta"],["plan","Plan"],["rpe","RPE"],["regler","Regler"],["logg","Logg"]];
+const TABS=[["idag","I dag"],["uka","Uka"],["man","Mandag"],["tir","Tirsdag"],["ons","Onsdag"],["tor","Torsdag"],["lor","Lørdag"],["styrke","Styrke"],["test","Test"],["teknikk","Teknikk"],["plan","Plan"],["rpe","RPE"],["regler","Regler"],["logg","Logg"]];
 let cur=new Date(); cur=new Date(cur.getFullYear(),cur.getMonth(),cur.getDate());
 let selDate=new Date(cur), weekRef=new Date(cur);
 function tabsHtml(t){ return TABS.map(([k,n])=>`<a href="#${k}" class="${k===t?"on":""}">${n}</a>`).join(""); }
@@ -498,7 +504,7 @@ function refCard(title,date){ const s=session(date,true); return `<div class="ca
 function nowOr(dow,fb){ const i=info(cur); return ["før","etter","jul"].includes(i.phase)?fb:addDays(mondayOf(i.y,i.w),dow-1); }
 const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Maksbuldring + Styrke A</h2>${curLabel()}${refCard("Denne uka",nowOr(1,D(2026,47,1)))}`,
- tir:()=>`<h2 style="margin-top:18px">Tirsdag · Teknikk</h2>${curLabel()}${refCard("Før NM",D(2026,47,2))}${refCard("Etter NM",D(2027,11,2))}`,
+ tir:()=>`<h2 style="margin-top:18px">Tirsdag · Teknikk – buldring</h2>${curLabel()}${refCard("Hele sesongen",D(2026,47,2))}`,
  ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · nov–des",D(2026,47,3))}${refCard("Linked boulders · jan–feb",D(2027,3,3))}${refCard("Tau · 2 × 4 (uke 10–14)",D(2027,11,3))}${refCard("Tau · 4 × 4 (uke 15–20)",D(2027,15,3))}`,
  tor:()=>`<h2 style="margin-top:18px">Torsdag · 3×10 + mobilitet</h2>${curLabel()}${refCard("Denne uka",nowOr(4,D(2026,47,4)))}`,
  lor:()=>`<h2 style="margin-top:18px">Lørdag</h2>${curLabel()}${refCard("Denne uka",nowOr(6,D(2026,47,6)))}`,
@@ -515,8 +521,10 @@ function vTest(){
   <div class="card">${testBlocks().map(blkHtml).join("")}</div>`;
 }
 function vTeknikk(){
-  return `<h2 style="margin-top:18px">Ro på ruta</h2><p class="small muted">Én drill per rute på tirsdag. Rekkefølgen roterer under <a href="#idag">I dag</a>.</p>
-  ${DRILL.map(x=>`<div class="card" id="tema-${x.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${x.n}</h3><p style="margin:0">${x.d}</p></div>`).join("")}`;
+  const card=x=>`<div class="card" id="tema-${x.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${x.n}</h3><p style="margin:0">${x.d}</p></div>`;
+  return `<h2 style="margin-top:18px">Teknikk</h2>
+  <h3>Buldring (tirsdag)</h3><p class="small muted">Ett tema per uke. Roterer under <a href="#idag">I dag</a>.</p>${BTEMA.map(card).join("")}
+  <h3>Ro på ruta (hard led, lørdag etter NM)</h3><p class="small muted">Én drill per rute på onsight-lørdager. Redpoint: les ruta og hvil før krux.</p>${DRILL.map(card).join("")}`;
 }
 function vPlan(){
   const {w:cw,y:cy}=isoWeek(cur);
@@ -525,9 +533,9 @@ function vPlan(){
   return `<h2 style="margin-top:18px">Plan</h2>
   <div class="card small"><ul>
    <li><b>Tre ting denne vinteren:</b> sterkere · målt framgang · ro på led.</li>
-   <li><b>Uka før NM:</b> man maksbuldring + Styrke A · tir teknikk · ons linked boulders · tor 3×10 + mobilitet · lør fingerstyrke + maksbuldring + Styrke B. Fre og søn hvile.</li>
-   <li><b>Etter NM (uke 10–20):</b> onsdag tau-utholdenhet · tirsdag mer led · lørdag hard led i stedet for maksbuldring, Styrke B kort.</li>
-   <li><b>NM-uka (uke 9):</b> man test · tir teknikk · ons teknikk 1 t, RPE 5 · tor 3×10 med 2 runder · lør NM, ingen fingerstyrke og ingen Styrke B.</li>
+   <li><b>Uka før NM:</b> man maksbuldring + Styrke A · tir teknikk (buldring) · ons linked boulders · tor 3×10 + mobilitet · lør fingerstyrke + maksbuldring + Styrke B. Fre og søn hvile.</li>
+   <li><b>Etter NM (uke 10–20):</b> onsdag tau-utholdenhet · lørdag hard led med Ro på ruta i stedet for maksbuldring, Styrke B kort.</li>
+   <li><b>NM-uka (uke 9):</b> man test · tir teknikk (buldring) · ons teknikk 1 t, RPE 5 · tor 3×10 med 2 runder · lør NM, ingen fingerstyrke og ingen Styrke B.</li>
    <li><b>Jul (52, 53):</b> fri eller lett klatring, én kjerneøkt i uka. <b>Uke 1:</b> Styrke A og B 2 sett, RPE 7, klatring tir–tor.</li></ul></div>
   <div class="card"><div class="tscroll"><table><thead><tr><th>Uke</th><th>Fra</th><th>Blokk</th><th>Nytt</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
@@ -755,7 +763,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-200228";
+const APP_VERSION="2026-11-05-202429";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
