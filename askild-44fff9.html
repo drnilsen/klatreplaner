@@ -253,7 +253,7 @@ function session(date,noTheme){
     s.count={label:"Runder 3×10",max:r};
     s.blocks=[B("Oppvarming",["Lett klatring."],"15 min"),
       B("3×10",[`<span class="key">${r} runder × 10 min</span> sammenhengende lett klatring, 4+ grader under onsight, RPE 3–4, 5 min pause.`,
-        "Topptau med nedklatring eller traversering.","Runde 1 overdrevet teknikk · runde 2 normalt · runde 3 så lett og stille som mulig."],"40 min"),
+        "Autobelay: ruter på rad, nedfiringen er eneste pause.","Runde 1 overdrevet teknikk · runde 2 normalt · runde 3 så lett og stille som mulig."],"40 min"),
       B("Styrke A",[st.none?st.none:`<a href="#styrke">Styrke A</a> – <span class="key">${st.txt}</span>.`,
         "Stopp i et sett ved RPE-målet eller når teknikken endres."],"35 min")];
     s.notes.push(["acc","Onsdagen ble oransje → ett sett ned i styrke i dag."]);
@@ -528,7 +528,7 @@ function vOns(){ return `<h2 style="margin-top:18px">Onsdag</h2>${curPhaseLabel(
   ${phaseCard("NM-uka (uke 8)",D(2027,8,3))}${phaseCard("Rutedag på led · uke 9–20",D(2027,9,3))}`; }
 function vTor(){ return `<h2 style="margin-top:18px">Torsdag · 3×10 + Styrke A</h2>${curPhaseLabel()}
   ${phaseCard("Vanlig torsdag",D(2026,46,4))}${phaseCard("NM-uka (uke 8)",D(2027,8,4))}
-  <div class="card small">3×10 er regenerering: topptau med nedklatring eller traversering, ikke autobelay. Aldri hardt. Konkurranseuker og lette uker: 2 runder.</div>`; }
+  <div class="card small">3×10 er regenerering på autobelay. Aldri hardt. Konkurranseuker og lette uker: 2 runder.</div>`; }
 function vLor(){ return `<h2 style="margin-top:18px">Lørdag</h2>${curPhaseLabel()}
   <p class="small">Oddetallsuker: buldring i jam-format · partallsuker: tau, alt på led.</p>
   ${phaseCard("Oddetallsuker · jam-format",D(2026,45,6))}${phaseCard("Partall uke 46–50 og 2 · ledvolum",D(2026,50,6))}
