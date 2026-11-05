@@ -213,7 +213,7 @@ function session(date,noTheme){
     s.count={label:"Forsøk",max};
     s.blocks=[
       B("Oppvarming",["5 min puls, mobilitet skulder/hofte.","20 min lett klatring med teknikktemaet – pyramide lett → middels, 10–12 buldre."],"30 min"),
-      B("Hoveddel",[hov, `<span class="key">Maks ${max} forsøk.</span>`,"Les hele buldret før første forsøk. <a href='#regler' data-anchor='rutine'>Rutinen før hvert forsøk</a>. Sitt ned i pausene.","Stopp: "+stopp,
+      B("Hoveddel",[hov, `<span class="key">Maks ${max} forsøk.</span>`,"Les hele buldret før første forsøk. <a href='#teknikk' data-anchor='rutine'>Rutinen før hvert forsøk</a>. Sitt ned i pausene.","Stopp: "+stopp,
         "Spraywall eller board. Board: maks 6 forsøk, vinkel ≤ 35°."],"60–70 min"),
       B("Nedtrapping",["Lett klatring, rist ut."],"10–15 min")];
     s.notes.push(["acc","Helgeregel: klatret i går (søndag) → i dag blir 3×10 med teknikktema."]);
@@ -246,7 +246,7 @@ function session(date,noTheme){
     break; }
   case 4: { // TORSDAG
     if(i.phase==="nm"){ s.key="tor"; s.title="Lett klatring med rutinen"; s.time="20 min";
-      s.blocks=[B("Økt",["20 min lett klatring. Øv på <a href='#regler' data-anchor='rutine'>rutinen før hvert forsøk</a>.","Ingen styrke."],"20 min")]; break; }
+      s.blocks=[B("Økt",["20 min lett klatring. Øv på <a href='#teknikk' data-anchor='rutine'>rutinen før hvert forsøk</a>.","Ingen styrke."],"20 min")]; break; }
     s.key="tor"; s.title="3×10 + Styrke A"; s.time="ca. 1,5 t";
     let r=3; if(i.light||i.comp) r=2;
     const st=strengthSets(i);
@@ -260,14 +260,14 @@ function session(date,noTheme){
     break; }
   case 6: { // LØRDAG
     if(i.phase==="nm"){ s.key="lor"; s.title="NM junior"; s.time="";
-      s.blocks=[B("Konkurranse",["Samme oppvarming som på jam-lørdagene.","<a href='#regler' data-anchor='rutine'>Rutinen før hvert forsøk</a>."])]; break; }
+      s.blocks=[B("Konkurranse",["Samme oppvarming som på jam-lørdagene.","<a href='#teknikk' data-anchor='rutine'>Rutinen før hvert forsøk</a>."])]; break; }
     if(i.odd){
       s.key="lor"; s.title="Buldring i jam-format"; s.time="ca. 2 t";
       const max=i.light?10:20; s.count={label:"Forsøk",max,extra:"Topper"};
       s.blocks=[B("Oppvarming",["Samme rutine hver gang, lik konkurranse."],"25 min"),
         B("Jam-format",["Nye buldre: 8–10 buldre fra lett til grensen, valgfri rekkefølge.",
           `Maks 3 forsøk per buldre, <span class="key">maks ${max} forsøk totalt</span>, minst 2 min pause mellom forsøk.`,
-          "<a href='#regler' data-anchor='rutine'>Rutinen før hvert forsøk</a>.","Mål: like mange topper i siste tredjedel som i første.",
+          "<a href='#teknikk' data-anchor='rutine'>Rutinen før hvert forsøk</a>.","Mål: like mange topper i siste tredjedel som i første.",
           "Sluttpunkt: tiden, eller tre forsøk på rad med dårligere kvalitet.",
           "Uten nye buldre: som mandag, hoveddel 60 min, eller buldre du ikke har prøvd på andre vegger."],"75 min"),
         B("Nedtrapping",["Lett klatring."],"15 min")];
@@ -277,11 +277,11 @@ function session(date,noTheme){
       if(y===2026 || (y===2027&&w<=2)){ title="Tau · ledvolum"; const n=i.light?"3–4":"6–8"; s.count={label:"Ruter",max:null};
         main=[`${n} ruter 3–4 grader under onsight, RPE 5.`,"Sikringsbyttet er pausen.","Fokus: hvilestillinger og klipp i vanskelige posisjoner."]; dur="60 min"; }
       else if(w<=7){ title="Tau · onsight"; const n=i.light?"2–3":"4–5"; s.count={label:"Ruter",max:null};
-        main=[`${n} nye ruter 1–2 grader under onsight, RPE 7.`,"6 min lesing, 8–10 min pause.","<a href='#regler' data-anchor='rutine'>Rutinen før hvert forsøk</a>."]; dur="60 min"; }
+        main=[`${n} nye ruter 1–2 grader under onsight, RPE 7.`,"6 min lesing, 8–10 min pause.","<a href='#teknikk' data-anchor='rutine'>Rutinen før hvert forsøk</a>."]; dur="60 min"; }
       else if(w<=14){ title="Tau · 4 × 4"; const r=(i.light||i.comp)?2:3; s.count={label:"Runder",max:r};
         main=["4 ruter på rad, bare sikringsbyttet som pause.","3–4 grader under onsight, RPE 7–8.",`<span class="key">${r} runder, 10 min pause.</span>`,"Stopp: to fall på rad under eget onsight-nivå."]; dur="75 min"; }
       else { title="Tau · konkurranselikt"; const n=(i.light||i.comp)?"2":"3–4"; s.count={label:"Ruter",max:null};
-        main=[`${n} ruter på eller nær maks på første forsøk, RPE 8–9.`,"6 min lesing, 10–15 min pause.","<a href='#regler' data-anchor='rutine'>Rutinen før hvert forsøk</a>.","Stopp: to fall på rad under eget onsight-nivå."]; dur="60 min"; }
+        main=[`${n} ruter på eller nær maks på første forsøk, RPE 8–9.`,"6 min lesing, 10–15 min pause.","<a href='#teknikk' data-anchor='rutine'>Rutinen før hvert forsøk</a>.","Stopp: to fall på rad under eget onsight-nivå."]; dur="60 min"; }
       s.title=title+" (alt på led)";
       s.blocks=[B("Oppvarming",["Lett buldring, 2 lette ruter på led."],"20 min"), B(title.replace("Tau · ",""),main,dur)];
       if((y===2026&&w>=50)||y===2027) s.blocks.push(B("Falltrening",["Kontrollerte fall over taudraget på overhengende vegg, trener sikrer.","4–6 fall. Start 0,5 m over draget, øk 0,5 m per økt til 2–3 m."],"10 min"));
@@ -586,10 +586,8 @@ function vRegler(){
    <li><b>Sluttpunkt:</b> antall forsøk bestemmes før økta. Føtter som smeller eller fingre som kjennes = ferdig.</li>
    <li><b>Grep:</b> unngå samme type tak hele økta. Har alt vært crimp i en time: noe annet til slutt.</li>
    <li><b>Konkurranse lørdag:</b> erstatter lørdagsøkta.</li></ul></div>
-  <div class="card" id="rutine"><h3 style="margin-top:0">Rutine før hvert forsøk</h3><ul>
-   <li>Pust ut langsomt – lengre ut enn inn, 3 ganger.</li><li>Si de tre første flyttene stille for deg selv.</li>
-   <li>Skuldrene ned, rist hendene.</li><li>Første fot.</li></ul></div>
-  <div class="card small">Teknikkbanken med beskrivelser ligger under <a href="#teknikk">Teknikk</a>. Ett tema per økt; temaet roterer og står under «I dag».</div>
+
+  <div class="card small">Rutinen før hvert forsøk og teknikkbanken ligger under <a href="#teknikk">Teknikk</a>. Ett tema per økt; temaet roterer og står under «I dag».</div>
   <div class="card"><h3 style="margin-top:0">Justering</h3><ul>
    <li><b>Vekstspurt</b> (eller føles klønete) → 3–4 uker: hard buldring 2 grader lettere og maks 10 forsøk, jam maks 12, PE 4 runder, torsdag 3 × 6–8 min.</li>
    <li><b>To oransje dager på rad</b> → neste harde økt blir 3×10.</li>
@@ -667,8 +665,11 @@ const TEKNIKK=[
   feil:["For lenge på dårlig tak.","Hviler i bøyd arm."],prog:"Hvil på mindre tak og brattere vegg."}];
 function temaId(name){ const t=TEKNIKK.find(x=>x.n===name); return t?t.id:""; }
 function vTeknikk(){
-  return `<h2 style="margin-top:18px">Teknikkbank</h2>
-  <p class="small muted">Ett tema per økt i oppvarmingen og i 3×10. Temaet roterer og står under <a href="#idag">I dag</a>.</p>
+  return `<h2 style="margin-top:18px">Teknikk</h2>
+<div class="card" id="rutine"><h3 style="margin-top:0">Rutine før hvert forsøk</h3><ul>
+   <li>Pust ut langsomt – lengre ut enn inn, 3 ganger.</li><li>Si de tre første flyttene stille for deg selv.</li>
+   <li>Skuldrene ned, rist hendene.</li><li>Første fot.</li></ul></div>
+  <h3>Teknikkbank</h3><p class="small muted">Ett tema per økt i oppvarmingen og i 3×10. Temaet roterer og står under <a href="#idag">I dag</a>.</p>
   ${TEKNIKK.map(t=>`<div class="card" id="tema-${t.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${t.n}</h3>
    <p style="margin:0 0 6px"><b>Mål:</b> ${t.mal}</p>
    ${t.slik.length?`<div class="blk"><h4>Slik</h4><ul>${t.slik.map(x=>`<li>${x}</li>`).join("")}</ul></div>`:""}
