@@ -325,7 +325,7 @@ function themeFor(date,cat){
 function addTheme(s,date){
   const cat=themeCat(s); if(!cat) return;
   const [t,d]=themeFor(date,cat);
-  const txt=`Teknikktema: <span class="key">${t}</span> – ${d}`;
+  const txt=`Teknikktema: <a class="key" href="#teknikk" data-anchor="tema-${temaId(t)}">${t}</a> – ${d}`;
   s.theme=t;
   const blk = s.key==="tor" ? s.blocks.find(b=>b.h==="3×10") : s.blocks.find(b=>b.h==="Oppvarming");
   if(blk) blk.items.unshift(txt);
@@ -434,7 +434,7 @@ function alerts(date){
 }
 
 /* ============ VISNINGER ============ */
-const TABS=[["idag","I dag"],["uka","Uka"],["man","Mandag"],["ons","Onsdag"],["tor","Torsdag"],["lor","Lørdag"],["styrke","Styrke"],["plan","Plan"],["rpe","RPE"],["regler","Regler"],["logg","Logg"]];
+const TABS=[["idag","I dag"],["uka","Uka"],["man","Mandag"],["ons","Onsdag"],["tor","Torsdag"],["lor","Lørdag"],["styrke","Styrke"],["teknikk","Teknikk"],["plan","Plan"],["rpe","RPE"],["regler","Regler"],["logg","Logg"]];
 let cur = new Date(); cur = new Date(cur.getFullYear(),cur.getMonth(),cur.getDate());
 let selDate = new Date(cur);
 let weekRef = new Date(cur);
@@ -517,7 +517,7 @@ function vUka(){
 }
 
 // Referansesider for hver økt: alle faser
-function phaseCard(title,date){ const s=session(date); return `<div class="card"><h3 style="margin-top:0">${title}</h3>${notesHtml(s.notes.filter(n=>n[0]!=="acc"))}${sessHtml(s)}</div>`; }
+function phaseCard(title,date){ const s=session(date,true); return `<div class="card"><h3 style="margin-top:0">${title}</h3>${notesHtml(s.notes.filter(n=>n[0]!=="acc"))}${sessHtml(s)}</div>`; }
 function curPhaseLabel(){ return `<p class="small muted">Nå: uke ${info(cur).w} · ${info(cur).label}</p>`; }
 const D=(y,w,dow)=>addDays(mondayOf(y,w),dow-1);
 function vMan(){ return `<h2 style="margin-top:18px">Mandag · Hard buldring</h2>${curPhaseLabel()}
@@ -589,11 +589,7 @@ function vRegler(){
   <div class="card" id="rutine"><h3 style="margin-top:0">Rutine før hvert forsøk</h3><ul>
    <li>Pust ut langsomt – lengre ut enn inn, 3 ganger.</li><li>Si de tre første flyttene stille for deg selv.</li>
    <li>Skuldrene ned, rist hendene.</li><li>Første fot.</li></ul></div>
-  <div class="card"><h3 style="margin-top:0">Teknikkbank – ett tema per økt</h3><p class="small muted" style="margin:0 0 4px">Temaet roterer automatisk og står under «I dag».</p><ul>
-   <li><b>Stille føtter:</b> 3 lette buldre uten lyd fra føttene.</li><li><b>Hofta inn:</b> hofta roteres inn før hånden flyttes.</li>
-   <li><b>Lese før du klatrer:</b> 1 min foran buldret, pek ut hvert flytt.</li><li><b>Flagg og dropknee:</b> lette buldre uten fotbytte.</li>
-   <li><b>Rette armer:</b> albuene strake mellom hvert flytt.</li><li><b>Hvile på tau:</b> tre hvilestillinger, 10 pust i hver.</li>
-   <li><b>Klipping:</b> riktig fot, begge hender.</li></ul></div>
+  <div class="card small">Teknikkbanken med beskrivelser ligger under <a href="#teknikk">Teknikk</a>. Ett tema per økt; temaet roterer og står under «I dag».</div>
   <div class="card"><h3 style="margin-top:0">Justering</h3><ul>
    <li><b>Vekstspurt</b> (eller føles klønete) → 3–4 uker: hard buldring 2 grader lettere og maks 10 forsøk, jam maks 12, PE 4 runder, torsdag 3 × 6–8 min.</li>
    <li><b>To oransje dager på rad</b> → neste harde økt blir 3×10.</li>
@@ -632,6 +628,47 @@ function vRpe(){
    <p class="small muted" style="margin-bottom:0">Uthevet: fasen du er i nå.</p></div>`;
 }
 
+const TEKNIKK=[
+ {id:"stille-fotter",n:"Stille føtter",mal:"Presis fotplassering. Vekten over på foten først når den står.",
+  slik:["Se på taket helt til tåa står.","Plasser foten én gang – ingen justering etterpå.","Flytt vekten over på foten, så hånden."],
+  drill:["3–4 lette buldre eller ruter uten lyd fra føttene.","Partner eller trener lytter og sier fra ved lyd."],
+  feil:["Blikket går videre før foten står.","Skrapelyd eller fot som glir."],prog:"Mindre fottak, så brattere vegg."},
+ {id:"hofta-inn",n:"Hofta inn",mal:"Lengre rekkevidde og mindre armkraft på bratt vegg.",
+  slik:["Vri hofta inn mot veggen på samme side som hånden som skal flytte.","Stå på yttersiden av skoen på den foten.","Skulderen strekkes mot neste tak, armen som holder er rett."],
+  drill:["Lette buldre i bratt vegg: hvert flytt med hofta inn.","Prøv samme flytt med hofta ut og hofta inn – kjenn forskjellen i rekkevidde."],
+  feil:["Hofta ut fra veggen, brystet mot veggen.","Bøyd arm på taket du holder."],prog:"Lengre flytt, mindre tak."},
+ {id:"lese",n:"Lese før du klatrer",mal:"Bedre første forsøk og færre stopp.",
+  slik:["1 min foran buldret eller ruta.","Pek ut hvert håndtak og hvert fottak – også føttene.","Finn nøkkelflyttet og hvilestillingene.","Se for deg sekvensen i riktig tempo."],
+  drill:["Les, klatre uten å stoppe.","Etterpå: hvor skilte planen seg fra det du gjorde?"],
+  feil:["Leser bare hendene.","Planlegger for få flytt framover."],prog:"Lengre buldre og ruter, kortere lesetid."},
+ {id:"flagg",n:"Flagg og dropknee",mal:"Balanse uten fotbytte.",
+  slik:["Flagg: den frie foten strekkes ut som motvekt – bak eller foran den andre foten.","Dropknee: kneet vris ned og inn, hofta mot veggen, låser stillingen i bratt vegg.","Velg flagg der du ellers ville byttet fot."],
+  drill:["Lette buldre uten fotbytte – hvert flytt med flagg eller dropknee.","Samme buldre med flagg på begge sider."],
+  feil:["Flagger med bøyd bein uten spenn.","Dropknee som kjennes i kneet – da ut av stillingen."],prog:"Brattere vegg, mindre fottak."},
+ {id:"rette-armer",n:"Rette armer",mal:"Spare kraft i underarmene.",
+  slik:["Heng i rette armer mellom flyttene.","Flytt med beina og hofta, ikke ved å trekke.","Armen bøyes først når hånden skal videre."],
+  drill:["Lett klatring: sjekk albuene mellom hvert flytt.","Stopp og rett ut armen hvis den er bøyd."],
+  feil:["Henger i bøyde armer mens du leser eller hviler.","Trekker deg inn mot veggen mellom flyttene."],prog:"Brattere vegg, lengre ruter."},
+ {id:"klipping",n:"Klipping",mal:"Trygge og raske klipp fra stabil stilling.",
+  slik:["Klipp fra godt fottak, med tauet i brysthøyde – ikke strekk deg over hodet.","Klipp med både høyre og venstre hånd.","Sjekk at tauet går riktig vei gjennom karabinen og at du ikke klipper med tauet under forrige bolt."],
+  drill:["Lett rute: annenhver klipp med høyre og venstre.","Trener ser på hvert klipp."],
+  feil:["Klipper fra dårlig tak fordi bolten er der.","Drar opp for mye tau over hodet."],prog:"Klipp fra brattere vegg og mindre tak."},
+ {id:"hvile-tau",n:"Hvile på tau",mal:"Hente seg inn underveis på ruta.",
+  slik:["Finn stillinger med rett arm og vekten på føttene: store tak, stemming, hofta inn.","Rist ut én arm om gangen, hånden under hjertehøyde.","Rolig pust – lengre ut enn inn."],
+  drill:["Tre hvilestillinger på en lett rute, 10 pust i hver.","Kjenn etter om pumpen går ned før du klatrer videre."],
+  feil:["Hviler med bøyd arm.","Blir for lenge på et dårlig tak."],prog:"Hvil på mindre tak og brattere vegg."}];
+function temaId(name){ const t=TEKNIKK.find(x=>x.n===name); return t?t.id:""; }
+function vTeknikk(){
+  return `<h2 style="margin-top:18px">Teknikkbank</h2>
+  <p class="small muted">Ett tema per økt i oppvarmingen og i 3×10. Temaet roterer og står under <a href="#idag">I dag</a>.</p>
+  ${TEKNIKK.map(t=>`<div class="card" id="tema-${t.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${t.n}</h3>
+   <p style="margin:0 0 6px"><b>Mål:</b> ${t.mal}</p>
+   <div class="blk"><h4>Slik</h4><ul>${t.slik.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+   <div class="blk"><h4>Øvelse</h4><ul>${t.drill.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+   <div class="blk"><h4>Typiske feil</h4><ul>${t.feil.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+   <p class="small" style="margin:10px 0 0"><b>Vanskeligere:</b> ${t.prog}</p></div>`).join("")}`;
+}
+
 function vLogg(){
   const keys=Object.keys(LOG).sort().reverse();
   // rutenett per uke
@@ -666,7 +703,7 @@ function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=
 function render(){
   const t=route();
   document.getElementById("tabs").innerHTML=tabsHtml(t);
-  const v={idag:vIdag,uka:vUka,man:vMan,ons:vOns,tor:vTor,lor:vLor,styrke:vStyrke,plan:vPlan,regler:vRegler,rpe:vRpe,logg:vLogg}[t]();
+  const v={idag:vIdag,uka:vUka,man:vMan,ons:vOns,tor:vTor,lor:vLor,styrke:vStyrke,plan:vPlan,regler:vRegler,rpe:vRpe,teknikk:vTeknikk,logg:vLogg}[t]();
   const focus=document.activeElement&&document.activeElement.id;
   // ikke overskriv skjema mens man skriver
   if(t==="idag"&&focus&&["fAntall","fTopper","fHoyde","fKom"].includes(focus)) return;
@@ -698,7 +735,7 @@ document.addEventListener("click",async ev=>{
     return;
   }
   if(el.dataset.anchor){ ev.preventDefault(); const go=()=>{ const t=document.getElementById(el.dataset.anchor); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); };
-    if(location.hash!=="#regler"){ location.hash="#regler"; setTimeout(go,150); } else go(); return; }
+    const tab=el.getAttribute("href")||"#regler"; if(location.hash!==tab){ location.hash=tab; setTimeout(go,150); } else go(); return; }
   if(el.dataset.share){ shareText(summary(el.dataset.share),document.getElementById("shareMsg")); return; }
   if(el.dataset.backup){ downloadBackup(); return; }
   if(el.id==="fDel"){ await deleteEntry(ymd(selDate)); render(); return; }
