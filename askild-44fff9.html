@@ -329,13 +329,19 @@ function themeCat(s){
   if(s.key==="lor") return s.title.startsWith("Tau")?"tau":null;
   if(s.key==="ons"&&s.title.startsWith("Rutedag")) return "tau";
   if(s.key==="ons"&&s.title==="Regenerering") return null;
+  if(s.key==="tor") return "tre";
   return "gen";
 }
+// 3×10 på autobelay: bare temaer som passer sammenhengende lett klatring
+const TEMA_TRE=[["Stille føtter","Ingen lyd fra føttene og ingen justering etter plassering – alle tre rundene."],
+ ["Hofta inn","Runde 1 hofta inn på hvert flytt, runde 2 normalt, runde 3 bare der det sparer kraft."],
+ ["Rette armer","Albuene strake mellom hvert flytt – flytt med bein og hofte."],
+ ["Flagg og dropknee","Runde 1 flagg eller dropknee på hvert flytt det går, runde 2 normalt, runde 3 bare der det sparer kraft."]];
 const themeCache={};
 function themeFor(date,cat){
   const key=ymd(date)+cat; if(themeCache[key]) return themeCache[key];
   let n=0; for(let d=new Date(2026,10,2); d<date; d=addDays(d,1)){ if(themeCat(session(d,true))===cat) n++; }
-  const bank=cat==="tau"?TEMA_TAU:TEMA_GEN;
+  const bank=cat==="tau"?TEMA_TAU:cat==="tre"?TEMA_TRE:TEMA_GEN;
   return themeCache[key]=bank[n%bank.length];
 }
 function addTheme(s,date){
@@ -907,7 +913,7 @@ async function shareReport(scope,msgEl){
 document.addEventListener("change",ev=>{ if(ev.target.id==="initInput"){ lsSet(INIT_KEY,ev.target.value.trim()); } });
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-112220";
+const APP_VERSION="2026-11-05-112415";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
