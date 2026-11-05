@@ -229,7 +229,7 @@ function session(date,noTheme){
   const s={i,key:"hvile",title:"Hvile",time:"–",blocks:[],notes:[],fields:[],checks:[],extra:""};
   if(i.phase==="før"||i.phase==="etter"){ s.title=i.label; s.key="utenfor"; return s; }
   if(i.phase==="jul"){ s.key="jul"; s.title="Jul – fri"; s.blocks=[B("I dag",["Fri, lett buldring etter lyst."])]; return s; }
-  if(i.light) s.notes.push(["warn","Lett uke: halvparten så mange harde forsøk, ingen fredagsøkt."]);
+  if(i.light) s.notes.push(["warn","Lett uke: halvparten så mange buldre, ingen fredagsøkt."]);
   if(c) s.notes.push(["warn",`Konkurranseuke – ${c.navn}${c.sted?" "+c.sted:""} ${c.dato}: korte økter, ingen board, ingen styrke.`]);
   const t=pick(i);
   switch(i.dow){
@@ -238,16 +238,16 @@ function session(date,noTheme){
     if(i.y===2027&&w===13) s.notes.push(["warn","2. påskedag: sjekk åpningstider i hallen."]);
     if(i.y===2027&&w===20) s.notes.push(["warn","17. mai: sjekk åpningstider i hallen."]);
     if(c){ s.title="Nye buldre – kort økt"; s.time="ca. 1 t";
-      s.blocks=[B("Oppvarming",[OPPV],"25 min"),B("Nye buldre",["4 buldre du ikke har prøvd før, RPE 8–9. Maks 3 forsøk på hvert.","4 min på hvert buldre, 4 min pause – som i konkurranse.",PUST+"."],"30 min"),B("Nedtrapping",["Lett buldring."],"5 min")];
+      s.blocks=[B("Oppvarming",[OPPV],"25 min"),B("Nye buldre",[`4 buldre du ikke har prøvd før, RPE 8–9. Maks ${c.mx===8?2:3} forsøk på hvert.`,"4 min på hvert buldre, 4 min pause – som i konkurranse.",PUST+"."],"30 min"),B("Nedtrapping",["Lett buldring."],"5 min")];
       s.fields=[["topper","Topper"]]; break; }
     let mx=i.mb===1?14:12; if(i.light) mx=half(mx);
     s.title="Buldring + teknikk"; s.time="ca. 1 t 35";
     s.blocks=[B("Oppvarming",[OPPV],"25 min"),
       B("Teknikk",["Lette buldre med ukas tema, RPE 3–4."],"15 min"),
-      B("Vanskelige buldre",["Buldre du har lyst til å få til – vanskelige for deg.",i.mb===1?"RPE 7–8: du må ta i, men har kontroll. Ikke hardere.":"RPE 8–9: full kraft, men flyttene sitter. Ikke hardere.",`<span class="key">Maks ${mx} harde forsøk.</span> God pause mellom forsøkene, gjerne sittende.`,PUST+".","Stopp når du bommer på ting du klarte tidligere i økta."],"45 min"),
+      B("Vanskelige buldre",["Buldre du har lyst til å få til – vanskelige for deg.",i.mb===1?"RPE 7–8: du må ta i, men har kontroll. Ikke hardere.":"RPE 8–9: full kraft, men flyttene sitter. Ikke hardere.",`<span class="key">${i.light?"3 buldre":i.mb===1?"5 buldre":"4 buldre"}, maks 3 forsøk på hvert.</span>`,i.light?"Ingen ekstra buldre i lett uke.":`Går buldrene på 1–2 forsøk: ta ett eller to buldre til (maks ${i.mb===1?7:6}). Bruker du alle tre forsøkene på de fleste: hold deg til ${i.mb===1?5:4}.`,"God pause mellom forsøkene, gjerne sittende.",PUST+".","Stopp når du bommer på ting du klarte tidligere i økta."],"45 min"),
       B("Nedtrapping",["Lett buldring."],"10 min")];
     if(!noTheme){ s.blocks[1].items.unshift(tLink(t)); s.theme=t.n; }
-    s.fields=[["forsok","Harde forsøk"],["topper","Topper"]];
+    s.fields=[["antBuldre","Buldre"],["topper","Topper"]];
     break; }
   case 3: {
     s.key="ons";
@@ -262,16 +262,16 @@ function session(date,noTheme){
     s.key="fre"; s.title="Board – valgfri"; s.time="ca. 1 t 15";
     s.notes.push(["acc","Sliten → dropp økta, uten å ta den igjen."]);
     s.blocks=[B("Oppvarming",[OPPV,"Avslutt med noen lette boardproblemer."],"25 min"),
-      B("Board",["Problemer du har lyst til å prøve, ikke brattere enn 40°, RPE 7–8.",`<span class="key">Maks 8 harde forsøk.</span> God pause mellom forsøkene.`,"Ingen full crimp.","Resten av tida: lette problemer, eller lek med flytt du ikke får til."],"40 min"),B("Nedtrapping",["Store tak."],"10 min")];
-    s.fields=[["forsok","Harde forsøk"]];
+      B("Board",["Problemer du har lyst til å prøve, ikke brattere enn 40°, RPE 7–8.",`<span class="key">3 problemer, maks 3 forsøk på hvert.</span>`,"Går problemene på 1–2 forsøk: ta ett problem til (maks 4).","God pause mellom forsøkene.","Ingen full crimp.","Resten av tida: lette problemer, eller lek med flytt du ikke får til."],"40 min"),B("Nedtrapping",["Store tak."],"10 min")];
+    s.fields=[["antBuldre","Problemer"]];
     break; }
   case 6: {
     s.key="lor";
     if(c){ s.title=`${c.navn}${c.sted?" "+c.sted:""}`; s.time=""; s.blocks=[B("Konkurranse",[PUST+". Første fot.",`Sjekk <a href="#hodet" data-anchor="format">formatet</a> i innbydelsen.`])]; s.fields=[["resultat","Resultat / plassering"]]; break; }
-    const f=i.light?7:15, fb=i.light?5:10;
+    const f=i.light?3:5, fb=i.light?2:3;
     s.title="Nye buldre + styrke"; s.time="ca. 1 t 40";
     s.blocks=[B("Oppvarming",[OPPV],"25 min"),
-      B("Nye buldre",["Buldre du ikke har prøvd før. Se på buldret, lag en plan, prøv.",i.mb===1?"RPE 7–8.":"RPE 8–9.","Maks 3 forsøk på hvert buldre.",`<span class="key">Maks ${f} forsøk</span> – ${fb} hvis du klatret board fredag.`,"Vil du øve på konkurranse: 4 min på hvert buldre, 4 min pause."],"40 min"),
+      B("Nye buldre",["Buldre du ikke har prøvd før. Se på buldret, lag en plan, prøv.",i.mb===1?"RPE 7–8.":"RPE 8–9.",`<span class="key">${f} buldre, maks 3 forsøk på hvert</span> – ${fb} buldre hvis du klatret board fredag.`,i.light?"Ingen ekstra buldre i lett uke.":"Går buldrene på 1–2 forsøk: ta ett eller to buldre til (maks 7). Bruker du alle tre forsøkene på de fleste: hold deg til antallet over.","Vil du øve på konkurranse: 4 min på hvert buldre, 4 min pause."],"40 min"),
       B("Nedtrapping",["Lett buldring."],"5 min")];
     s.extra=styrkeHtml(i);
     s.notes.push(["acc","Klatret ute i helga: erstatter lørdag. Styrken tas etter buldringen mandag, eller utgår."]);
@@ -295,7 +295,7 @@ async function deleteEntry(date){ delete LOG[date]; lsSet(LS_KEY,JSON.stringify(
 
 const FN={gronn:"grønn",gul:"gul",oransje:"oransje",rod:"rød",svart:"svart"};
 const has=v=>v!=null&&v!=="";
-const FIELDS=["forsok","topper","lorTopper","antall","resultat"];
+const FIELDS=["antBuldre","forsok","topper","lorTopper","antall","resultat"];
 function reportDetail(e){ const t=[]; if(e.miljo) t.push("ga en yngre utøver oppmerksomhet"); for(const f of FIELDS) if(has(e[f])) t.push(`${e[f+"Navn"]||f} ${e[f]}`); if(e.finger) t.push("SMERTE I FINGER"); if(e.kommentar) t.push(e.kommentar); return t.join(" · "); }
 function entryLine(k){ const e=LOG[k], d=parseYmd(k); const det=reportDetail(e); return `${DAYS[isoWeek(d).dow]} ${fmt(d)}: ${FN[e.farge]||"–"} · ${e.okt||""}${det?" · "+det:""}`; }
 function summary(scope){
@@ -453,7 +453,7 @@ function vRegler(){
   <div class="card"><h3 style="margin-top:0">Fingre</h3><ul><li><b>Ingen campusbrett og ingen fingerbrett</b> denne vinteren.</li><li><b>Full crimp:</b> bare uthvilt, ikke de siste 30 minuttene av en økt.</li>
    <li><b>Smerte i et fingerledd:</b> stopp lister og crimp samme økt, si fra samme dag. Over 3 dager, hovent ledd eller smerte ved bøy: lege.</li></ul></div>
   <div class="card"><h3 style="margin-top:0">Det som ligger fast</h3><ul><li><b>Hviledager:</b> tirsdag, torsdag og søndag.</li><li><b>Fredag er valgfri.</b> Sliten → dropp den, uten å ta den igjen.</li>
-   <li><b>RPE:</b> hver økt har et RPE-tall. Kjennes det hardere: lettere buldre eller lengre pause.</li><li><b>Sluttpunkt:</b> forsøkstaket, eller to forsøk på rad med tydelig teknikkfall.</li><li><b>Tapt økt tas ikke igjen.</b></li><li><b>Supersett:</b> aldri samme muskelgruppe.</li></ul></div>
+   <li><b>RPE:</b> hver økt har et RPE-tall. Kjennes det hardere: lettere buldre eller lengre pause.</li><li><b>Sluttpunkt:</b> antall buldre for økta, eller to forsøk på rad med tydelig teknikkfall.</li><li><b>Tapt økt tas ikke igjen.</b></li><li><b>Supersett:</b> aldri samme muskelgruppe.</li></ul></div>
   <div class="card"><h3 style="margin-top:0">Når uka blir annerledes</h3><ul><li><b>Sliten fredag:</b> dropp board.</li><li><b>Bare 2 økter:</b> mandag og lørdag.</li>
    <li><b>Klatret ute i helga:</b> erstatter lørdag. Styrken tas etter buldringen mandag, eller utgår.</li><li><b>To oransje dager på rad:</b> neste økt bare teknikk og lett buldring.</li><li><b>Etter ≥ 5 dager fri:</b> første uke på fase 1-nivå.</li></ul></div>
   <div class="card"><h3 style="margin-top:0">Fargen på dagen</h3><p><span class="dot f-gronn"></span> <b>Grønn</b> uthvilt, god kvalitet, neste økt føles sterkere<br><span class="dot f-gul"></span> <b>Gul</b> vedlikehold<br><span class="dot f-oransje"></span> <b>Oransje</b> trente for sliten, lav kvalitet<br><span class="dot f-rod"></span> <b>Rød</b> trenger flere hviledager → hvile neste dag, si fra<br><span class="dot f-svart"></span> <b>Svart</b> skade → stopp, si fra samme dag</p></div>`;
@@ -664,7 +664,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-175740";
+const APP_VERSION="2026-11-05-180037";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
