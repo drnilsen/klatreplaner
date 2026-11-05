@@ -359,9 +359,11 @@ function session(date,noTheme){
 }
 
 /* Teknikktema – hoftekontroll, roterer per økt (man, ons, tor) */
-const TEMA=[["Hofta inn","Hvert flytt med hofta inn før hånden går."],["Stille føtter","Ingen lyd, ingen justering etter plassering."],
- ["Høyt steg med kontroll","Press opp med beinet, armene bare balanse."],["Flagg i stedet for fotbytte","Ingen fotbytte – flagg der du ellers ville byttet."],
- ["Hoftedrift","Start hvert flytt med hoftebevegelsen."],["Drop knee og twist-lock","Ingen hold i låsen, maks 6–8, ≤ 30°."]];
+const TEMA=[["Hofta inn","Hvert flytt med hofta inn før hånden går.","Runde 1 hofta inn på hvert flytt, runde 2 normalt, runde 3 bare der det sparer kraft."],
+ ["Stille føtter","Ingen lyd, ingen justering etter plassering.","Ingen lyd fra føttene og ingen justering etter plassering – alle tre rundene."],
+ ["Flagg i stedet for fotbytte","Ingen fotbytte – flagg der du ellers ville byttet.","Runde 1 flagg på hvert flytt det går, runde 2 normalt, runde 3 bare der det sparer kraft."],
+ ["Hoftedrift","Start hvert flytt med hoftebevegelsen.","Start hvert flytt med hofta – overdrevet i runde 1."],
+ ["Drop knee og twist-lock","Ingen hold i låsen, maks 6–8, ≤ 30°.","Drop knee der veggen er ≤ 30°, kneet ikke under hofta, ingen hold i låsen, maks 6–8 totalt."]];
 function themeOK(t,date){ const i=info(date); return !(t[0].startsWith("Drop")&&(i.y===2026||i.w<2)); }
 function themeCat(s){ return ["man","ons","tor"].includes(s.key)&&s.title!=="Rutedag på led"&&!s.i.comp&&s.i.phase!=="jul"; }
 const themeCache={};
@@ -373,7 +375,7 @@ function themeFor(date){
 }
 function addTheme(s,date){
   if(!themeCat(s)) return;
-  const [t,d]=themeFor(date);
+  const [t,d0,d3]=themeFor(date); const d=s.key==="tor"?d3:d0;
   const txt=`Teknikktema: <a class="key" href="#teknikk" data-anchor="tema-${temaId(t)}">${t}</a> – ${d}`+(t.startsWith("Drop")?" Bare når full dybde er smertefri.":"");
   s.theme=t;
   const blk=s.key==="tor"?s.tre:s.blocks.find(b=>b.h==="Oppvarming");
@@ -650,11 +652,8 @@ const TEKNIKK=[
   drill:["Spraywall med store volumer: hvert flytt med hofta inn før hånden går.","Samme flytt med brystet mot veggen og med hofta inn – velg det som krever minst.","Lange flytt: hofta inn i stedet for lock-off."],
   feil:["Brystet mot veggen av vane på bratt vegg."],prog:"Lengre flytt, mindre tak."},
  {id:"stille-fotter",n:"Stille føtter",mal:"Én plassering, ingen justering – også i fart.",
-  drill:["Lette buldre uten lyd – lyd betyr start på nytt.","Samme buldre i dobbelt tempo med samme presisjon.","Spraywall: bare de minste fottakene."],
+  drill:["Lette buldre eller ruter uten lyd – lyd betyr start på nytt.","Samme buldre i dobbelt tempo med samme presisjon.","Spraywall: bare de minste fottakene."],
   feil:["Blikket videre før foten er lastet.","Justering etter plassering."],prog:"Mindre tak, brattere vegg, høyere tempo."},
- {id:"hoyt-steg",n:"Høyt steg med kontroll",mal:"Opp på høye fottak med beinet, ikke armene.",
-  drill:["Volumvegg: 3 buldre med høye steg – press opp med beinet, armene bare balanse.","Kontrollert ned samme vei.","Dybde innenfor det smertefrie."],
-  feil:["Drar seg opp med armene.","Faller inn i steget i stedet for å presse."],prog:"Høyere steg, mindre fottak – innenfor smertefri dybde."},
  {id:"flagg",n:"Flagg i stedet for fotbytte",mal:"Flagg som førstevalg der du ellers ville byttet fot.",
   drill:["Lette buldre uten fotbytte – innside- og utsideflagg.","Samme buldre en gang til med flagg på motsatt side.","3×10: runde 1 flagg på hvert flytt det går, runde 2 normalt, runde 3 bare der det sparer kraft."],
   feil:["Fotbytte av vane på lette flytt."],prog:"Brattere vegg, mindre fottak."},
@@ -673,7 +672,7 @@ function vTeknikk(){
    <li><b>Finale:</b> 2 min observasjon, 4 min klatring. Hver tredje gang.</li>
    <li><b>Registrer:</b> topp, sone, forsøk og poeng (topp 25, sone 10, −0,1 per mislykket forsøk).</li></ul></div>
   <div class="card small">Unngå samme type tak hele økta: ikke bare lister, bare board eller bare slopere.</div>
-  <h3>Teknikkbank · hoftekontroll</h3><p class="small muted">Ett tema per økt i oppvarmingen og i 3×10. Temaet roterer og står under <a href="#idag">I dag</a>.</p>
+  <h3>Teknikkbank · hoftekontroll</h3><p class="small muted">Ett tema per økt i oppvarmingen (buldring) og i 3×10 (ruter på autobelay). Temaet roterer og står under <a href="#idag">I dag</a>.</p>
   ${TEKNIKK.map(t=>`<div class="card" id="tema-${t.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${t.n}</h3>
    <p style="margin:0 0 6px"><b>Mål:</b> ${t.mal}</p>
    <div class="blk"><h4>Øvelse</h4><ul>${t.drill.map(x=>`<li>${x}</li>`).join("")}</ul></div>
@@ -882,7 +881,7 @@ async function shareReport(scope,msgEl){
 document.addEventListener("change",ev=>{ if(ev.target.id==="initInput"){ lsSet(INIT_KEY,ev.target.value.trim()); } });
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-110104";
+const APP_VERSION="2026-11-05-112121";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
