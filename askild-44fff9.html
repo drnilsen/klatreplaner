@@ -254,14 +254,9 @@ function session(date,noTheme){
         B("Nedtrapping",["Lett klatring."],"10 min")];
       break; }
     s.key="ons"; s.title="Linked boulders"; s.time="ca. 1 t 15";
-    let main;
-    if(L===1||(i.y===2027&&i.w===3)){ const r=i.light?3:5; s.count={label:"Lange buldre",max:r};
-      main=["12–20 flytt per buldre, 3–4 grader under maks, RPE 6–7.",`<span class="key">${r} lange buldre, 3 min pause mellom hvert.</span>`]; }
-    else { const ser=i.light?1:2; s.count={label:"Lange buldre",max:ser*3};
-      main=["12–16 hardere flytt per buldre, 2–3 grader under maks, RPE 7–8.",`<span class="key">${ser*3} lange buldre, 3 min pause mellom hvert${ser>1?", 8 min ekstra pause etter de tre første":""}.</span>`]; }
+    const lv=(L===1||(i.y===2027&&i.w===3))?1:2, sets=lv===1?(i.light?1:2):(i.light?2:3); s.count={label:"Sett",max:sets};
     s.blocks=[B("Oppvarming",["Som mandag."],"25 min"),
-      B("Linked boulders",["Lange buldre: så mange flytt at det tilsvarer 2–3 vanlige buldre satt sammen (45–90 s). Alltid fullføre.",...main,
-        "Nye buldre hver uke. Hopp ned på siste tak. Fall → neste lange buldre én grad lettere.","Tak: volumvegg, slopere og pinch – ikke bare lister."],L===1?"ca. 25 min":"ca. 35 min"),
+      B("Linked boulders",[...lbItems(sets,lv),"Tak: volumvegg, slopere og pinch – ikke bare lister."],lbDur(sets)),
       B("Nedtrapping",["Lett klatring."],"15 min")];
     break; }
   case 4: { // TORSDAG
@@ -556,7 +551,7 @@ function vMan(){ return `<h2 style="margin-top:18px">Mandag · Hard buldring</h2
   ${phaseCard("Fase 1 · uke 45–51 (og uke 1–2)",D(2026,46,1))}${phaseCard("Fase 2 · uke 3–7",D(2027,3,1))}${phaseCard("Fase 3 · uke 9–20",D(2027,9,1))}
   <div class="card small"><b>Lett uke:</b> halvt antall forsøk. <b>NM-uka:</b> maks 8 forsøk.</div>`; }
 function vOns(){ return `<h2 style="margin-top:18px">Onsdag</h2>${curPhaseLabel()}
-  ${phaseCard("Linked boulders · fase 1 (uke 45–51, 1–2)",D(2026,46,3))}${phaseCard("Linked boulders · fase 2 (uke 3–7)",D(2027,3,3))}
+  ${phaseCard("Linked boulders · fase 1 (uke 45–51, 1–3)",D(2026,46,3))}${phaseCard("Linked boulders · fase 2 (uke 4–7)",D(2027,4,3))}
   ${phaseCard("NM-uka (uke 8)",D(2027,8,3))}${phaseCard("Rutedag på led · uke 9–20",D(2027,9,3))}`; }
 function vTor(){ return `<h2 style="margin-top:18px">Torsdag · 3×10 + Styrke A</h2>${curPhaseLabel()}
   ${phaseCard("Vanlig torsdag",D(2026,46,4))}${phaseCard("NM-uka (uke 8)",D(2027,8,4))}
@@ -929,6 +924,17 @@ function lightRpe(root){
   }catch(e){}
 }
 
+/* ============ LINKED BOULDERS (Lattice) ============ */
+function lbItems(sets,lvl,enkel){
+  const grad=lvl===1?"1–2 grader under flash-graden, RPE 6–7":"rundt flash-graden, RPE 7–8";
+  const it=[enkel?`Velg 1–3 buldre på ca. 12 flytt, ${grad}. Ingen 12 flytt: legg 2–4 traversflytt til starten.`:`Velg 1–3 buldre på ca. 12 flytt, jevnt vanskelige hele veien, ${grad}. Finnes ikke 12 flytt: legg 2–4 harde traversflytt til starten.`,
+    `<span class="key">${sets} sett × 4</span>: klatre buldret 4 ganger med 2 min pause før hver gang. 5 min pause mellom settene.`,
+    "Greit å falle på de siste flyttene på slutten av et sett. Faller du jevnlig før halvveis: lettere buldre. Alt uten fall: hardere neste økt.",
+    "Bytt buldre med noen økters mellomrom."];
+  return it;
+}
+function lbDur(sets){ return sets>=3?"ca. 45 min":sets===2?"ca. 30 min":"ca. 15 min"; }
+
 /* ============ RUTING ============ */
 function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
 function render(){
@@ -979,7 +985,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-213437";
+const APP_VERSION="2026-11-05-213726";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

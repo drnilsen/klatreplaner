@@ -309,14 +309,12 @@ function session(date,noTheme){
     if(c){ s.title="Hvile eller lett klatring"; s.time="20 min"; s.blocks=[B("I dag",["Hvile, eller 20 min lett klatring."])]; break; }
     if(i.phase==="tau"){ s.title="Rutedag på led"; s.time="ca. 1 t 30"; s.blocks=[B("Oppvarming",["Lette ruter."],"20 min"),B("Ruter",["6–8 ruter 2–3 grader under onsight, RPE 6."],"60 min"),B("Nedtrapping",["Lett klatring."],"10 min")]; s.fields=[["antall","Ruter"]]; break; }
     const f2=i.M===2&&!(i.y===2027&&i.w===3);
-    let n=8, split="4, så 8 min ekstra pause, 4 til";
-    if(i.y===2027&&(w===8||w===16)){ n=4; split=""; } else if(i.y===2027&&w===15){ n=6; split="3, så 8 min ekstra pause, 3 til"; } else if(i.light){ n=4; split=""; }
-    s.title="Linked boulders"; s.time="ca. 1 t 20";
-    s.blocks=[B("Oppvarming",["Som mandag."],"25 min"),B("Linked boulders",[LB,f2?"10–14 hardere flytt, 2–3 grader under maks, RPE 7–8, 3 min pause mellom hvert.":"12–20 flytt, 3–4 grader under maks, RPE 6–7, 3 min pause mellom hvert.",
-      `<span class="key">${n} lange buldre</span>${split?": "+split:""}.`,"Fall → neste lange buldre én grad lettere.","Nye kombinasjoner hver uke. Volumvegg, slopere og pinch, kompresjonsflytt."],"35–40 min"),
+    let sets=3; if(i.y===2027&&(w===8||w===16)) sets=1; else if(i.y===2027&&w===15) sets=2; else if(i.light) sets=2;
+    s.title="Linked boulders"; s.time="ca. 1 t 25";
+    s.blocks=[B("Oppvarming",["Som mandag."],"25 min"),B("Linked boulders",[...lbItems(sets,f2?2:1),"Volumvegg, slopere og pinch, kompresjonsflytt."],lbDur(sets)),
       B("Nedtrapping",["Lett klatring."],"15 min")];
     if(!noTheme&&kd){ s.blocks[0].items.unshift(tLink(kd)); s.theme=kd.n; }
-    s.fields=[["antall","Lange buldre"]];
+    s.fields=[["antall","Sett"]];
     break; }
   case 4: {
     s.key="tor";
@@ -478,7 +476,7 @@ function nowOr(dow,fb){ const i=info(cur); return ["før","etter","jul"].include
 const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring – mengde</h2>${curLabel()}${refCard("Fase 1 og uke 2",D(2026,46,1))}${refCard("Fra uke 3",D(2027,3,1))}${refCard("Konkurranseuke",D(2027,5,1))}`,
  tir:()=>`<h2 style="margin-top:18px">Tirsdag · Bein + skulderprogram</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,46,2)))}`,
- ons:()=>`<h2 style="margin-top:18px">Onsdag · Linked boulders</h2>${curLabel()}${refCard("Fase 1 og uke 2",D(2026,46,3))}${refCard("Fra uke 3",D(2027,3,3))}<div class="card small"><b>Antall lange buldre:</b> 8 (4 + 4) · lett uke 4 · uke 15: 6 (3 + 3) · uke 8 og 16: 4 · konkurranseuker: ingen · uke 20: rutedag på led.</div>`,
+ ons:()=>`<h2 style="margin-top:18px">Onsdag · Linked boulders</h2>${curLabel()}${refCard("Fase 1 og uke 2",D(2026,46,3))}${refCard("Fra uke 3",D(2027,3,3))}<div class="card small"><b>Linked, sett × 4:</b> 3 · lett uke 2 · uke 15: 2 · uke 8 og 16: 1 · konkurranseuker: ingen · uke 20: rutedag på led.</div>`,
  tor:()=>`<h2 style="margin-top:18px">Torsdag · 3×10 + Styrke B</h2>${curLabel()}${refCard("Denne uka",nowOr(4,D(2026,46,4)))}`,
  lor:()=>`<h2 style="margin-top:18px">Lørdag · Board og prosjekter</h2>${curLabel()}${refCard("Fase 1",D(2026,46,6))}${refCard("Fra uke 3",D(2027,3,6))}${refCard("Topping",D(2027,8,6))}`,
 };
@@ -496,9 +494,9 @@ function vKonk(){
    <li><b>Tir:</b> skulderprogram 2 sett, RPE 7, + 20 min mobilitet. Ingen bein.</li><li><b>Ons:</b> hvile eller 20 min lett klatring.</li>
    <li><b>Tor:</b> 3×10 med 2 runder. Aktivering: 3–4 middels buldre på første forsøk.</li><li><b>Fre:</b> hvile.</li><li><b>Lør(–søn):</b> konkurranse. Oppvarming 30–40 min før isolasjon/start.</li></ul></div>
   <div class="card"><h3 style="margin-top:0">Topping (uke 7–8 og 15–16)</h3><div class="tscroll"><table><thead><tr><th>Uke</th><th>Mandag</th><th>Linked</th><th>Lørdag</th><th>Styrke</th></tr></thead><tbody>
-   <tr><td>Fase 2</td><td>15 forsøk</td><td>8 lange buldre</td><td>20 forsøk</td><td>Fullt</td></tr>
-   <tr><td>7 / 15</td><td>10</td><td>– (7) / 6 (15)</td><td>NC2 / bare del 1, maks 10</td><td>Uke 7: skulder 2 sett · uke 15: 3 sett</td></tr>
-   <tr><td>8 / 16</td><td>10</td><td>4</td><td>Bare del 1, maks 10</td><td>2 sett, RPE 8</td></tr></tbody></table></div></div>
+   <tr><td>Fase 2</td><td>15 forsøk</td><td>3 sett × 4</td><td>20 forsøk</td><td>Fullt</td></tr>
+   <tr><td>7 / 15</td><td>10</td><td>– (7) / 2 sett (15)</td><td>NC2 / bare del 1, maks 10</td><td>Uke 7: skulder 2 sett · uke 15: 3 sett</td></tr>
+   <tr><td>8 / 16</td><td>10</td><td>1 sett</td><td>Bare del 1, maks 10</td><td>2 sett, RPE 8</td></tr></tbody></table></div></div>
   <div class="card" id="format" style="scroll-margin-top:110px"><h3 style="margin-top:0">Konkurranseformat</h3><ul>
    <li><b>NC-kvalik (kø):</b> 12 buldre, 90 min, fri rekkefølge, ett forsøk per tur. Sone 1, sone 2, topp. I trening: 8 buldre, 45 min.</li>
    <li><b>NC-finale:</b> 4 buldre, 4 min klatretid, 8 min felles observasjon før start.</li>
@@ -752,6 +750,17 @@ function lightRpe(root){
   }catch(e){}
 }
 
+/* ============ LINKED BOULDERS (Lattice) ============ */
+function lbItems(sets,lvl,enkel){
+  const grad=lvl===1?"1–2 grader under flash-graden, RPE 6–7":"rundt flash-graden, RPE 7–8";
+  const it=[enkel?`Velg 1–3 buldre på ca. 12 flytt, ${grad}. Ingen 12 flytt: legg 2–4 traversflytt til starten.`:`Velg 1–3 buldre på ca. 12 flytt, jevnt vanskelige hele veien, ${grad}. Finnes ikke 12 flytt: legg 2–4 harde traversflytt til starten.`,
+    `<span class="key">${sets} sett × 4</span>: klatre buldret 4 ganger med 2 min pause før hver gang. 5 min pause mellom settene.`,
+    "Greit å falle på de siste flyttene på slutten av et sett. Faller du jevnlig før halvveis: lettere buldre. Alt uten fall: hardere neste økt.",
+    "Bytt buldre med noen økters mellomrom."];
+  return it;
+}
+function lbDur(sets){ return sets>=3?"ca. 45 min":sets===2?"ca. 30 min":"ca. 15 min"; }
+
 /* ============ RUTING ============ */
 function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
 function render(){
@@ -800,7 +809,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-213437";
+const APP_VERSION="2026-11-05-213726";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
