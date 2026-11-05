@@ -318,10 +318,10 @@ function session(date,noTheme){
     if(cf){ s.title="3×10 + aktivering"; s.time="ca. 40 min";
       s.blocks=[B("3×10",["2 runder × 10 min lett klatring på autobelay, RPE 3–4."],"25 min"),B("Aktivering",["3–4 middels buldre på første forsøk, RPE 5–6."],"10 min"),B("Ingen spenst eller styrke",["Siste 5 dager før konkurranse."])];
       break; }
-    if(i.phase==="led"){ s.title="3×10 + skulder"; s.time="ca. 1 t 20"; }
-    else { s.title="Spenst + 3×10 + skulder"; s.time="ca. 1 t 45"; s.spenst=true; }
-    s.blocks=[B("Oppvarming",["Lett klatring og mobilitet."],"15 min")];
-    s.tre=B("3×10",[`${i.light?2:3} runder × 10 min sammenhengende lett klatring på autobelay, 4+ grader under onsight, RPE 3–4, 5 min pause.`,
+    if(i.phase==="led"){ s.title="3×10 + skulder"; s.time="ca. 1 t 10"; }
+    else { s.title="Spenst + 3×10 + skulder"; s.time="ca. 1 t 40"; s.spenst=true; }
+    s.blocks=s.spenst?[B("Oppvarming",["Puls og mobilitet, ingen klatring – før spensten."],"10 min")]:[];
+    s.tre=B("3×10",["Ingen egen oppvarming – første runde er oppvarmingen.",`${i.light?2:3} runder × 10 min sammenhengende lett klatring på autobelay, 4+ grader under onsight, RPE 3–4, 5 min pause.`,
       "Runde 1 overdrevet teknikk · runde 2 normalt · runde 3 så lett og stille som mulig."],"40 min");
     s.skulder=true; s.fields=[["antall","Spenst (kontakter)"]];
     break; }
@@ -881,7 +881,7 @@ async function shareReport(scope,msgEl){
 document.addEventListener("change",ev=>{ if(ev.target.id==="initInput"){ lsSet(INIT_KEY,ev.target.value.trim()); } });
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-112121";
+const APP_VERSION="2026-11-05-112220";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

@@ -263,12 +263,12 @@ function session(date,noTheme){
   case 4: { // TORSDAG
     if(i.phase==="nm"){ s.key="tor"; s.title="Lett klatring med rutinen"; s.time="20 min";
       s.blocks=[B("Økt",["20 min lett klatring. Øv på <a href='#teknikk' data-anchor='rutine'>rutinen før hvert forsøk</a>.","Ingen styrke."],"20 min")]; break; }
-    s.key="tor"; s.title="3×10 + Styrke A"; s.time="ca. 1,5 t";
+    s.key="tor"; s.title="3×10 + Styrke A"; s.time="ca. 1 t 15";
     let r=3; if(i.light||i.comp) r=2;
     const st=strengthSets(i);
     s.count={label:"Runder 3×10",max:r};
-    s.blocks=[B("Oppvarming",["Lett klatring."],"15 min"),
-      B("3×10",[`<span class="key">${r} runder × 10 min</span> sammenhengende lett klatring, 4+ grader under onsight, RPE 3–4, 5 min pause.`,
+    s.blocks=[
+      B("3×10",[`Ingen egen oppvarming – første runde er oppvarmingen.`,`<span class="key">${r} runder × 10 min</span> sammenhengende lett klatring, 4+ grader under onsight, RPE 3–4, 5 min pause.`,
         "Autobelay: ruter på rad, nedfiringen er eneste pause.","Runde 1 overdrevet teknikk · runde 2 normalt · runde 3 så lett og stille som mulig."],"40 min"),
       B("Styrke A",[st.none?st.none:`<a href="#styrke">Styrke A</a> – <span class="key">${st.txt}</span>.`,
         "Stopp i et sett ved RPE-målet eller når teknikken endres."],"35 min")];
@@ -907,7 +907,7 @@ async function shareReport(scope,msgEl){
 document.addEventListener("change",ev=>{ if(ev.target.id==="initInput"){ lsSet(INIT_KEY,ev.target.value.trim()); } });
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-110104";
+const APP_VERSION="2026-11-05-112220";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
