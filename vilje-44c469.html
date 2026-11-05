@@ -532,11 +532,7 @@ function vRpe(){
   return `<h2 style="margin-top:18px">RPE og intensitet</h2>
   <p class="small muted">RPE = hvor hardt det kjennes, 1–10. Nå: uke ${info(cur).w} · ${info(cur).label}.</p>
   <div class="card"><h3 style="margin-top:0">RPE-skala</h3><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">3–4</div><div><div class="small"><b>Styrke:</b> Oppvarmingssett.</div><div class="small"><b>Lett klatring:</b> Rolig pust, lett varme. Trinn 1.</div></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">5</div><div><div class="small"><b>Styrke:</b> 4 eller flere reps igjen.</div><div class="small"><b>Lett klatring:</b> Lett pump som går over i pausen. Fra trinn 2.</div></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">6–7</div><div><div class="small"><b>Styrke:</b> 3–4 reps igjen. Lette uker, tung skoleuke.</div><div class="small"><b>Lett klatring:</b> Merkbar pump – for hardt.</div></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">7–8</div><div><div class="small"><b>Styrke:</b> 2–3 reps igjen. Arbeidssett 8–12.</div></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">8</div><div><div class="small"><b>Styrke:</b> 2 reps igjen. Hovedløft 3–5.</div></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">9</div><div><div class="small"><b>Styrke:</b> 1 rep igjen. Brukes ikke.</div></div></div></div>
-  <div class="card itab"><h3 style="margin-top:0">Intensitet per økt</h3>
-   <div class="blk"><h4>Styrke</h4><ul><li><span class="muted">Uke 43–52:</span> 8–12 reps, RPE 7–8. Pause 60–90 s, stabilisering 45–60 s. Stopp i et sett: RPE-målet, eller teknikken endres.</li>
-    <li><span class="muted">Uke 1–20:</span> hovedløft 3–5 / 4–6 reps, RPE 8, A1 → 2 min → A2 → 2 min. Øvrige 8–12. Fingersmerte → stropper tilbake.</li>
-    <li><span class="muted">Trinn 3–4:</span> styrkevolumet justeres når klatrevolumet øker.</li></ul></div>
-   <div class="blk"><h4>Lett klatring</h4><ul><li>Trinn 1: jugs, RPE 3–4. Trinn 2: åpne lister, RPE 3–5. Stopp: smerteregelen.</li><li>Klatrevolum opp trinn for trinn.</li></ul></div></div>`;
+  <div class="card"><h3 style="margin-top:0">Intensitet gjennom sesongen</h3><ul><li>Uke 43–52: styrke 8–12 reps, RPE 7–8. Lett klatring RPE 3–4.</li><li>Fra uke 1: hovedløft 3–6 reps, RPE 8. Øvrige øvelser 8–12 reps.</li><li>Lett klatring øker trinn for trinn, RPE 3–5. Smerteregelen gjelder alltid.</li><li>Lette uker: 2 sett, RPE 6–7.</li></ul></div>`;
 }
 function vRegler(){
   return `<h2 style="margin-top:18px">Regler</h2>
@@ -856,7 +852,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-210602";
+const APP_VERSION="2026-11-05-210834";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
