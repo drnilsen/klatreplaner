@@ -173,7 +173,7 @@ function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; 
 
 const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
 const COMP={5:{navn:"NC buldring",sted:"Kristiansund",dato:"lør 6. feb",mx:12},7:{navn:"NC2 buldring",sted:"",dato:"lør 20. feb",mx:12},8:{navn:"NM junior",sted:"Trondheim",dato:"lør 27. feb",mx:8}};
-const NYTT={48:"Lett uke",1:"Lett uke",2:"Fase 1-nivå",3:"Vanskeligere buldre mandag",4:"Linked boulders: 3 sett, ca. 12 flytt på flash-graden",6:"Styrke 3 sett",9:"Lett uke",12:"Påske, lett uke",16:"Lett uke"};
+const NYTT={48:"Lett uke",1:"Lett uke",2:"Fase 1-nivå",3:"Vanskeligere buldre mandag",4:"Linked boulders: 2 sett, ca. 12 flytt på flash-graden",6:"Styrke 3 sett",9:"Lett uke",12:"Påske, lett uke",16:"Lett uke"};
 function info(date){
   const {y,w,dow}=isoWeek(date);
   const i={date,y,w,dow,light:false,phase:"utenfor",label:"Utenfor planen",comp:null,mb:1,lk:1,st:2};
@@ -255,8 +255,8 @@ function session(date,noTheme){
   case 3: {
     s.key="ons";
     if(c){ s.title="Kort buldreøkt"; s.time="45 min"; s.blocks=[B("Økt",["Oppvarming 20 min.","3 buldre på RPE 8, maks 2 forsøk på hvert. God pause."],"45 min")]; s.fields=[["topper","Topper"]]; break; }
-    const sets=i.light?1:(i.lk===1?2:3);
-    s.title="Linked boulders"; s.time=sets===3?"ca. 1 t 15":"ca. 1 t";
+    const sets=i.lk===1?(i.light?2:3):(i.light?1:2);
+    s.title="Linked boulders"; s.time=lbTot(sets,30);
     s.blocks=[B("Oppvarming",[OPPV],"20 min"),B("Linked boulders",[...lbItems(sets,i.lk,true),"Varier: volumer, slopere og klyper, ikke bare lister."],lbDur(sets)),B("Nedtrapping",["Lett buldring."],"10 min")];
     s.fields=[["antall","Sett"]];
     break; }
@@ -686,7 +686,8 @@ function lbItems(sets,lvl,enkel){
     "Bytt buldre med noen økters mellomrom."];
   return it;
 }
-function lbDur(sets){ return sets>=3?"ca. 45 min":sets===2?"ca. 30 min":"ca. 15 min"; }
+function lbDur(sets){ return "ca. "+sets*15+" min"; }
+function lbTot(sets,extra){ const m=sets*15+extra; return "ca. "+(m>=60?Math.floor(m/60)+" t"+(m%60?" "+m%60:""):m+" min"); }
 
 /* ============ RUTING ============ */
 function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
@@ -737,7 +738,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-221955";
+const APP_VERSION="2026-11-05-223240";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

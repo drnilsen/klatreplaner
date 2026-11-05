@@ -253,8 +253,8 @@ function session(date,noTheme){
           "Fall eller heng → neste runde ett hakk lettere. Alt lett → ett hakk hardere neste økt."],"55 min"),
         B("Nedtrapping",["Lett klatring."],"10 min")];
       break; }
-    s.key="ons"; s.title="Linked boulders"; s.time="ca. 1 t 15";
-    const lv=(L===1||(i.y===2027&&i.w===3))?1:2, sets=lv===1?(i.light?1:2):(i.light?2:3); s.count={label:"Sett",max:sets};
+    s.key="ons"; s.title="Linked boulders";
+    const lv=(L===1||(i.y===2027&&i.w===3))?1:2, sets=lv===1?(i.light?2:3):(i.light?1:2); s.time=lbTot(sets,40); s.count={label:"Sett",max:sets};
     s.blocks=[B("Oppvarming",["Som mandag."],"25 min"),
       B("Linked boulders",[...lbItems(sets,lv),"Tak: volumvegg, slopere og pinch – ikke bare lister."],lbDur(sets)),
       B("Nedtrapping",["Lett klatring."],"15 min")];
@@ -936,7 +936,8 @@ function lbItems(sets,lvl,enkel){
     "Bytt buldre med noen økters mellomrom."];
   return it;
 }
-function lbDur(sets){ return sets>=3?"ca. 45 min":sets===2?"ca. 30 min":"ca. 15 min"; }
+function lbDur(sets){ return "ca. "+sets*15+" min"; }
+function lbTot(sets,extra){ const m=sets*15+extra; return "ca. "+(m>=60?Math.floor(m/60)+" t"+(m%60?" "+m%60:""):m+" min"); }
 
 /* ============ RUTING ============ */
 function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
@@ -988,7 +989,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-221955";
+const APP_VERSION="2026-11-05-223240";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
