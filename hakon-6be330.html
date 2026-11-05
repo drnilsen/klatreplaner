@@ -715,6 +715,40 @@ document.addEventListener("change",ev=>{ if(ev.target.id==="initInput"){ lsSet(I
 /* Videolenke: YouTube-søk på øvelsen */
 function vid(name){ const t=(typeof VID!=="undefined")&&VID[name]; return t?` <a class="vid" href="https://www.youtube.com/results?search_query=${encodeURIComponent(t)}" target="_blank" rel="noopener">Video ↗</a>`:""; }
 
+/* ============ RPE PÅ ALLE DELØKTER ============ */
+const RPE_DEF=[
+ [/^(SLUTTPUNKT|OVERGANG|HVILEDAG|INGEN )/i,null],
+ [/OPPVARMING/i,"RPE 2–5, gradvis opp."],
+ [/^NEDTRAPPING/i,"RPE 1–2."],
+ [/PILATES/i,"RPE 4–5."],
+ [/MOBILITET|^PAUSE/i,"RPE 2–3."],
+ [/FALLTRENING/i,"RPE 3–4."],
+ [/AKTIVERING/i,"RPE 5–6."],
+ [/^KONKURRANSE$/i,"RPE 9–10."],
+ [/^LETT BULDRING/i,"RPE 3–4."],
+ [/^SPENST/i,"RPE 7: full fart og høyde på hver kontakt, stopp når høyden faller."],
+ [/^TEST/i,"Siste løft RPE 10 – tyngste du klarer med god teknikk."],
+ [/^SVA/i,"RPE 3–5."],
+ [/^JAM/i,"RPE 5–9, fra lett til grensen."],
+ [/KONKURRANSEUKE/i,"RPE 7."],
+ [/NYE BULDRE|^HOVEDDEL|KONKURRANSEFORMAT|^DEL 2|REDPOINT|ONSIGHT/i,"RPE 8–9."],
+ [/^STYRKE/i,"RPE 7–8."],
+ [/^(I DAG|ØKT)/i,t=>/aktivering/i.test(t)?"Aktivering: RPE 5–6.":/Styrke A, 2 sett/.test(t)?"RPE 7.":/lett(e)? (klatr|buldr|sva|ruter)|lette (klatre|ruter)/i.test(t)?"Lett klatring: RPE 3–4.":null]];
+function fillRpe(root){
+  if(!root) return;
+  root.querySelectorAll(".blk").forEach(bl=>{
+    const h4=bl.querySelector("h4"); if(!h4) return;
+    const head=(h4.childNodes[0]&&h4.childNodes[0].textContent||"").trim().toUpperCase(); if(!head) return;
+    let t=bl.innerText||bl.textContent; const nx=bl.nextElementSibling; if(nx&&nx.classList.contains("exlist")) t+=nx.textContent;
+    if(/RPE/.test(t)) return;
+    const r=RPE_DEF.find(x=>x[0].test(head)); if(!r||!r[1]) return;
+    const txt=typeof r[1]==="function"?r[1](t):r[1]; if(!txt) return;
+    const html=txt.replace(/RPE \d+(–\d+)?/,m=>`<a href="#rpe">${m}</a>`);
+    const ul=bl.querySelector("ul");
+    if(ul) ul.insertAdjacentHTML("afterbegin",`<li>${html}</li>`); else h4.insertAdjacentHTML("afterend",`<ul><li>${html}</li></ul>`);
+  });
+}
+
 /* ============ RUTING ============ */
 function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
 function render(){
@@ -723,7 +757,7 @@ function render(){
   const v=({idag:vIdag,uka:vUka,styrke:vStyrke,test:vTest,plan:vPlan,regler:vRegler,rpe:vRpe,teknikk:vTeknikk,logg:vLogg}[t]||VIEWS[t])();
   const focus=document.activeElement;
   if(t==="idag"&&focus&&focus.closest&&focus.closest("#logform")&&focus.tagName!=="BUTTON") return;
-  document.getElementById("view").innerHTML=v;
+  document.getElementById("view").innerHTML=v; fillRpe(document.getElementById("view"));
   const on=document.querySelector("nav.tabs a.on"); if(on&&on.scrollIntoView) on.scrollIntoView({block:"nearest",inline:"nearest"});
 }
 window.addEventListener("hashchange",()=>{ render(); window.scrollTo(0,0); });
@@ -763,7 +797,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-202429";
+const APP_VERSION="2026-11-05-202652";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
