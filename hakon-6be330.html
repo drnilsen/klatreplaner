@@ -270,20 +270,22 @@ function fingerHtml(i){
 
 /* ============ RO PÅ RUTA ============ */
 const DRILL=[
- {id:"les",n:"Les ruta",d:"2–3 hvil og klippene merkes fra bakken. Følg planen."},
- {id:"pust",n:"Pust ved klipp",d:"Lang utpust ved hver klipp."},
- {id:"stopp",n:"Stopp-drill",d:"Stopp 3 s etter hvert femte flytt, føttene stille."},
- {id:"tempo",n:"Tempo-drill",d:"Samme rute to ganger – bevisst sakte, så naturlig tempo."},
- {id:"krux",n:"Hvil før krux",d:"Rist til pumpen synker."},
- {id:"setning",n:"Én setning",d:"Én setning før start, f.eks. «rolig til første hvil»."}];
+ {id:"les",n:"Les ruta",d:["2 min lesing fra bakken.","Merk 2–3 hvil, alle klippestillinger og kruxet, med 2 alternative sekvenser for kruxet.","Etter ruta: sammenlign planen med det som faktisk skjedde, noter avvik."]},
+ {id:"klipp",n:"Klipp fra rett arm",d:["Klipp bare fra grepet du planla, med rett arm.","Lang utpust etter hver klipp før neste flytt.","Klipp fra bøyd arm eller dårlig grep noteres etterpå.","Progresjon: let etter dobbelklipp."]},
+ {id:"stopp",n:"Stopp-drill",d:["Stopp 3 s i stabil posisjon etter hvert femte flytt.","Bestem de neste 3–5 flyttene mens du står stille.","Progresjon: stopp bare der du selv velger, maks 4 stopp."]},
+ {id:"tempo",n:"Planlagt tempo",d:["Del ruta i seksjoner fra bakken: «rask» på bratt vegg, «rolig» på teknisk terreng.","Klatre etter planen.","Etter ruta: noter hvilke seksjoner som ble jagete."]},
+ {id:"krux",n:"Hvil før krux",d:["Rist annenhver arm til pumpen synker, minst 3 ristinger per arm.","To rolige pust per risting. Første krux-flytt tas etter en lang utpust.","Progresjon: finn et hvil underveis som ikke var planlagt fra bakken."]},
+ {id:"setning",n:"Én setning før start",d:["Én konkret setning om utførelsen, f.eks. «lang utpust ved hver klipp».","Gjenta den ved hvert hvil.","Etter ruta: ble den fulgt, ja eller nei."]}];
 const BTEMA=[
- {id:"blese",n:"Les buldret",d:"Pek ut hvert flytt før start, klatre som planlagt."},
- {id:"bstille",n:"Stille føtter",d:"Ingen lyd fra føttene – lyd betyr start på nytt."},
- {id:"bstopp",n:"Stopp-drill",d:"3 s stillstand med stille føtter etter hvert tredje flytt."},
- {id:"btempo",n:"Tempo-drill",d:"Samme buldre to ganger – bevisst sakte, så naturlig tempo."},
- {id:"bpust",n:"Pust før start",d:"Lang utpust, én setning, så første fot."},
- {id:"bfot",n:"Presis fot",d:"Bare de minste fottakene, 3 s stillstand før hvert flytt."}];
-function drillList(i,n){ const s=Math.max(0,weekIndex(i)); const out=[]; for(let k=0;k<n;k++){ const d=DRILL[(s+k)%DRILL.length]; out.push(`Rute ${k+1}: <a href="#teknikk" data-anchor="tema-${d.id}">${d.n}</a> – ${d.d}`); } return out; }
+ {id:"bstille",n:"Stille føtter",d:["4–5 buldre, vertikal og bratt vegg.","Hver fot plasseres én gang, uten lyd og uten justering.","Hørbar fot eller justering: start buldret på nytt.","Progresjon: mindre fotgrep, brattere vegg."]},
+ {id:"bsveve",n:"Svevende hender",d:["4 buldre.","Hånda holdes 2–3 s over neste grep før den griper.","Grepet tas i endelig posisjon, ingen omgrep.","Progresjon: 5 s på de to tyngste flyttene."]},
+ {id:"btreff",n:"Treff grepet",d:["3–4 dynamiske flytt på bratt vegg, 3 forsøk hver.","Landing i endelig grep, ingen justering, føttene blir på.","Justering eller fot som slipper teller som bom. Maks 6 forsøk per flytt.","Progresjon: mindre målgrep, lengre flytt."]},
+ {id:"bbeta",n:"Beta-prognose",d:["4 nye buldre.","60 s lesing fra bakken: sekvens, fotplasseringer og kroppsposisjon bestemt før start.","Ett flashforsøk. Avvik fra planen noteres etterpå.","Progresjon: 30 s lesing."]},
+ {id:"bbygg",n:"Bygg flyttet",d:["5–6 konkurransemønstre: dynamisk opptråkk på sva, pull-to-press, skate/step-through, hopp til fotplassering, sideveis dyn med tåkrok.","3 rene repetisjoner per mønster. Ren = ingen ekstra fotjustering etter landing.","Progresjon: mønstrene settes sammen to og to."]},
+ {id:"barm",n:"Rette armer",d:["4 buldre på bratt vegg.","Armene rette mellom flyttene, bøy bare i selve flyttet.","Bøyd arm i hvilestilling: start på nytt.","Progresjon: færre og dårligere fotgrep."]},
+ {id:"bned",n:"Nedklatring",d:["4 buldre.","Opp og ned samme vei, med samme fotplasseringer.","Feil fot eller hopp av: start på nytt.","Progresjon: bratt vegg, kortere hvile mellom buldrene."]},
+ {id:"btempo",n:"Sakte – naturlig",d:["3 buldre, hvert klatres to ganger: først 3 s per flytt, så i naturlig tempo.","Samme fotplasseringer begge gangene.","Progresjon: en tredje runde i høyt tempo, med samme presisjon."]}];
+function drillList(i,n){ const s=Math.max(0,weekIndex(i)); const out=[]; for(let k=0;k<n;k++){ const d=DRILL[(s+k)%DRILL.length]; out.push(`Rute ${k+1}: <a href="#teknikk" data-anchor="tema-${d.id}">${d.n}</a> – ${d.d[0]}`); } return out; }
 
 /* ============ ØKTENE ============ */
 const B=(h,items,dur)=>({h,items,dur});
@@ -322,7 +324,7 @@ function session(date,noTheme){
     s.key="tir"; s.title="Teknikk – buldring"; s.time="2 t";
     const bt=BTEMA[Math.max(0,weekIndex(i))%BTEMA.length];
     s.blocks=[B("Oppvarming",["Lett buldring."],"20 min"),
-      B("Teknikkbuldring",[...(noTheme?[]:[`Teknikktema: <a class="key" href="#teknikk" data-anchor="tema-${bt.id}">${bt.n}</a> – ${bt.d}`]),"15–20 buldre 3–4 grader under maks, RPE 5–6.","Alltid: stille føtter, foten helt inn, ingen justering etter at foten er satt.","Jagete → lettere buldre."],"90 min"),
+      B("Teknikkbuldring",[...(noTheme?[]:[`Teknikktema: <a class="key" href="#teknikk" data-anchor="tema-${bt.id}">${bt.n}</a> – drill først i økta:`,...bt.d]),"15–20 buldre 3–4 grader under maks, RPE 5–6.","Alltid: stille føtter, foten helt inn, ingen justering etter at foten er satt.","Jagete → lettere buldre."],"90 min"),
       B("Nedtrapping",["Lett buldring."],"10 min")];
     if(!noTheme) s.theme=bt.n;
     s.fields=[["drill","Hva fungerte best"]];
@@ -521,7 +523,7 @@ function vTest(){
   <div class="card">${testBlocks().map(blkHtml).join("")}</div>`;
 }
 function vTeknikk(){
-  const card=x=>`<div class="card" id="tema-${x.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${x.n}</h3><p style="margin:0">${x.d}</p></div>`;
+  const card=x=>`<div class="card" id="tema-${x.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${x.n}</h3><ul>${x.d.map(y=>`<li>${y}</li>`).join("")}</ul></div>`;
   return `<h2 style="margin-top:18px">Teknikk</h2>
   <h3>Buldring (tirsdag)</h3><p class="small muted">Ett tema per uke. Roterer under <a href="#idag">I dag</a>.</p>${BTEMA.map(card).join("")}
   <h3>Ro på ruta (hard led, lørdag etter NM)</h3><p class="small muted">Én drill per rute på onsight-lørdager. Redpoint: les ruta og hvil før krux.</p>${DRILL.map(card).join("")}`;
@@ -797,7 +799,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-202652";
+const APP_VERSION="2026-11-05-202947";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
