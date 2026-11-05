@@ -4,7 +4,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Askild">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="apple-touch-icon" href="icon.png"><link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.png"><link rel="manifest" href="manifest-askild.webmanifest"><meta name="theme-color" content="#0f6b5f"><link rel="icon" href="icon.svg">
 </head><body>
 <title>Askild – treningsplan</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -655,4 +655,5 @@ initDb();
 render();
 </script>
 
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}</script>
 </body></html>
