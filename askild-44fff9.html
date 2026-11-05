@@ -208,13 +208,13 @@ function session(date){
     s.key="man"; s.title="Hard buldring"; s.time="ca. 2 t";
     let max=[0,18,15,12][L], hov={1:"6–8 buldre 1–2 grader under maks · RPE 7–8 · 3 min pause",
       2:"5–6 buldre nær maks · RPE 8–9 · 3–4 min pause",3:"4–5 buldre på maks · RPE 9 · 4–5 min pause"}[L];
-    const stopp={1:"Kjent flytt glipper to ganger.",2:"Første forsøk med tydelig teknikkfall.",3:"Oppvarmingsbuldre begynner å kreve noe."}[L];
+    const stopp={1:"Bom to ganger på et flytt du har klart før.",2:"Første forsøk med tydelig teknikkfall.",3:"Oppvarmingsbuldre begynner å kreve noe."}[L];
     if(i.phase==="nm") max=8; else if(i.light) max=half(max);
     s.count={label:"Forsøk",max};
     s.blocks=[
       B("Oppvarming",["5 min puls, mobilitet skulder/hofte.","20 min lett klatring med dagens teknikktema – pyramide lett → middels, 10–12 buldre."],"30 min"),
       B("Hoveddel",[hov, `<span class="key">Maks ${max} forsøk.</span>`,"Les hele buldret før første forsøk. <a href='#regler' data-anchor='rutine'>Rutinen før hvert forsøk</a>. Sitt ned i pausene.","Stopp: "+stopp,
-        "Spraywall eller board. Board: maks 6 forsøk, vinkel ≤ 35°, ingen dynamiske flytt til lister."],"60–70 min"),
+        "Spraywall eller board. Board: maks 6 forsøk, vinkel ≤ 35°."],"60–70 min"),
       B("Nedtrapping",["Lett klatring, rist ut."],"10–15 min")];
     s.notes.push(["acc","Helgeregel: klatret i går (søndag) → i dag blir 3×10 med teknikktema."]);
     if(date.getDate()<=7) s.notes.push(["acc","Første mandag i måneden: mål høyde (samme tidspunkt, uten sko) og skriv i loggen."]);
