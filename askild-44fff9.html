@@ -475,7 +475,7 @@ function vIdag(){
     let d=addDays(selDate,1), n=session(d), k=0; while(n.key==="hvile"&&k<6){ d=addDays(d,1); n=session(d); k++; }
     if(n.key!=="hvile") h+=`<div class="card small"><span class="muted">Neste økt:</span> <b>${DAY[n.i.dow]} ${fmt(d)}</b> – ${n.title}</div>`;
   }
-  h+=formHtml(selDate,s);
+  if(!["hvile","utenfor"].includes(s.key)) h+=formHtml(selDate,s);
   return h;
 }
 
@@ -762,7 +762,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-085256";
+const APP_VERSION="2026-11-05-103408";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
