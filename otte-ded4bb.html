@@ -1,0 +1,766 @@
+<!doctype html><html lang="no"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Otte">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icon.png"><link rel="manifest" href="manifest-otte.webmanifest"><meta name="theme-color" content="#0f6b5f"><link rel="icon" href="icon.svg">
+</head><body>
+<title>Otte – treningsplan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{
+  --bg:#f4f3ef; --card:#ffffff; --ink:#1d2321; --muted:#5f6a66; --line:#dedbd2;
+  --accent:#0f6b5f; --accent-ink:#ffffff; --accent-soft:#dcefe9;
+  --warn:#9a5b00; --warn-soft:#fff1d6; --stop:#a61e1e; --stop-soft:#fde4e4;
+  --chip:#ecebe5;
+  --c-gronn:#2f9e44; --c-gul:#e9b92f; --c-oransje:#ec7d10; --c-rod:#d62f2f; --c-svart:#1b1b1b;
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121615; --card:#1b2120; --ink:#e8ece9; --muted:#9aa6a1; --line:#2c3533;
+    --accent:#4cc2ac; --accent-ink:#0b1513; --accent-soft:#1d3531;
+    --warn:#f2b45a; --warn-soft:#3a2c14; --stop:#ff8a8a; --stop-soft:#3c1d1d;
+    --chip:#252d2b; --c-svart:#000000;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121615; --card:#1b2120; --ink:#e8ece9; --muted:#9aa6a1; --line:#2c3533;
+  --accent:#4cc2ac; --accent-ink:#0b1513; --accent-soft:#1d3531;
+  --warn:#f2b45a; --warn-soft:#3a2c14; --stop:#ff8a8a; --stop-soft:#3c1d1d;
+  --chip:#252d2b; --c-svart:#000000;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:760px;margin:0 auto;
+  padding:0 max(16px,env(safe-area-inset-right)) 48px max(16px,env(safe-area-inset-left))}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding-top:env(safe-area-inset-top);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:12px 0 6px}
+.brand h1{font-size:18px;margin:0;letter-spacing:.01em}
+.brand .sub{font-size:12.5px;color:var(--muted);white-space:nowrap}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{flex:0 0 auto;text-decoration:none;color:var(--ink);background:var(--chip);
+  padding:7px 13px;border-radius:999px;font-size:14px;font-weight:500;white-space:nowrap}
+nav.tabs a.on{background:var(--accent);color:var(--accent-ink)}
+.banner{margin:18px 0 4px;font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--accent)}
+h2{font-size:22px;margin:4px 0 10px;line-height:1.25}
+h3{font-size:16px;margin:18px 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin:12px 0}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.tag{font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--chip);color:var(--ink);white-space:nowrap}
+.tag.acc{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.tag.warn{background:var(--warn-soft);color:var(--warn);font-weight:600}
+.tag.stop{background:var(--stop-soft);color:var(--stop);font-weight:600}
+.daynav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
+.daynav .d{font-weight:600;text-align:center;flex:1}
+.daynav .d small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{background:var(--chip);border:0;border-radius:10px;padding:9px 14px;min-height:42px}
+.btn.pri{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.sm{min-height:34px;padding:5px 11px;font-size:14px}
+.blk{margin:14px 0 0}
+#rutine{scroll-margin-top:110px}
+.blk h4{margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.blk .dur{float:right;font-weight:500;text-transform:none;letter-spacing:0}
+ul{margin:4px 0 0;padding-left:20px}
+li{margin:3px 0}
+.key{font-weight:700}
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:9px 12px;border-radius:0 10px 10px 0;margin:10px 0;font-size:14.5px}
+.note.stop{border-color:var(--stop);background:var(--stop-soft)}
+.note.acc{border-color:var(--accent);background:var(--accent-soft)}
+.rest{color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:7px 6px;border-bottom:1px solid var(--line)}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.tscroll{overflow-x:auto;margin:0 -4px}
+tr.now td{background:var(--accent-soft)}
+.week-row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:flex-start;text-decoration:none;color:inherit}
+.week-row:last-child{border-bottom:0}
+.week-row .wd{width:46px;flex:0 0 46px;font-weight:600}
+.week-row .wd small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.week-row .wt{flex:1}
+.week-row .wt small{color:var(--muted)}
+.week-row.today{background:var(--accent-soft);border-radius:10px;padding-left:8px;padding-right:8px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;border:1px solid rgba(0,0,0,.15)}
+.f-gronn{background:var(--c-gronn)} .f-gul{background:var(--c-gul)} .f-oransje{background:var(--c-oransje)}
+.f-rod{background:var(--c-rod)} .f-svart{background:var(--c-svart)}
+/* logg form */
+.colors{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0 12px}
+.colors button{border:2px solid transparent;border-radius:10px;padding:9px 2px 7px;background:var(--chip);font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.colors button .dot{width:20px;height:20px}
+.colors button.on{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+input[type=number],input[type=text],textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+textarea{min-height:76px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.saved{font-size:13px;color:var(--muted);margin-left:10px}
+.grid{display:grid;grid-template-columns:52px repeat(4,1fr);gap:4px;font-size:12.5px;align-items:center}
+.grid .h{color:var(--muted);text-align:center;font-weight:600}
+.grid .wk{color:var(--muted)}
+.grid .cell{height:22px;border-radius:6px;background:var(--chip)}
+.grid .cell.f-gronn{background:var(--c-gronn)} .grid .cell.f-gul{background:var(--c-gul)} .grid .cell.f-oransje{background:var(--c-oransje)} .grid .cell.f-rod{background:var(--c-rod)} .grid .cell.f-svart{background:var(--c-svart)}
+a{color:var(--accent)}
+.grid .cur{color:var(--accent);font-weight:700}
+.entry{padding:10px 0;border-bottom:1px solid var(--line)}
+.entry:last-child{border-bottom:0}
+.entry .eh{display:flex;justify-content:space-between;gap:8px;font-weight:600}
+.entry .eh small{color:var(--muted);font-weight:400}
+.entry p{margin:4px 0 0;font-size:14.5px}
+.muted{color:var(--muted)}
+.small{font-size:13.5px}
+.ex{padding:12px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-items:start}
+.ex .fig{max-width:340px;background:#fbfbf8;border-radius:10px;border:1px solid var(--line);line-height:0}
+.ex .fig svg{width:100%;height:auto;display:block}
+@media (min-width:560px){.ex{grid-template-columns:220px minmax(0,1fr);gap:14px}}
+.ex:last-child{border-bottom:0}
+.ex .exh{display:flex;flex-direction:column;gap:2px;font-weight:600}
+.ex .exh span.code{color:var(--accent);margin-right:6px}
+.ex .exh .sets{white-space:nowrap;font-weight:600;color:var(--accent)}
+.ex p{margin:3px 0 0;font-size:14.5px;color:var(--muted)}
+.ok{color:var(--accent)}
+.upd{position:fixed;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));z-index:20;
+  background:var(--accent);color:var(--accent-ink);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:736px;margin:0 auto}
+.upd[hidden]{display:none}
+.upd p{margin:0;flex:1;font-size:14.5px}.upd .btn{background:var(--accent-ink);color:var(--accent);font-weight:700}
+.ver{font-size:12px;color:var(--muted);text-align:center;margin:28px 0 0}
+.trinn{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:12px 0 0}
+.tbtn{border:2px solid var(--line);background:var(--card);border-radius:10px;min-width:40px;min-height:38px;font-weight:700}
+.tbtn.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chk{display:flex;align-items:center;gap:8px;margin:12px 0 0;font-size:15px}
+.chk input{width:20px;height:20px}
+.exlist .ex{grid-template-columns:118px minmax(0,1fr);gap:12px}
+@media (min-width:560px){.exlist .ex{grid-template-columns:200px minmax(0,1fr)}}
+.grid.g6{grid-template-columns:52px repeat(5,1fr)}
+@media (min-width:640px){ .brand h1{font-size:20px} h2{font-size:26px} }
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="brand"><h1>Otte <span style="font-weight:400;color:var(--muted)">· 2026/27</span></h1><span class="sub" id="syncState"></span></div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main id="view"></main>
+<p class="ver" id="ver"></p>
+<div class="upd" id="upd" hidden><p id="updTxt">Ny versjon av planen.</p><button class="btn sm" id="updBtn">Oppdater</button></div>
+</div>
+
+<script>
+/* ============ KALENDER ============ */
+const NAVN="Otte", KEY="otte";
+const DAY = ["", "Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag","Søndag"];
+const DAYS = ["", "Man","Tir","Ons","Tor","Fre","Lør","Søn"];
+const MON = ["jan","feb","mars","april","mai","juni","juli","aug","sep","okt","nov","des"];
+function ymd(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function parseYmd(s){ const [y,m,dd]=s.split("-").map(Number); return new Date(y,m-1,dd); }
+function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function fmt(d){ return d.getDate()+". "+MON[d.getMonth()]; }
+function isoWeek(d){
+  const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  const dow=t.getUTCDay()||7; t.setUTCDate(t.getUTCDate()+4-dow);
+  const y=t.getUTCFullYear(); const y0=new Date(Date.UTC(y,0,1));
+  return {y, w:Math.ceil(((t-y0)/864e5+1)/7), dow};
+}
+function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; return addDays(jan4,(w-1)*7-(dow-1)); }
+const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
+const COMP={9:{navn:"NM senior",sted:"Kristiansand",dager:"lør 6.–søn 7. mars"},17:{navn:"Europe Series",sted:"Göteborg",dager:"lør 1.–søn 2. mai"},19:{navn:"Europe Series",sted:"Wien",dager:"lør 15.–søn 16. mai"}};
+const NYTT={45:"Fase 1 starter",46:"Nordic hamstring",47:"Kassehopp",48:"Lett uke",49:"RDL 4 × 5–6",50:"Lengdehopp",
+  1:"Lett oppstart",2:"Re-entry på fase 1-nivå",3:"Klatring på fase 2-nivå",4:"Styrke på fase 2-nivå",6:"Ettbeins landing",7:"Topping",8:"Topping",
+  10:"Lett uke",11:"Kvart rotasjon",15:"Topping",16:"Topping",18:"Fase 2-nivå, eller lavenergi-uke ved eksamen",20:"Led starter"};
+
+function info(date){
+  const {y,w,dow}=isoWeek(date);
+  const i={date,y,w,dow,light:false,phase:"utenfor",label:"Utenfor planen",L:1,S:1,comp:null,top:0};
+  const inSeason=(y===2026&&w>=45)||(y===2027&&w<=20);
+  if(!inSeason){ i.phase=(y<2026||(y===2026&&w<45))?"før":"etter"; i.label=i.phase==="før"?"Før sesongstart":"Planen er ferdig"; return i; }
+  if(y===2026&&w<=51){ i.phase="f1"; i.label="Fase 1 · Kapasitet"; i.light=w===48; }
+  else if(y===2026){ i.phase="jul"; i.label="Jul"; }
+  else if(w===1){ i.phase="f1"; i.label="Jul · lett oppstart"; i.start=true; }
+  else if(w<=6){ i.phase="f2"; i.label="Fase 2 · Intensitet"; i.L=w>=3?2:1; i.S=w>=4?2:1; }
+  else if(w===7||w===8||w===15||w===16){ i.phase="top"; i.top=(w===7||w===15)?1:2; i.label="Topping"; i.L=2; i.S=2; }
+  else if(COMP[w]){ i.phase="comp"; i.comp=COMP[w]; i.label=`${COMP[w].navn} · ${COMP[w].sted}`; i.L=2; i.S=2; }
+  else if(w===20){ i.phase="led"; i.label="Led starter"; i.L=2; i.S=2; }
+  else { i.phase="f2"; i.label=w===10?"Etter NM · lett uke":"Etter NM · fase 2-nivå"; i.L=2; i.S=2; i.light=w===10; }
+  return i;
+}
+const half=n=>Math.max(1,Math.round(n/2));
+
+/* ============ STYRKE ============ */
+// [kode, navn, utførelse, figur]
+const STYRKE_A=[
+ ["A1","Rumensk markløft (stang, løftestropper)","Stang langs lårene, lett bøy i knærne, hofta bakover til strekk bak på låret, rett rygg. 2–3 s ned.","rdl"],
+ ["A2","Pallof press (kabel)","Siden mot kabelen, press rett fram, hold 2 s uten rotasjon.","pallof"],
+ ["B","Goblet squat til kasse","Kettlebell mot brystet, kontrollert ned på kasse, opp uten å vippe fram. Kassehøyden senkes gradvis. RPE 6–7 i alle faser.","goblet_box"],
+ ["C1","Bulgarsk utfall (vektvest eller manualer med stropper)","Bakre fot på benk. 3 s ned til smertefri, kontrollert dybde – start grunt, øk 2–3 cm per uke. Kneet over foten.","bulgarian"],
+ ["C2","Beinhev i stativ (albuestøtte)","Underarmene på putene, ryggen mot puten. Bein til vannrett, rolig ned uten sving.","leg_raise"],
+ ["D1","Copenhagen-plank","Øverste bein på benk, nederste henger, kroppen rett. Lettere: kneet på benken.","copenhagen"],
+ ["D2","Nordic hamstring, assistert","Knærne på matte, ankler holdt fast. Senk overkroppen fram så sakte du klarer, ta imot med hendene, skyv tilbake.","nordic"],
+ ["D3","Tåhev + tibialisheving (ett bein)","Tåhev på kant, full bane, 2 s nede. Så hæl på gulv, løft tærne.","calf_tib"]];
+function styrkeA(i){ // returns rows [ex, sets, reps, pause]
+  const rdlReps=(i.y===2026&&i.w<=48)?"6–8":"5–6";
+  const rows=[[0,4,rdlReps,i.S===2?"3 min":"2–3 min"],[1,2,"10 /side",""],[2,3,"8","90 s"],[3,3,"8–10 /bein",""],[4,3,"8–12","90 s"],
+    [5,3,"20–30 s /side",""],[6,2,"4–6",""],[7,2,"12–15 /side","60 s"]];
+  const out=rows.filter(r=>!(r[0]===6&&i.y===2026&&i.w<46));
+  if(i.light) out.forEach(r=>r[1]=half(r[1]));
+  return out;
+}
+const SKULDER=[
+ ["B1","Scapula pull-ups","Rette armer, helt grep. Skulderbladene ned og sammen, kroppen løfter seg 5–10 cm.",3,"8","","scap"],
+ ["B2","Push-ups (føtter hevet eller på ringer)","Rett kropp, albuene ca. 45°, full bane.",2,"10–12","60 s","pushup"],
+ ["C1","Skulderpress (manualer)","Stående, press til strake armer uten svai. 2–3 s ned.",3,"8 → 12","","db_press"],
+ ["C2","Y-hev på skrå benk","Magen på benken, lette manualer, rette armer i Y, tommel opp.",3,"10","60 s","y_incline"],
+ ["D1","Utadrotasjon i kabel","Albue 90° inntil kroppen, roter ut, rolig tilbake.",2,"12–15 /side","","cable_er"],
+ ["D2","Revers håndleddscurl + fingerekstensjon (strikk)","Lett manual, håndflaten ned, løft håndbaken. Så strikk rundt fingrene, spre og strekk.",2,"15–20","45 s","wrist_curl"]];
+const FIG={"rdl": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M112.0 38.0 L114.0 86.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M114.0 86.0 L116.0 116.0 L116.0 147.0 L126.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"112\" cy=\"24\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M112.0 40.0 L114.0 62.0 L116.0 84.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><g opacity=\"0.22\"><line x1=\"90\" y1=\"88\" x2=\"142\" y2=\"88\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"110\" y=\"76\" width=\"8\" height=\"24\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><path d=\"M78.0 70.0 L126.0 86.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M126.0 86.0 L118.0 116.0 L118.0 147.0 L128.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"66\" cy=\"62\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M80.0 72.0 L90.0 96.0 L100.0 118.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><g opacity=\"1\"><line x1=\"74\" y1=\"120\" x2=\"126\" y2=\"120\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"94\" y=\"108\" width=\"8\" height=\"24\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><path d=\"M64 40 Q52 46 52.0 55.0\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M52.0 58.0 L46.0 48.4 L58.0 48.4 Z\" fill=\"#d9534f\"/><text x=\"186\" y=\"40\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">hofta bakover</text></svg>", "pallof": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"196\" y=\"30\" width=\"22\" height=\"118\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><circle cx=\"196\" cy=\"84\" r=\"4\" fill=\"#8a97a8\"/><path d=\"M100.0 92.0 L108.0 120.0 L110.0 147.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M100.0 44.0 L100.0 92.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M100.0 92.0 L94.0 120.0 L92.0 147.0 L84.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"100\" cy=\"30\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M100.0 50.0 L110.0 70.0 L102.0 84.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><line x1=\"196\" y1=\"84\" x2=\"102\" y2=\"84\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"0.32\"/><path d=\"M100.0 50.0 L118.0 70.0 L140.0 82.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"196\" y1=\"84\" x2=\"140\" y2=\"82\" stroke=\"#8a97a8\" stroke-width=\"2.2\"/><line x1=\"112\" y1=\"104\" x2=\"137.0\" y2=\"104.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M140.0 104.0 L130.4 110.0 L130.4 98.0 Z\" fill=\"#d9534f\"/><text x=\"120\" y=\"16\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">ingen rotasjon</text></svg>", "goblet_box": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"130\" y=\"112\" width=\"40\" height=\"36\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><path d=\"M112.0 38.0 L114.0 84.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M114.0 84.0 L114.0 116.0 L114.0 147.0 L102.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"112\" cy=\"24\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M112.0 42.0 L124.0 56.0 L118.0 52.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"120\" cy=\"52\" r=\"7\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"0.22\"/><path d=\"M106.0 72.0 L136.0 110.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M136.0 110.0 L100.0 108.0 L104.0 147.0 L92.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"102\" cy=\"58\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M106.0 76.0 L118.0 90.0 L112.0 86.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"114\" cy=\"86\" r=\"7\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"1\"/><line x1=\"60\" y1=\"70\" x2=\"60.0\" y2=\"101.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M60.0 104.0 L54.0 94.4 L66.0 94.4 Z\" fill=\"#d9534f\"/><line x1=\"46\" y1=\"104\" x2=\"46.0\" y2=\"73.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M46.0 70.0 L52.0 79.6 L40.0 79.6 Z\" fill=\"#d9534f\"/></svg>", "bulgarian": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"170\" y=\"112\" width=\"52\" height=\"7\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><line x1=\"178\" y1=\"119\" x2=\"178\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"3\"/><line x1=\"214\" y1=\"119\" x2=\"214\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"3\"/><path d=\"M138.0 90.0 L160.0 124.0 L186.0 112.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M136.0 46.0 L138.0 90.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M138.0 90.0 L112.0 116.0 L100.0 147.0 L88.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"136\" cy=\"34\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M136.0 50.0 L148.0 64.0 L140.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"144\" cy=\"62\" r=\"7\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"0.22\"/><path d=\"M140.0 112.0 L162.0 140.0 L186.0 112.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M136.0 68.0 L140.0 112.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M140.0 112.0 L104.0 112.0 L100.0 147.0 L88.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"136\" cy=\"56\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M136.0 72.0 L148.0 86.0 L140.0 82.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"144\" cy=\"84\" r=\"7\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"1\"/><line x1=\"60\" y1=\"70\" x2=\"60.0\" y2=\"101.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M60.0 104.0 L54.0 94.4 L66.0 94.4 Z\" fill=\"#d9534f\"/><line x1=\"46\" y1=\"104\" x2=\"46.0\" y2=\"73.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M46.0 70.0 L52.0 79.6 L40.0 79.6 Z\" fill=\"#d9534f\"/></svg>", "leg_raise": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"150\" y=\"30\" width=\"14\" height=\"118\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><rect x=\"120\" y=\"58\" width=\"44\" height=\"8\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><path d=\"M146.0 32.0 L148.0 82.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"142\" cy=\"20\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M146.0 34.0 L130.0 58.0 L150.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M148.0 82.0 L146.0 112.0 L146.0 140.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M148.0 82.0 L112.0 84.0 L80.0 84.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M140 132 Q110 128 97.3 102.7\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M96.0 100.0 L105.7 105.9 L94.9 111.3 Z\" fill=\"#d9534f\"/><text x=\"70\" y=\"30\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">albuestøtte</text></svg>", "copenhagen": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"150\" y=\"96\" width=\"70\" height=\"7\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><line x1=\"158\" y1=\"103\" x2=\"158\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"3\"/><line x1=\"212\" y1=\"103\" x2=\"212\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"3\"/><path d=\"M110.0 108.0 L132.0 128.0 L150.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M52.0 112.0 L110.0 108.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M110.0 108.0 L150.0 100.0 L186.0 94.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"40\" cy=\"104\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M52.0 112.0 L52.0 146.0 L74.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M110.0 108.0 L140.0 108.0 L170.0 104.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"84\" y1=\"144\" x2=\"84.0\" y2=\"127.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M84.0 124.0 L90.0 133.6 L78.0 133.6 Z\" fill=\"#d9534f\"/><text x=\"120\" y=\"22\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">sett forfra · øverste bein på benken</text></svg>", "nordic": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"120\" y=\"140\" width=\"80\" height=\"8\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\"/><circle cx=\"190\" cy=\"138\" r=\"5\" fill=\"#d9534f\"/><path d=\"M132.0 44.0 L136.0 92.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M136.0 92.0 L140.0 140.0 L188.0 140.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"132\" cy=\"30\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M132.0 46.0 L126.0 66.0 L130.0 84.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M76.0 104.0 L124.0 120.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M124.0 120.0 L140.0 140.0 L188.0 140.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"62\" cy=\"98\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M76.0 104.0 L66.0 124.0 L56.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M118 40 Q92 52 79.3 77.3\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M78.0 80.0 L76.9 68.7 L87.7 74.1 Z\" fill=\"#d9534f\"/><text x=\"190\" y=\"126\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">holdt fast</text></svg>", "calf_tib": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"70\" y=\"128\" width=\"40\" height=\"20\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><path d=\"M84.0 46.0 L86.0 90.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M86.0 90.0 L86.0 116.0 L88.0 128.0 L102.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"84\" cy=\"34\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M84.0 38.0 L86.0 82.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M86.0 82.0 L86.0 108.0 L92.0 120.0 L104.0 128.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"84\" cy=\"26\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><line x1=\"54\" y1=\"124\" x2=\"54.0\" y2=\"103.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M54.0 100.0 L60.0 109.6 L48.0 109.6 Z\" fill=\"#d9534f\"/><path d=\"M170.0 44.0 L172.0 86.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M172.0 86.0 L172.0 116.0 L172.0 147.0 L184.0 136.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"170\" cy=\"32\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><line x1=\"196\" y1=\"146\" x2=\"196.0\" y2=\"131.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M196.0 128.0 L202.0 137.6 L190.0 137.6 Z\" fill=\"#d9534f\"/><text x=\"86\" y=\"14\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">tåhev</text><text x=\"176\" y=\"14\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">tibialisheving</text></svg>", "pogo": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M90.0 51.0 L92.0 85.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M92.0 85.0 L100.0 117.0 L90.0 147.0 L102.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"90\" cy=\"39\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M90.0 55.0 L100.0 73.0 L96.0 89.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M150.0 42.0 L152.0 76.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M152.0 76.0 L160.0 108.0 L150.0 138.0 L162.0 138.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"150\" cy=\"30\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M150.0 46.0 L160.0 64.0 L156.0 80.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"186\" y1=\"140\" x2=\"186.0\" y2=\"115.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M186.0 112.0 L192.0 121.6 L180.0 121.6 Z\" fill=\"#d9534f\"/><line x1=\"200\" y1=\"112\" x2=\"200.0\" y2=\"137.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M200.0 140.0 L194.0 130.4 L206.0 130.4 Z\" fill=\"#d9534f\"/><text x=\"120\" y=\"16\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">rette knær, stive ankler · raskt og lavt</text></svg>", "step_off": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"40\" y=\"118\" width=\"44\" height=\"30\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><path d=\"M62.0 22.0 L64.0 56.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M64.0 56.0 L72.0 88.0 L62.0 118.0 L74.0 118.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"62\" cy=\"10\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M62.0 26.0 L72.0 44.0 L68.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M140.0 67.0 L142.0 101.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M142.0 101.0 L159.6 117.0 L140.0 147.0 L152.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"140\" cy=\"55\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M140.0 71.0 L150.0 89.0 L146.0 105.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M84 100 Q110 92 123.9 105.9\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M126.0 108.0 L115.0 105.5 L123.5 97.0 Z\" fill=\"#d9534f\"/><text x=\"150\" y=\"20\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">land i halv knebøy, stille</text></svg>", "box_jump": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"146\" y=\"112\" width=\"56\" height=\"36\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><path d=\"M70.0 67.0 L72.0 101.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M72.0 101.0 L89.6 117.0 L70.0 147.0 L82.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"70\" cy=\"55\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M70.0 71.0 L80.0 89.0 L76.0 105.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M170.0 30.0 L172.0 64.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M172.0 64.0 L188.4 82.0 L170.0 112.0 L182.0 112.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"170\" cy=\"18\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M170.0 34.0 L180.0 52.0 L176.0 68.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M84 80 Q120 40 157.1 51.1\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M160.0 52.0 L149.1 55.0 L152.5 43.5 Z\" fill=\"#d9534f\"/></svg>", "broad_jump": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M46.0 67.0 L48.0 101.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M48.0 101.0 L65.6 117.0 L46.0 147.0 L58.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"46\" cy=\"55\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M46.0 71.0 L56.0 89.0 L52.0 105.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M178.0 67.0 L180.0 101.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M180.0 101.0 L197.6 117.0 L178.0 147.0 L190.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"178\" cy=\"55\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M178.0 71.0 L188.0 89.0 L184.0 105.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M64 70 Q114 20 163.7 60.1\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M166.0 62.0 L154.8 60.6 L162.3 51.3 Z\" fill=\"#d9534f\"/><text x=\"120\" y=\"140\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">submaks</text></svg>", "sl_landing": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"30\" y=\"118\" width=\"40\" height=\"30\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><path d=\"M50.0 22.0 L52.0 56.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M52.0 56.0 L60.0 88.0 L50.0 118.0 L62.0 118.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"50\" cy=\"10\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M50.0 26.0 L60.0 44.0 L56.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M144.0 104.0 L130.0 118.0 L118.0 124.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M140.0 62.0 L144.0 104.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M144.0 104.0 L160.0 124.0 L150.0 147.0 L162.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"140\" cy=\"48\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M140.0 66.0 L156.0 84.0 L160.0 96.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M72 96 Q100 80 121.3 90.7\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M124.0 92.0 L112.7 93.1 L118.1 82.3 Z\" fill=\"#d9534f\"/><text x=\"150\" y=\"20\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">ett bein · kneet over foten</text></svg>", "quarter_rot": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><ellipse cx=\"120\" cy=\"140\" rx=\"56\" ry=\"10\" fill=\"none\" stroke=\"#c3ccd7\" stroke-width=\"2\" stroke-dasharray=\"4 4\"/><path d=\"M120.0 63.0 L122.0 97.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M122.0 97.0 L137.2 117.0 L120.0 147.0 L132.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"120\" cy=\"51\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M120.0 67.0 L130.0 85.0 L126.0 101.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M70 96 Q92 58 147.0 61.8\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M150.0 62.0 L140.0 67.3 L140.8 55.4 Z\" fill=\"#d9534f\"/><text x=\"120\" y=\"20\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">90° vridning · land på to bein</text></svg>", "scap": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"20\" y1=\"22\" x2=\"220\" y2=\"22\" stroke=\"#8a97a8\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M46.0 22.0 L57.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M94.0 22.0 L83.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M57.0 60.0 L70.0 60.0 L83.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M70.0 60.0 L70.0 104.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M64.0 104.0 L62.0 124.0 L63.0 142.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M76.0 104.0 L78.0 124.0 L77.0 142.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"70\" cy=\"52\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><text x=\"70\" y=\"156\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">heng</text><path d=\"M146.0 22.0 L157.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M194.0 22.0 L183.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M157.0 60.0 L170.0 51.0 L183.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M170.0 51.0 L170.0 95.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M164.0 95.0 L162.0 115.0 L163.0 133.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M176.0 95.0 L178.0 115.0 L177.0 133.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"170\" cy=\"38\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><text x=\"170\" y=\"156\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">skuldrene ned</text><line x1=\"120\" y1=\"70\" x2=\"143.0\" y2=\"70.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M146.0 70.0 L136.4 76.0 L136.4 64.0 Z\" fill=\"#d9534f\"/><line x1=\"206\" y1=\"96\" x2=\"206.0\" y2=\"81.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M206.0 78.0 L212.0 87.6 L200.0 87.6 Z\" fill=\"#d9534f\"/><line x1=\"150\" y1=\"50\" x2=\"154.7\" y2=\"59.3\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M156.0 62.0 L146.3 56.1 L157.1 50.7 Z\" fill=\"#d9534f\"/><line x1=\"190\" y1=\"50\" x2=\"185.3\" y2=\"59.3\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M184.0 62.0 L182.9 50.7 L193.7 56.1 Z\" fill=\"#d9534f\"/></svg>", "pushup": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"200\" y=\"138\" width=\"36\" height=\"10\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><path d=\"M66.0 104.0 L140.0 116.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M140.0 116.0 L172.0 130.0 L204.0 140.0 L212.0 143.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"52\" cy=\"98\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M68.0 106.0 L68.0 126.0 L70.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M64.0 128.0 L140.0 130.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M140.0 130.0 L172.0 136.0 L204.0 140.0 L212.0 143.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"50\" cy=\"124\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M66.0 130.0 L84.0 124.0 L70.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"30\" y1=\"104\" x2=\"30.0\" y2=\"121.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M30.0 124.0 L24.0 114.4 L36.0 114.4 Z\" fill=\"#d9534f\"/><line x1=\"18\" y1=\"124\" x2=\"18.0\" y2=\"107.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M18.0 104.0 L24.0 113.6 L12.0 113.6 Z\" fill=\"#d9534f\"/></svg>", "db_press": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M126.0 96.0 L128.0 120.0 L128.0 147.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M120.0 48.0 L120.0 96.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M114.0 96.0 L112.0 120.0 L112.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"120\" cy=\"34\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M108.0 50.0 L90.0 62.0 L92.0 42.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M132.0 50.0 L150.0 62.0 L148.0 42.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><g transform=\"translate(92 40) rotate(0)\" opacity=\"0.22\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><g transform=\"translate(148 40) rotate(0)\" opacity=\"0.22\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><path d=\"M108.0 50.0 L98.0 30.0 L100.0 8.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M132.0 50.0 L142.0 30.0 L140.0 8.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><g transform=\"translate(100 8) rotate(0)\" opacity=\"1\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><g transform=\"translate(140 8) rotate(0)\" opacity=\"1\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><line x1=\"176\" y1=\"60\" x2=\"176.0\" y2=\"29.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M176.0 26.0 L182.0 35.6 L170.0 35.6 Z\" fill=\"#d9534f\"/><text x=\"200\" y=\"140\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">forfra</text></svg>", "y_incline": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M60 128 L170 78\" stroke=\"#8a97a8\" stroke-width=\"7\" stroke-linecap=\"round\"/><line x1=\"80\" y1=\"122\" x2=\"80\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"3\"/><line x1=\"160\" y1=\"86\" x2=\"160\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"3\"/><path d=\"M160.0 70.0 L104.0 100.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M104.0 100.0 L76.0 118.0 L56.0 147.0 L46.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"176\" cy=\"60\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M160.0 72.0 L162.0 96.0 L164.0 118.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><g transform=\"translate(164 121) rotate(90)\" opacity=\"0.22\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><path d=\"M160.0 72.0 L186.0 52.0 L210.0 32.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><g transform=\"translate(212 30) rotate(40)\" opacity=\"1\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><path d=\"M178 112 Q206 92 207.9 53.0\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M208.0 50.0 L213.5 59.9 L201.6 59.3 Z\" fill=\"#d9534f\"/></svg>", "cable_er": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"14\" y=\"94\" width=\"22\" height=\"40\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><circle cx=\"34\" cy=\"114\" r=\"4\" fill=\"#8a97a8\"/><text x=\"25\" y=\"150\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">kabel</text><path d=\"M158.0 92.0 L130.0 114.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><line x1=\"34\" y1=\"114\" x2=\"130\" y2=\"114\" stroke=\"#8a97a8\" stroke-width=\"2.5\" opacity=\"0.32\"/><rect x=\"146\" y=\"80\" width=\"10\" height=\"9\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\"/><ellipse cx=\"120\" cy=\"70\" rx=\"40\" ry=\"15\" fill=\"#1f3a5f\"/><circle cx=\"120\" cy=\"70\" r=\"11\" fill=\"#2c4f7c\" opacity=\"1\"/><path d=\"M156.0 74.0 L158.0 92.0\" stroke=\"#1f3a5f\" stroke-width=\"8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M158.0 92.0 L186.0 116.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"34\" y1=\"114\" x2=\"186\" y2=\"116\" stroke=\"#8a97a8\" stroke-width=\"2.5\"/><rect x=\"182\" y=\"112\" width=\"9\" height=\"8\" rx=\"2\" fill=\"#8a97a8\"/><path d=\"M140 128 Q166 138 181.4 129.5\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M184.0 128.0 L178.5 137.9 L172.7 127.4 Z\" fill=\"#d9534f\"/><text x=\"130\" y=\"150\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">albuen inntil kroppen</text><text x=\"232\" y=\"16\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"end\">ovenfra</text></svg>", "wrist_curl": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"30\" y=\"96\" width=\"100\" height=\"7\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><line x1=\"38\" y1=\"103\" x2=\"38\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"3\"/><line x1=\"122\" y1=\"103\" x2=\"122\" y2=\"148\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"50\" y=\"86\" width=\"64\" height=\"9\" rx=\"4\" fill=\"#1f3a5f\"/><path d=\"M114.0 90.0 L128.0 104.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><g transform=\"translate(132 110) rotate(90)\" opacity=\"0.22\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><path d=\"M114.0 90.0 L130.0 80.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><g transform=\"translate(134 76) rotate(90)\" opacity=\"1\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><path d=\"M150 112 Q160 96 147.7 78.5\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M146.0 76.0 L156.4 80.4 L146.6 87.3 Z\" fill=\"#d9534f\"/><text x=\"80\" y=\"30\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">håndflaten ned · løft håndbaken</text></svg>", "finger_ext": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"48\" y=\"88\" width=\"44\" height=\"46\" rx=\"14\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M53.0 96.0 L33.1 82.6\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M61.0 88.0 L58.3 54.1\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M70.0 86.0 L70.0 48.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M79.0 88.0 L81.7 54.1\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M88.0 92.0 L93.0 64.5\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><ellipse cx=\"70\" cy=\"62.0\" rx=\"22\" ry=\"9\" fill=\"none\" stroke=\"#d9534f\" stroke-width=\"2.5\" opacity=\"1\"/><text x=\"70\" y=\"152\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">start</text><rect x=\"148\" y=\"88\" width=\"44\" height=\"46\" rx=\"14\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M153.0 96.0 L129.6 101.5\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M161.0 88.0 L146.2 57.4\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M170.0 86.0 L170.0 48.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M179.0 88.0 L193.8 57.4\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M188.0 92.0 L209.9 74.6\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><ellipse cx=\"170\" cy=\"62.0\" rx=\"36\" ry=\"9\" fill=\"none\" stroke=\"#d9534f\" stroke-width=\"2.5\" opacity=\"1\"/><text x=\"170\" y=\"152\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">spre og rett ut</text><line x1=\"108\" y1=\"96\" x2=\"129.0\" y2=\"96.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M132.0 96.0 L122.4 102.0 L122.4 90.0 Z\" fill=\"#d9534f\"/></svg>"};
+function exRow(code,name,txt,sets,reps,pause,fig,tag){
+  return `<div class="ex"><div class="fig" role="img" aria-label="${name}">${FIG[fig]||""}</div><div>
+   <div class="exh"><span><span class="code">${code}</span>${name}</span><span class="sets">${sets} × ${reps}</span></div>
+   ${tag?`<div class="meta"><span class="tag warn">${tag}</span></div>`:""}<p>${txt}${pause?` · Pause ${pause}`:""}</p></div></div>`;
+}
+
+/* Spenst */
+const SP={pogo:["Pogos","Rette knær, stive ankler, raskt og lavt.","pogo"],step:["Gå av kasse 30 cm, land i halv knebøy","Mykt, knærne over tærne, stille.","step_off"],
+  kasse:["Kassehopp 40 cm","Land mykt i halv knebøy, gå ned.","box_jump"],lengde:["Lengdehopp tobeins, submaks","Land mykt, knærne over tærne, stille.","broad_jump"],
+  ett:["Ettbeins landing","Kneet følger foten, stille landing.","sl_landing"],rot:["Kvart rotasjon","90° vridning, land på to bein, kneet følger foten.","quarter_rot"]};
+function spenst(i){ // [[key,sets,reps]], kontakter
+  const w=i.w, y=i.y;
+  if(i.phase==="top") return {list:[["pogo",2,"10"],["kasse",2,"3"]],k:26};
+  let list;
+  if(y===2026&&w<=46) list=[["pogo",2,"15"],["step",3,"5"]];
+  else if(y===2026&&w<=49) list=[["pogo",2,"15"],["step",3,"5"],["kasse",3,"4"]];
+  else if((y===2026)||(w<=5)) list=[["pogo",2,"15"],["kasse",3,"4"],["lengde",3,"4"]];
+  else if(w===6||w===10) list=[["pogo",2,"15"],["lengde",3,"4"],["ett",3,"4 /bein"]];
+  else list=[["pogo",2,"15"],["ett",3,"4 /bein"],["rot",3,"3 /side"]];
+  if(i.light) list=list.map(([a,b,c])=>[a,half(b),c]);
+  const per={pogo:15,step:5,kasse:4,lengde:4,ett:8,rot:6};
+  const k=list.reduce((s,[a,b])=>s+b*(a==="pogo"?15:per[a]),0);
+  return {list,k};
+}
+
+/* ============ ØKTENE ============ */
+const B=(h,items,dur)=>({h,items,dur});
+function linked(i){
+  const w=i.w,y=i.y;
+  const f1="12–20 flytt, 3–4 grader under maks, RPE 6–7, 3–4 min pause.";
+  const f2=(p)=>`10–14 flytt, 2–3 grader under maks, ${p} pause. RPE runde 1–2: 7–8 · runde 3–4: 8–9.`;
+  if(y===2026&&w<=46) return ["2 × 3",f1];
+  if(y===2026||w===1) return [w===1?"2 × 3":(i.light?"1 × 4":"2 × 4"),f1];
+  if(w===2) return ["2 × 4",f1];
+  if(w===3) return ["2 × 4",f2("3–4 min")];
+  if(w===7||w===15) return ["2 × 3",f2("3 min")];
+  if(w===8||w===16) return ["1 × 4",f2("3 min")];
+  if(w===10) return ["1 × 4",f2("3 min")];
+  return ["2 × 4",f2("3 min")];
+}
+function session(date,noTheme){
+  const i=info(date), w=i.w;
+  const s={i,key:"hvile",title:"Hvile",time:"–",blocks:[],notes:[],fields:[],hard:false};
+  if(i.phase==="før"||i.phase==="etter"){ s.title=i.label; s.key="utenfor"; return s; }
+  const md=date.getMonth()===11?date.getDate():0;
+  if(i.phase==="jul"){
+    s.key="jul"; s.title=i.dow===2?"Jul – kort styrke eller hvile":"Jul – fri";
+    s.blocks=[B("I dag",i.dow===2?["Én kort styrkeøkt (Styrke A, 2 sett) eller hvile."]:["Fri eller lett klatring."])];
+    if(md>=24&&md<=27) s.notes.push(["stop","24.–27. des: ingen harde økter."]);
+    return s;
+  }
+  if(i.light) s.notes.push(["warn","Lett uke: samme økter, halvt antall forsøk/runder/sett, samme intensitet."]);
+  if(i.start) s.notes.push(["warn","Uke 1: lett oppstart på fase 1-nivå."]);
+  if(i.phase==="top") s.notes.push(["warn",`Topping uke ${i.top}: volum ned, intensitet og antall økter som i fase 2.`]);
+  if(w===18&&i.y===2027) s.notes.push(["warn","Uke 18: fase 2-nivå, eller lavenergi-uke ved eksamen – se Regler."]);
+  const warm=(min,extra)=>B("Oppvarming",["5 min puls, mobilitet hofte og skulder.","15 min lett klatring med teknikktemaet. Pyramide, 8–10 buldre fra lett til middels."+(extra?" "+extra:"")],min);
+  const cf=i.comp;
+  switch(i.dow){
+  case 1: {
+    s.key="man"; s.hard=true;
+    if(i.y===2027&&w===10){ s.title="Hvile etter NM"; s.key="hvile"; s.hard=false; s.blocks=[B("I dag",["Hvile."])]; break; }
+    if(cf){ s.title="Konkurranseformat – siste harde økt"; s.time="ca. 1 t 30";
+      s.blocks=[warm("30 min"),B("Hoveddel",["4 buldre i <a href='#teknikk' data-anchor='format'>konkurranseformat</a>, maks 4 forsøk per buldre, maks 12–16 totalt.","Rutinen før hvert forsøk."],"40–50 min")];
+      s.count={label:"Forsøk",max:16}; break; }
+    if(i.phase==="top"){ const mx=i.top===1?12:10; s.title="Konkurranseformat"; s.time="ca. 1 t 30";
+      s.blocks=[warm("25–30 min"),B("Hoveddel",[`4 nye buldre i <a href='#teknikk' data-anchor='format'>konkurranseformat</a>, maks 4 forsøk per buldre, <span class="key">maks ${mx} forsøk totalt</span>.`,"Les ferdig før første forsøk. Rutinen før hvert forsøk."],"40–50 min"),B("Nedtrapping",["Volumvegg."],"10 min")];
+      s.count={label:"Forsøk",max:mx}; break; }
+    s.title="Hard buldring"; s.time="ca. 1 t 50";
+    let mx=i.L===1?18:14; if(i.light) mx=half(mx);
+    const hov=i.L===1?"6–8 buldre 1–2 grader under maks, RPE 7–8, 3 min pause.":"4–6 buldre på eller over maks, RPE 8–9, 4–5 min pause.";
+    s.blocks=[warm("25–30 min"),B("Hoveddel",[hov,`<span class="key">Maks ${mx} forsøk.</span>`,"Les ferdig før første forsøk. <a href='#teknikk' data-anchor='rutine'>Rutinen</a> før hvert forsøk. Sitt ned mellom forsøk.",
+      "Board (Kilter/Tension): maks halvparten av forsøkene, vinkel ≤ 40°.","Sluttpunkt: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"60–75 min"),B("Nedtrapping",["Volumvegg."],"10 min")];
+    s.count={label:"Forsøk",max:mx};
+    if((i.y===2027&&w===13)||(i.y===2027&&w===20)) s.notes.push(["warn",`${w===13?"2. påskedag":"17. mai"}: mandagsøkta utgår hvis hallen er stengt.`]);
+    break; }
+  case 2: {
+    s.key="tir";
+    if(cf){ s.title="Mobilitet og lett klatring"; s.time="30–40 min"; s.blocks=[B("Økt",["Mobilitet og lett sva eller volumvegg, RPE 3.","Ingen styrke siste 5 dager før konkurranse."],"30–40 min")]; break; }
+    s.title="Styrke A · bein og kjerne"; s.time=i.phase==="top"?"ca. 30 min":"55–65 min";
+    s.blocks=[B("Oppvarming",["5 min sykkel eller hopptau · 90/90-hofterotasjon 8 per side · dyp knebøy-hold med støtte 3 × 20 s (smertefri dybde) · strikk pull-aparts 2 × 15 · 2 lette sett RDL med tom stang."],"12 min")];
+    s.strA=true; s.fields=[["rdl","RDL (kg × reps)"]];
+    s.notes.push(["acc","Felles med Finn: oppvarming, A, B og C (ca. 45 min). Egne vekter, reps og dybde. Ingen klatring, ingen grepsbelastning."]);
+    break; }
+  case 3: {
+    s.key="ons";
+    if(cf){ s.title="Hvile eller lett klatring"; s.time="0–20 min"; s.blocks=[B("Økt",["Hvile, eller 20 min lett klatring."])]; break; }
+    if(i.phase==="led"){ s.title="Rutedag på led"; s.time="ca. 1 t 30"; s.hard=true;
+      s.blocks=[B("Oppvarming",["Lett buldring, 2 lette ruter på led."],"20 min"),B("Ruter",["6–8 ruter 2–3 grader under onsight, RPE 6."],"60 min"),B("Nedtrapping",["Lett klatring."],"10 min")];
+      s.fields=[["antall","Ruter"]]; break; }
+    const [r,txt]=linked(i);
+    s.title="Linked boulders"; s.time="ca. 1 t 15"; s.hard=true;
+    s.blocks=[warm("25 min"),B("Linked boulders",["2–3 buldre satt sammen, 45–90 s arbeid.",`<span class="key">${r} runder</span>${r.startsWith("2")?", 8 min mellom seriene":""}.`,txt,
+      "Fullfør runden og land på to bein. Fall → neste runde én grad lettere.","Nye buldre hver uke. Tak: volumvegg, slopere og pinch – ikke bare lister."],"ca. 25 min"),
+      B("Nedtrapping",["Lett klatring, 5 min henge og strekke skulder."],"15 min")];
+    s.fields=[["antall","Runder"]];
+    break; }
+  case 4: {
+    s.key="tor";
+    if(cf){ s.title="3×10 + aktivering"; s.time="ca. 40 min";
+      s.blocks=[B("3×10",["2 runder × 10 min lett klatring på autobelay, RPE 3–4."],"25 min"),B("Aktivering",["3–4 middels buldre på første forsøk, RPE 5–6."],"10 min"),B("Ingen spenst eller styrke",["Siste 5 dager før konkurranse."])];
+      break; }
+    if(i.phase==="led"){ s.title="3×10 + skulder"; s.time="ca. 1 t 20"; }
+    else { s.title="Spenst + 3×10 + skulder"; s.time="ca. 1 t 45"; s.spenst=true; }
+    s.blocks=[B("Oppvarming",["Lett klatring og mobilitet."],"15 min")];
+    s.tre=B("3×10",[`${i.light?2:3} runder × 10 min sammenhengende lett klatring på autobelay, 4+ grader under onsight, RPE 3–4, 5 min pause.`,
+      "Runde 1 overdrevet teknikk · runde 2 normalt · runde 3 så lett og stille som mulig."],"40 min");
+    s.skulder=true; s.fields=[["antall","Spenst (kontakter)"]];
+    break; }
+  case 5:
+    if(cf){ s.key="fre"; s.title="Hvile eller aktivering"; s.blocks=[B("I dag",["Hvile, eller 15 min aktivering."])]; }
+    else { s.blocks=[B("Hviledag",["Tapt økt tas ikke igjen."])]; }
+    break;
+  case 6: {
+    s.key="lor"; s.hard=true;
+    if(cf){ s.title=`${cf.navn} ${cf.sted}`+(w===9?" – kvalik":" – dag 1"); s.time="";
+      s.blocks=[B("Konkurranse",["Oppvarming 30–40 min før isolasjon: pyramide 6–8 buldre.","<a href='#teknikk' data-anchor='rutine'>Rutinen</a> før hvert forsøk.","Mat og drikke mellom runder."])];
+      s.fields=[["poeng","Resultat / plassering"]]; break; }
+    if(i.phase==="led"){ s.title="Enkel ledøkt"; s.time="ca. 1 t 30";
+      s.blocks=[B("Oppvarming",["Lett buldring, 2 lette ruter på led."],"20 min"),B("Ruter",["8–10 ruter 3–4 grader under onsight, RPE 5–6."],"60 min"),B("Nedtrapping",["Lett klatring."],"10 min")];
+      s.fields=[["antall","Ruter"]]; break; }
+    let tot=18, del2=i.L===1?10:8;
+    if(i.phase==="top"&&i.top===2) tot=12;
+    if(i.light){ tot=half(tot); del2=half(del2); }
+    s.title=i.phase==="top"?"Konkurranseformat – bare del 1":"Hard buldring – konkurranseformat"; s.time=i.phase==="top"?"ca. 1 t 30":"ca. 2 t 15";
+    s.blocks=[B("Oppvarming",["Som mandag. Avslutt med 2–3 buldre som krever presisjon på første forsøk."],"30 min"),
+      B("Del 1 · nye buldre",[`5 nye buldre i <a href='#teknikk' data-anchor='format'>konkurranseformat</a>. Maks 4 forsøk per buldre, <span class="key">maks ${tot} totalt</span>.`,"Ingen beta fra andre. Registrer topp, sone og forsøk."],"50 min")];
+    if(i.phase!=="top") s.blocks.push(B("Del 2",[`Prosjektering eller repetere det du falt på, med beta. <span class="key">Maks ${del2} forsøk.</span>`],"40 min"));
+    s.blocks.push(B("Uten nye buldre",[`Mandagens tak for fasen (${i.L===1?18:14}), ingen del 2.`]));
+    s.blocks.push(B("Nedtrapping",["Lett klatring."],"15 min"));
+    s.fields=[["poeng","Poeng nye buldre"],["topper","Topper og soner"]];
+    break; }
+  case 7:
+    if(cf){ s.key="lor2"; s.hard=true; s.title=`${cf.navn} ${cf.sted}`+(w===9?" – semi/finale":" – dag 2");
+      s.blocks=[B("Konkurranse",["Samme rutine som i går."])]; s.fields=[["poeng","Resultat / plassering"]]; }
+    else s.blocks=[B("Hviledag",["Ev. lett mobilitet."])];
+    break;
+  }
+  if(!noTheme) addTheme(s,date);
+  return s;
+}
+
+/* Teknikktema – hoftekontroll, roterer per økt (man, ons, tor) */
+const TEMA=[["Hofta inn","Hvert flytt med hofta inn før hånden går."],["Stille føtter","Ingen lyd, ingen justering etter plassering."],
+ ["Høyt steg med kontroll","Press opp med beinet, armene bare balanse."],["Flagg i stedet for fotbytte","Ingen fotbytte – flagg der du ellers ville byttet."],
+ ["Hoftedrift","Start hvert flytt med hoftebevegelsen."],["Drop knee og twist-lock","Ingen hold i låsen, maks 6–8, ≤ 30°."]];
+function themeOK(t,date){ const i=info(date); return !(t[0].startsWith("Drop")&&(i.y===2026||i.w<2)); }
+function themeCat(s){ return ["man","ons","tor"].includes(s.key)&&s.title!=="Rutedag på led"&&!s.i.comp&&s.i.phase!=="jul"; }
+const themeCache={};
+function themeFor(date){
+  const k=ymd(date); if(themeCache[k]) return themeCache[k];
+  let n=0; for(let d=new Date(2026,10,2); d<date; d=addDays(d,1)){ const s=session(d,true); if(themeCat(s)) n++; }
+  const pool=TEMA.filter(t=>themeOK(t,date));
+  return themeCache[k]=pool[n%pool.length];
+}
+function addTheme(s,date){
+  if(!themeCat(s)) return;
+  const [t,d]=themeFor(date);
+  const txt=`Teknikktema: <a class="key" href="#teknikk" data-anchor="tema-${temaId(t)}">${t}</a> – ${d}`+(t.startsWith("Drop")?" Bare når full dybde er smertefri.":"");
+  s.theme=t;
+  const blk=s.key==="tor"?s.tre:s.blocks.find(b=>b.h==="Oppvarming");
+  if(blk) blk.items.unshift(txt);
+}
+
+/* ============ LOGG ============ */
+let LOG={};
+const LS_KEY=KEY+"-logg-v1";
+function lsGet(k){ try{ return localStorage.getItem(k);}catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v);}catch(e){} }
+function loadLocal(){ try{ LOG=JSON.parse(lsGet(LS_KEY)||"{}")||{}; }catch(e){ LOG={}; } }
+function initDb(){ loadLocal(); document.getElementById("syncState").textContent="Logg på denne telefonen"; }
+async function saveEntry(date,entry){ LOG[date]=entry; lsSet(LS_KEY,JSON.stringify(LOG)); return lsGet(LS_KEY)?"Lagret på denne telefonen.":"Kunne ikke lagre – nettleseren blokkerer lagring."; }
+async function deleteEntry(date){ delete LOG[date]; lsSet(LS_KEY,JSON.stringify(LOG)); }
+const FN={gronn:"grønn",gul:"gul",oransje:"oransje",rod:"rød",svart:"svart"};
+const has=v=>v!=null&&v!=="";
+const FIELD_NAMES={antall:"antall",rdl:"RDL",poeng:"poeng",topper:"topper/soner"};
+function entryLine(k){ const e=LOG[k], d=parseYmd(k);
+  let t=`${DAYS[isoWeek(d).dow]} ${fmt(d)}: ${FN[e.farge]||"–"} · ${e.okt||""}`;
+  for(const f of ["antall","rdl","poeng","topper"]) if(has(e[f])) t+=` · ${e[f+"Navn"]||FIELD_NAMES[f]}: ${e[f]}`;
+  if(has(e.kUnder)||has(e.kMorgen)) t+=` · kne ${has(e.kUnder)?e.kUnder:"–"}/${has(e.kMorgen)?e.kMorgen:"–"}`;
+  if(e.hevelse) t+=" · HEVELSE"; if(e.laas) t+=" · LÅSNING/SVIKT";
+  if(e.kommentar) t+=` – ${e.kommentar}`;
+  return t; }
+function summary(scope){
+  let keys=Object.keys(LOG).sort();
+  const head=`${NAVN}. Kne = under økta / neste morgen (0–10).`;
+  if(scope==="uke"){ const {y,w}=isoWeek(cur); const m=mondayOf(y,w); const a=ymd(m), z=ymd(addDays(m,6));
+    keys=keys.filter(k=>k>=a&&k<=z);
+    return `${head}\nLogg uke ${w}\n`+(keys.length?keys.map(entryLine).join("\n"):"Ingen økter logget."); }
+  let out=`${head}\nLogg vinteren 2026/27`, lastW=null;
+  keys.forEach(k=>{ const w=isoWeek(parseYmd(k)).w; if(w!==lastW){ out+=`\n\nUke ${w}`; lastW=w; } out+="\n"+entryLine(k); });
+  return keys.length?out:out+"\nIngen økter logget.";
+}
+async function shareText(t,msgEl){
+  try{ if(navigator.share){ await navigator.share({title:"Treningslogg",text:t}); return; } }catch(e){ if(e&&e.name==="AbortError") return; }
+  try{ await navigator.clipboard.writeText(t); msgEl.textContent="Kopiert – lim inn i en melding til trener."; return; }catch(e){}
+  const ta=document.getElementById("shareFallback"); ta.value=t; ta.hidden=false; ta.select(); msgEl.textContent="Kopier teksten under.";
+}
+function downloadBackup(){
+  const blob=new Blob([JSON.stringify({utover:NAVN,versjon:1,logg:LOG},null,1)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=KEY+"-logg-"+ymd(cur)+".json";
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
+}
+function restoreBackup(file,msgEl){
+  const r=new FileReader();
+  r.onload=()=>{ try{ const o=JSON.parse(r.result); const l=o&&o.logg; if(!l||typeof l!=="object") throw 0;
+      let n=0; for(const k in l){ if(/^\d{4}-\d\d-\d\d$/.test(k)&&!LOG[k]){ LOG[k]=l[k]; n++; } }
+      lsSet(LS_KEY,JSON.stringify(LOG)); render(); const m=document.getElementById("shareMsg"); if(m) m.textContent=`Hentet inn ${n} økter.`; }
+    catch(e){ msgEl.textContent="Fant ingen logg i filen."; } };
+  r.readAsText(file);
+}
+
+/* Varsler fra loggen */
+function alerts(date){
+  const out=[]; const ds=ymd(date);
+  const prev=Object.keys(LOG).filter(k=>k<ds).sort();
+  const lastK=prev[prev.length-1];
+  const within=(k,n)=>(date-parseYmd(k))/864e5<=n;
+  if(prev.some(k=>within(k,3)&&LOG[k].laas)) out.push(["stop","Låsning, eller kneet tok tak eller sviktet: stopp, kontakt fysio eller kirurg før neste økt."]);
+  if(prev.some(k=>within(k,7)&&LOG[k].hevelse)) out.push(["stop","Hevelse i kneet: ingen spenst eller dyp bøy, kontakt fysio samme uke."]);
+  if(lastK&&within(lastK,3)&&((has(LOG[lastK].kUnder)&&+LOG[lastK].kUnder>2)||(has(LOG[lastK].kMorgen)&&+LOG[lastK].kMorgen>2)))
+    out.push(["stop","Kne over 2/10 sist: forrige nivå (dybde, vekt, hopp, teknikktema) i én uke, prøv igjen uka etter."]);
+  const last2=prev.slice(-2).map(k=>LOG[k].farge);
+  if(last2.length===2&&last2.every(f=>f==="oransje"||f==="rod")) out.push(["stop","To oransje/røde dager på rad → neste harde økt blir 3×10."]);
+  if(lastK&&LOG[lastK].farge==="svart") out.push(["stop","Sist logget svart: ikke tren før du har snakket med trener."]);
+  if(lastK&&LOG[lastK].farge==="rod") out.push(["stop","Sist logget rød: trenger flere hviledager."]);
+  const i=info(date), yd=ymd(addDays(date,-1));
+  if(i.dow===2&&LOG[yd]&&LOG[yd].farge==="oransje") out.push(["warn","Mandagen ble oransje → ett sett ned i styrke i dag."]);
+  if(i.dow===4&&LOG[yd]&&LOG[yd].farge==="oransje") out.push(["warn","Onsdagen ble oransje → skulder ett sett ned i dag."]);
+  if(LOG[yd]&&!has(LOG[yd].kMorgen)&&ds===ymd(cur)) out.push(["acc",`Fyll inn kneet i morges for gårsdagens økt: <a href="#idag" data-go="${yd}">åpne i går</a>.`]);
+  return out;
+}
+
+/* ============ VISNINGER ============ */
+const TABS=[["idag","I dag"],["uka","Uka"],["man","Mandag"],["tir","Tirsdag"],["ons","Onsdag"],["tor","Torsdag"],["lor","Lørdag"],["konk","Konkurranse"],["teknikk","Teknikk"],["plan","Plan"],["rpe","RPE"],["regler","Regler"],["logg","Logg"]];
+let cur=new Date(); cur=new Date(cur.getFullYear(),cur.getMonth(),cur.getDate());
+let selDate=new Date(cur), weekRef=new Date(cur);
+function tabsHtml(t){ return TABS.map(([k,n])=>`<a href="#${k}" class="${k===t?"on":""}">${n}</a>`).join(""); }
+function notesHtml(n){ return n.map(([c,t])=>`<div class="note ${c==="warn"?"":c}">${t}</div>`).join(""); }
+function rpeLink(t){ return t.replace(/RPE \d+(–\d+)?(?![^<]*<\/a>)/g,m=>`<a href="#rpe">${m}</a>`); }
+function blkHtml(b){ return `<div class="blk"><h4>${b.h}${b.dur?`<span class="dur">${b.dur}</span>`:""}</h4><ul>${b.items.map(x=>`<li>${rpeLink(x)}</li>`).join("")}</ul></div>`; }
+function tagsHtml(i){
+  let t=`<span class="tag">Uke ${i.w}</span><span class="tag acc">${i.label}</span>`;
+  if(i.light) t+=`<span class="tag warn">Lett uke</span>`;
+  if(i.comp) t+=`<span class="tag stop">${i.comp.dager}</span>`;
+  if(NYTT[i.w]&&!["før","etter","jul"].includes(i.phase)&&!i.light&&i.phase!=="top") t+=`<span class="tag">Nytt: ${NYTT[i.w]}</span>`;
+  return `<div class="meta">${t}</div>`;
+}
+function strAHtml(i){
+  if(i.phase==="top") return `<div class="blk"><h4>Topping · 2 sett<span class="dur">ca. 30 min</span></h4><ul>
+    <li>RDL 2 × 3–4, ${rpeLink("RPE 8")}, samme vekt som siste fase 2-uke.</li><li>Goblet 2 × 8 · Copenhagen 2 × 20–30 s /side · tåhev 2 × 12–15 /side.</li></ul></div>`;
+  const rows=styrkeA(i), rpe=i.S===2?"RPE 8 (2 reps igjen)":"RPE 7 (3 reps igjen)";
+  const led=i.phase==="led";
+  return `<div class="blk"><h4>Hoveddel</h4><p class="small" style="margin:0 0 4px">${rpeLink(rpe)} · 2–3 s senkefase · supersett A1/A2 osv.${led?" · uke 20: 2 sett":""} · aldri til svikt.</p></div>
+   <div class="exlist">${rows.map(([ix,sets,reps,pause])=>{ const e=STYRKE_A[ix]; return exRow(e[0],e[1],e[2],led?Math.min(2,sets):sets,reps,pause,e[3],ix===6&&i.y===2026&&i.w===46?"Ny denne uka":""); }).join("")}</div>
+   <div class="blk"><ul><li><b>Stopp i et sett:</b> ved RPE-målet, eller når teknikken endres.</li><li><b>RDL-progresjon:</b> alle 4 sett på øvre rep-tall ved mål-RPE → +2,5–5 kg neste økt.</li>
+   <li><b>Øvrige bein:</b> først dybde, så reps, så vekt. Aldri to av dem samme uke.</li></ul></div>`;
+}
+function spenstHtml(i){
+  const sp=spenst(i);
+  return `<div class="blk"><h4>Spenst · først i økta<span class="dur">≤ 20 min · ${sp.k} kontakter</span></h4><ul>
+    <li>Stølhet ≥ 3/10 i lårene → bare pogos og landinger.</li><li>Pause 60–90 s. Stopp: ustø landing, eller to hopp lavere enn de første.</li>
+    ${sp.list.some(x=>x[0]==="ett")?"<li>Krav før ettbeins landing: 3 × 8 ettbeins knebøy til kasse uten smerte og uten at kneet faller inn.</li>":""}</ul></div>
+   <div class="exlist">${sp.list.map(([k,sets,reps])=>{ const e=SP[k]; return exRow("",e[0],e[1],sets,reps,"",e[2],""); }).join("")}</div>`;
+}
+function skulderHtml(i){
+  let list=SKULDER; if(i.phase==="top") list=SKULDER.filter(e=>["B1","D1","D2"].includes(e[0]));
+  return `<div class="blk"><h4>Skulderprogram<span class="dur">25 min · ${rpeLink("RPE 5–6")}</span></h4><p class="small" style="margin:0 0 4px">Progresjon: reps opp (8 → 12) på RPE 5–6, ikke vekt.${i.phase==="top"?" Topping: bare B1, D1 og D2.":""}</p></div>
+   <div class="exlist">${list.map(e=>exRow(e[0],e[1],e[2],i.light?half(e[3]):e[3],e[4],e[5],e[6],"")).join("")}</div>`;
+}
+function sessionCard(s,withAlerts){
+  const i=s.i;
+  let h=`<div class="card"><h2>${s.title}</h2>${tagsHtml(i)}${s.time&&s.time!=="–"?`<div class="small muted">Tid: ${s.time}</div>`:""}
+   ${withAlerts?notesHtml(alerts(i.date)):""}${notesHtml(s.notes.filter(n=>n[0]!=="acc"))}`;
+  h+=s.blocks.map(blkHtml).join("");
+  if(s.strA) h+=strAHtml(i);
+  if(s.spenst) h+=spenstHtml(i);
+  if(s.tre) h+=blkHtml(s.tre);
+  if(s.skulder) h+=skulderHtml(i);
+  h+=s.notes.filter(n=>n[0]==="acc").map(n=>`<p class="small muted">${n[1]}</p>`).join("")+`</div>`;
+  return h;
+}
+function vIdag(){
+  const s=session(selDate), i=s.i, isToday=ymd(selDate)===ymd(cur);
+  let h=`<div class="banner">HVA SKAL JEG ØVE PÅ I DAG?</div>
+  <div class="daynav"><button class="btn sm" data-nav="-1" aria-label="Forrige dag">◀</button>
+   <div class="d">${isToday?"I dag":DAY[i.dow]} · ${fmt(selDate)}<small>${isToday?DAY[i.dow]:'<a href="#" data-today="1">Tilbake til i dag</a>'}</small></div>
+   <button class="btn sm" data-nav="1" aria-label="Neste dag">▶</button></div>`;
+  h+=sessionCard(s,true);
+  if(s.key==="hvile"){ let d=addDays(selDate,1), n=session(d,true), k=0; while(n.key==="hvile"&&k<6){ d=addDays(d,1); n=session(d,true); k++; }
+    if(n.key!=="hvile") h+=`<div class="card small"><span class="muted">Neste økt:</span> <b>${DAY[n.i.dow]} ${fmt(d)}</b> – ${n.title}</div>`; }
+  h+=formHtml(selDate,s);
+  return h;
+}
+let draft={};
+function formHtml(date,s){
+  const ds=ymd(date), e=LOG[ds]||{}; draft={...e};
+  const colors=[["gronn","Grønn"],["gul","Gul"],["oransje","Oransje"],["rod","Rød"],["svart","Svart"]];
+  const max=s.count&&s.count.max;
+  const fields=s.key==="man"?[["antall","Forsøk"+(max?` (maks ${max})`:"")]]:s.fields;
+  return `<div class="card" id="logform"><h3 style="margin-top:0">Logg økta</h3>
+   ${["hvile","jul"].includes(s.key)?'<p class="small muted" style="margin:0 0 6px">Hviledag – logg bare hvis du trente.</p>':""}
+   <label class="f">Fargen på dagen</label>
+   <div class="colors">${colors.map(([k,n])=>`<button type="button" data-farge="${k}" class="${e.farge===k?"on":""}"><span class="dot f-${k}"></span>${n}</button>`).join("")}</div>
+   ${fields.length?`<div class="row2">${fields.map(([k,l])=>`<div><label class="f">${l}</label><input type="text" data-field="${k}" data-label="${l.replace(/ \(.*/,"")}" value="${esc(e[k]??"")}"></div>`).join("")}</div>`:""}
+   <div class="row2"><div><label class="f">Kne under økta</label><input type="number" min="0" max="10" inputmode="numeric" placeholder="0–10" id="kUnder" value="${e.kUnder??""}"></div>
+     <div><label class="f">Kne neste morgen</label><input type="number" min="0" max="10" inputmode="numeric" placeholder="0–10" id="kMorgen" value="${e.kMorgen??""}"></div></div>
+   <label class="chk"><input type="checkbox" id="kHev" ${e.hevelse?"checked":""}> Hevelse i kneet</label>
+   <label class="chk"><input type="checkbox" id="kLaas" ${e.laas?"checked":""}> Låsning, kneet tok tak eller sviktet</label>
+   <label class="f">Kommentar</label><textarea id="fKom" placeholder="Hva gikk bra, hva kjentes?">${esc(e.kommentar||"")}</textarea>
+   <div style="margin-top:12px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+     <button class="btn pri" id="fSave">${LOG[ds]?"Oppdater":"Lagre"}</button>${LOG[ds]?'<button class="btn" id="fDel">Slett</button>':""}
+     <span class="saved" id="fMsg">${LOG[ds]?"Logget "+fmtTime(e.lagret):""}</span></div></div>`;
+}
+function esc(t){ return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function fmtTime(t){ if(!t) return ""; const d=new Date(t); return isNaN(d)?"":fmt(d)+" kl. "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
+
+function vUka(){
+  const {y,w}=isoWeek(weekRef); const mon=mondayOf(y,w); const i=info(mon);
+  let h=`<div class="daynav" style="margin-top:18px"><button class="btn sm" data-wk="-7">◀</button>
+   <div class="d">Uke ${w}<small>${fmt(mon)} – ${fmt(addDays(mon,6))}</small></div><button class="btn sm" data-wk="7">▶</button></div>
+   <div class="card">${tagsHtml({...i,dow:0})}<div style="margin-top:8px">`;
+  for(let k=0;k<7;k++){ const d=addDays(mon,k), s=session(d,true), e=LOG[ymd(d)], today=ymd(d)===ymd(cur);
+    h+=`<a class="week-row ${today?"today":""}" href="#idag" data-go="${ymd(d)}"><div class="wd">${DAYS[k+1]}<small>${d.getDate()}.</small></div>
+      <div class="wt"><span class="${s.key==="hvile"?"rest":""}">${s.title}</span>${s.time&&s.time!=="–"?` <small>· ${s.time}</small>`:""}</div>
+      ${e&&e.farge?`<span class="dot f-${e.farge}"></span>`:""}</a>`; }
+  h+=`</div></div>`;
+  if(weekRef.getTime()!==cur.getTime()) h+=`<p><button class="btn sm" data-wkreset="1">Denne uka</button></p>`;
+  return h;
+}
+const D=(y,w,dow)=>addDays(mondayOf(y,w),dow-1);
+function curLabel(){ const i=info(cur); return `<p class="small muted">Nå: uke ${i.w} · ${i.label}</p>`; }
+function refCard(title,date){ const s=session(date,true); return `<div class="card"><h3 style="margin-top:0">${title}</h3>${notesHtml(s.notes.filter(n=>n[0]==="stop"))}${s.blocks.map(blkHtml).join("")}${s.strA?strAHtml(s.i):""}${s.spenst?spenstHtml(s.i):""}${s.tre?blkHtml(s.tre):""}${s.skulder?skulderHtml(s.i):""}</div>`; }
+function nowOr(dow,fallback){ const i=info(cur); return ["før","etter","jul"].includes(i.phase)?fallback:addDays(mondayOf(i.y,i.w),dow-1); }
+const VIEWS={
+ man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,1))}${refCard("Fase 2 og etter NM",D(2027,4,1))}${refCard("Topping",D(2027,7,1))}${refCard("Konkurranseuke",D(2027,9,1))}`,
+ tir:()=>`<h2 style="margin-top:18px">Tirsdag · Styrke A</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,49,2)))}${refCard("Topping",D(2027,7,2))}`,
+ ons:()=>`<h2 style="margin-top:18px">Onsdag · Linked boulders</h2>${curLabel()}
+   <div class="card"><h3 style="margin-top:0">Runder per uke</h3><div class="tscroll"><table><thead><tr><th>Uker</th><th>Runder</th><th>Nivå</th><th>Pause</th></tr></thead><tbody>
+   <tr><td>45–46, 1</td><td>2 × 3</td><td>12–20 flytt, 3–4 under maks, RPE 6–7</td><td>3–4 min</td></tr>
+   <tr><td>47–51, 2</td><td>2 × 4</td><td>samme</td><td>3–4 min</td></tr>
+   <tr><td>3</td><td>2 × 4</td><td>10–14 flytt, 2–3 under maks, RPE 7–8 → 8–9</td><td>3–4 min</td></tr>
+   <tr><td>4–6, 11–14, 18</td><td>2 × 4</td><td>samme</td><td>3 min</td></tr>
+   <tr><td>7, 15</td><td>2 × 3</td><td>samme</td><td>3 min</td></tr>
+   <tr><td>8, 16 · lette uker 48, 10</td><td>1 × 4</td><td>samme</td><td>3 min</td></tr>
+   <tr><td>9, 17, 19</td><td>–</td><td>hvile eller 20 min lett</td><td></td></tr>
+   <tr><td>20</td><td colspan="3">Rutedag på led: 6–8 ruter 2–3 under onsight, RPE 6</td></tr></tbody></table></div></div>${refCard("Denne uka",nowOr(3,D(2026,47,3)))}`,
+ tor:()=>`<h2 style="margin-top:18px">Torsdag · Spenst + 3×10 + skulder</h2>${curLabel()}
+   <div class="card"><h3 style="margin-top:0">Spenst per uke · maks 80 kontakter</h3><div class="tscroll"><table><thead><tr><th>Uker</th><th>Innhold</th><th>Kontakter</th></tr></thead><tbody>
+   <tr><td>45–46</td><td>Pogos 2 × 15 · gå av kasse 3 × 5</td><td>45</td></tr><tr><td>47–49</td><td>+ kassehopp 40 cm 3 × 4</td><td>57</td></tr>
+   <tr><td>50–5</td><td>Pogos 2 × 15 · kassehopp 3 × 4 · lengdehopp 3 × 4</td><td>54</td></tr><tr><td>6, 10</td><td>Pogos 2 × 15 · lengdehopp 3 × 4 · ettbeins landing 3 × 4 /bein</td><td>66</td></tr>
+   <tr><td>11–</td><td>Pogos 2 × 15 · ettbeins landing 3 × 4 /bein · kvart rotasjon 3 × 3 /side</td><td>72</td></tr>
+   <tr><td>Topping</td><td>Pogos 2 × 10 · kassehopp 2 × 3</td><td>26</td></tr><tr><td>9, 17, 19, 20</td><td>Ingen spenst</td><td>0</td></tr></tbody></table></div></div>
+   ${refCard("Denne uka",nowOr(4,D(2026,47,4)))}`,
+ lor:()=>`<h2 style="margin-top:18px">Lørdag · Hard buldring – konkurranseformat</h2>${curLabel()}${refCard("Fase 1",D(2026,46,6))}${refCard("Fase 2 og etter NM",D(2027,4,6))}${refCard("Topping",D(2027,8,6))}`,
+};
+function vKonk(){
+  return `<h2 style="margin-top:18px">Konkurranse</h2>
+  <div class="card"><h3 style="margin-top:0">Konkurranser</h3><ul>
+   <li><b>NM senior</b> Kristiansand lør 6.–søn 7. mars (uke 9) – formtopp, avgjør Europa-kvalifisering.</li>
+   <li><b>Europe Series</b> Göteborg lør 1.–søn 2. mai (uke 17).</li><li><b>Europe Series</b> Wien lør 15.–søn 16. mai (uke 19).</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Konkurranseuka (uke 9, 17, 19)</h3><ul>
+   <li><b>Man:</b> oppvarming 30 min, 4 buldre i konkurranseformat, maks 4 forsøk per buldre, 40–50 min. Siste harde økt.</li>
+   <li><b>Tir:</b> 30–40 min mobilitet og lett sva eller volumvegg, RPE 3.</li><li><b>Ons:</b> hvile eller 20 min lett klatring.</li>
+   <li><b>Tor:</b> 3×10 med 2 runder. Aktivering: 3–4 middels buldre på første forsøk, RPE 5–6.</li><li><b>Fre:</b> hvile, eller 15 min aktivering.</li>
+   <li><b>Lør:</b> oppvarming 30–40 min før isolasjon (pyramide 6–8 buldre), rutinen, mat og drikke mellom runder.</li>
+   <li><b>Søn:</b> semi/finale, samme rutine. Mandag etter NM: hvile.</li><li>Ingen styrke og ingen spenst siste 5 dager.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Topping (uke 7–8 og 15–16)</h3><div class="tscroll"><table><thead><tr><th>Uke</th><th>Harde forsøk (man + lør)</th><th>Linked</th><th>Styrke</th></tr></thead><tbody>
+   <tr><td>Fase 2</td><td>14 + 26 = 40</td><td>2 × 4</td><td>Fullt</td></tr><tr><td>7 / 15</td><td>12 + 18 = 30</td><td>2 × 3</td><td>Tirsdag 30 min</td></tr>
+   <tr><td>8 / 16</td><td>10 + 12 = 22</td><td>1 × 4</td><td>2 sett, RPE 8</td></tr><tr><td>9 / 17 / 19</td><td>Man: 12–16</td><td>0</td><td>0</td></tr></tbody></table></div>
+   <p class="small muted" style="margin-bottom:0">Intensitet og antall økter som i fase 2.</p></div>`;
+}
+function vPlan(){
+  const {w:cw,y:cy}=isoWeek(cur);
+  const rows=SEASON.map(({y,w})=>{ const m=mondayOf(y,w), i=info(m);
+    return `<tr class="${y===cy&&w===cw?"now":""}"><td><a href="#uka" data-week="${ymd(m)}">${w}</a></td><td>${fmt(m)}</td><td>${i.label}</td><td>${(i.phase!=="jul"&&NYTT[w])?NYTT[w]:""}</td></tr>`; }).join("");
+  return `<h2 style="margin-top:18px">Plan</h2>
+  <div class="card small"><ul>
+   <li><b>Uka:</b> man hard buldring · tir Styrke A · ons linked boulders · tor spenst + 3×10 + skulder · lør hard buldring, konkurranseformat. Fre og søn hvile.</li>
+   <li><b>Fase 1 (45–51):</b> kapasitet. Uke 48 lett.</li><li><b>Jul (52, 53, 1):</b> fri eller lett klatring. Ingen harde økter 24.–27. des. Uke 1: lett oppstart.</li>
+   <li><b>Fase 2 (2–6):</b> uke 2 re-entry · 3 klatring fase 2 · 4 styrke fase 2 · 6 ettbeins landing.</li>
+   <li><b>Topping (7–8, 15–16)</b> · <b>NM (9)</b> · <b>uke 10 lett</b> · <b>11–14 og 18 fase 2-nivå</b> · <b>Göteborg (17)</b> · <b>Wien (19)</b> · <b>led fra uke 20</b>. 4 × 4 på led fra juni.</li>
+   <li><b>Maks én ny ting per uke.</b> Lett uke: halvt antall forsøk/runder/sett, samme intensitet.</li></ul></div>
+  <div class="card"><div class="tscroll"><table><thead><tr><th>Uke</th><th>Fra</th><th>Periode</th><th>Nytt</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+function vRpe(){
+  return `<h2 style="margin-top:18px">RPE og intensitet</h2><p class="small muted">RPE = hvor hardt det kjennes, 1–10. Nå: uke ${info(cur).w} · ${info(cur).label}.</p>
+  <div class="card"><div class="tscroll"><table><thead><tr><th>RPE</th><th>Buldring, styrke, spenst</th><th>Linked, tau</th><th>Brukes i</th></tr></thead><tbody>
+   <tr><td>1–2</td><td>Ingen flytt krever noe.</td><td>Kan snakke hele setninger.</td><td>Oppvarming, nedtrapping</td></tr>
+   <tr><td>3–4</td><td>Lette buldre, flytende.</td><td>Rolig pust, lett varme i underarmene.</td><td>3×10, teknikkdriller</td></tr>
+   <tr><td>5–6</td><td>Middels buldre, første–andre forsøk.</td><td>Merkbar pump som går tilbake i pausen.</td><td>Oppvarmingspyramide, skulderprogram, enkel ledøkt</td></tr>
+   <tr><td>7</td><td>Må ta i på nøkkelflyttet. Styrke: 3 reps igjen.</td><td>Tydelig pump, føttene krever jobb.</td><td>Hard buldring fase 1, linked fase 1, styrke fase 1</td></tr>
+   <tr><td>8</td><td>Full kraft, treffer og holder. Styrke: 2 reps igjen.</td><td>Hard pump, flyttene sitter.</td><td>Hard buldring fase 2, linked fase 2, styrke fase 2</td></tr>
+   <tr><td>9</td><td>Alt du har, treffer så vidt. Styrke: brukes ikke.</td><td>Kvaliteten holder akkurat.</td><td>Toppforsøk, konkurranseformat</td></tr>
+   <tr><td>10</td><td>Bom eller fall. Styrke: svikt – brukes ikke.</td><td>Falt av pump.</td><td>Grenseforsøk</td></tr></tbody></table></div></div>
+  <div class="card"><h3 style="margin-top:0">Intensitet per økt og fase</h3>
+   <div class="blk"><h4>Hard buldring</h4><ul><li>Fase 1: 1–2 grader under maks, RPE 7–8, 3 min, maks 18 forsøk.</li><li>Fase 2 / etter NM: på/over maks, RPE 8–9, 4–5 min, maks 14.</li><li>Topping / konkurranse: konkurranseformat, RPE 9, maks 4 per buldre.</li></ul></div>
+   <div class="blk"><h4>Styrke</h4><ul><li>RDL fase 1: RPE 7, 4 × 6–8 → 4 × 5–6, 2–3 min. Fase 2: RPE 8, 4 × 5–6, 3 min. Topping: 2 × 3–4, RPE 8.</li><li>Øvrig tirsdag: RPE 7 → 8. Skulder: RPE 5–6.</li></ul></div>
+   <div class="blk"><h4>3×10</h4><ul><li>4+ grader under onsight, RPE 3–4. 2 runder i konkurranseuker.</li></ul></div>
+   <p class="small muted" style="margin-bottom:0">Tirsdag ett sett ned når mandag ble oransje. Torsdag skulder ett sett ned når onsdag ble oransje.</p></div>`;
+}
+function vRegler(){
+  return `<h2 style="margin-top:18px">Regler</h2>
+  <div class="card"><h3 style="margin-top:0">Fra samtalen</h3><ul>
+   <li><b>Formtopp:</b> NM senior lør 6.–søn 7. mars, avgjør kvalifisering til Europe Series.</li><li><b>Mål:</b> det mentale i konkurranse – nye buldre i konkurranseformat.</li>
+   <li><b>Teknikk:</b> hoftekontroll i alle økter.</li><li><b>Styrke:</b> bein, kjerne, spenst, skadeforebygging, skulder.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Kne</h3><ul>
+   <li>Belastet bøy over 90° og vridning under belastning i samråd med fysio. Unngå vridning i dyp bøy. Gradvis dybde med kontroll. Ingen dyp bøy under utmattelse.</li>
+   <li><b>Smerte over 2/10</b> under eller morgenen etter → forrige nivå (dybde, vekt, hopp, teknikktema) i én uke, prøv igjen uka etter.</li>
+   <li><b>Hevelse</b> → ingen spenst eller dyp bøy, kontakt fysio samme uke.</li>
+   <li><b>Låsning, at kneet tar tak eller svikter</b> → stopp økta, kontakt fysio eller kirurg.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Fingre</h3><ul>
+   <li>Ingen fingerbrett eller campus. Halvcrimp og åpen hånd som standard, full crimp ikke siste 30 min.</li>
+   <li>Smerte i et fingerledd: stopp lister og crimp samme økt, si fra samme dag. Over en uke, eller hovent ledd: lege.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Det som ligger fast</h3><ul>
+   <li><b>Hviledager:</b> fredag og søndag. Tapt økt tas ikke igjen.</li>
+   <li><b>Sluttpunkt:</b> forsøkstaket for økta, eller to forsøk på rad med tydelig teknikkfall (fot smeller, hofte glir, grep åpner seg på et kjent flytt).</li>
+   <li><b>Styrke:</b> aldri til svikt.</li><li><b>Grep:</b> unngå samme type tak hele økta. Har alt vært crimp i en time: noe annet til slutt.</li>
+   <li><b>Maks én ny ting per uke:</b> ny øvelse, nytt hopp, nytt format eller ny fase i én økttype. Aldri dybde og vekt samme uke.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Justering</h3><ul>
+   <li><b>Skulder:</b> smerte foran i skulderen ved press eller push-ups → kutt press, dobbel dose utadrotasjon og Y-hev i to uker.</li>
+   <li><b>To oransje dager på rad</b> → neste harde økt blir 3×10.</li><li><b>Etter ≥ 5 dager fri:</b> første uke på fase 1-intensitet. Etter lett uke: rett tilbake.</li>
+   <li><b>Lavenergi-uke</b> (prøver, eksamen, sykdom, reise): man og tor som normalt, tir 2 sett, ons linked 1 × 4, lør bare del 1 / halv ledøkt.</li>
+   <li><b>Eksamen tidlig i mai:</b> uke 18 kan bli lavenergi-uke.</li>
+   <li><b>Uteprosjekt:</b> én hviledag kan godtas en kort periode – da går intensiteten inne ned før og etter.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Fargen på dagen</h3>
+   <p><span class="dot f-gronn"></span> <b>Grønn</b> uthvilt, god kvalitet, neste økt føles sterkere<br><span class="dot f-gul"></span> <b>Gul</b> vedlikehold<br>
+   <span class="dot f-oransje"></span> <b>Oransje</b> trente for sliten, lav kvalitet<br><span class="dot f-rod"></span> <b>Rød</b> trenger flere hviledager<br><span class="dot f-svart"></span> <b>Svart</b> skade</p></div>`;
+}
+const TEKNIKK=[
+ {id:"hofta-inn",n:"Hofta inn",mal:"Rekkevidde fra hofteposisjon i stedet for armkraft.",
+  drill:["Spraywall med store volumer: hvert flytt med hofta inn før hånden går.","Samme flytt med brystet mot veggen og med hofta inn – velg det som krever minst.","Lange flytt: hofta inn i stedet for lock-off."],
+  feil:["Brystet mot veggen av vane på bratt vegg."],prog:"Lengre flytt, mindre tak."},
+ {id:"stille-fotter",n:"Stille føtter",mal:"Én plassering, ingen justering – også i fart.",
+  drill:["Lette buldre uten lyd – lyd betyr start på nytt.","Samme buldre i dobbelt tempo med samme presisjon.","Spraywall: bare de minste fottakene."],
+  feil:["Blikket videre før foten er lastet.","Justering etter plassering."],prog:"Mindre tak, brattere vegg, høyere tempo."},
+ {id:"hoyt-steg",n:"Høyt steg med kontroll",mal:"Opp på høye fottak med beinet, ikke armene.",
+  drill:["Volumvegg: 3 buldre med høye steg – press opp med beinet, armene bare balanse.","Kontrollert ned samme vei.","Dybde innenfor det smertefrie."],
+  feil:["Drar seg opp med armene.","Faller inn i steget i stedet for å presse."],prog:"Høyere steg, mindre fottak – innenfor smertefri dybde."},
+ {id:"flagg",n:"Flagg i stedet for fotbytte",mal:"Flagg som førstevalg der du ellers ville byttet fot.",
+  drill:["Lette buldre uten fotbytte – innside- og utsideflagg.","Samme buldre en gang til med flagg på motsatt side.","3×10: runde 1 flagg på hvert flytt det går, runde 2 normalt, runde 3 bare der det sparer kraft."],
+  feil:["Fotbytte av vane på lette flytt."],prog:"Brattere vegg, mindre fottak."},
+ {id:"hoftedrift",n:"Hoftedrift",mal:"Hofta starter flyttet.",
+  drill:["Volumvegg: start hvert flytt med hoftebevegelsen.","Film 1–2 forsøk: hva starter flyttet – hofta eller hånda?","Samme buldre etter filmen, med hofta først."],
+  feil:["Hånda går før hofta har flyttet seg."],prog:"Brattere vegg, lengre flytt."},
+ {id:"drop-knee",n:"Drop knee og twist-lock",mal:"Lås posisjonen med beinet – uten å belaste kneet i låsen.",
+  drill:["Tidligst fra uke 2, og bare når full dybde er smertefri.","Moderat bratt vegg (≤ 30°), kneet ikke lavere enn hofta.","Inn, flytt, ut – ingen hold i låsen.","Maks 6–8 per økt, ikke siste 30 min."],
+  feil:["Holder låsen.","Kneet under hoftehøyde."],prog:"Ikke vanskeligere enn rammene over."}];
+function temaId(n){ const t=TEKNIKK.find(x=>x.n===n); return t?t.id:""; }
+function vTeknikk(){
+  return `<h2 style="margin-top:18px">Teknikk</h2>
+  <div class="card" id="rutine" style="scroll-margin-top:110px"><h3 style="margin-top:0">Rutine før hvert forsøk</h3><ul><li>Pust ut langsomt, tre ganger.</li><li>Si de tre første flyttene for deg selv.</li><li>Gå.</li></ul></div>
+  <div class="card" id="format" style="scroll-margin-top:110px"><h3 style="margin-top:0">Konkurranseformat</h3><ul>
+   <li><b>Kvalik/semi:</b> 5 min klatretid (lesing inkludert), 5 min pause. 5 buldre (kvalik) eller 4 (semi).</li>
+   <li><b>Finale:</b> 2 min observasjon, 4 min klatring. Hver tredje gang.</li>
+   <li><b>Registrer:</b> topp, sone, forsøk og poeng (topp 25, sone 10, −0,1 per mislykket forsøk).</li></ul></div>
+  <div class="card small">Unngå samme type tak hele økta: ikke bare lister, bare board eller bare slopere.</div>
+  <h3>Teknikkbank · hoftekontroll</h3><p class="small muted">Ett tema per økt i oppvarmingen og i 3×10. Temaet roterer og står under <a href="#idag">I dag</a>.</p>
+  ${TEKNIKK.map(t=>`<div class="card" id="tema-${t.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${t.n}</h3>
+   <p style="margin:0 0 6px"><b>Mål:</b> ${t.mal}</p>
+   <div class="blk"><h4>Øvelse</h4><ul>${t.drill.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+   <div class="blk"><h4>Typiske feil</h4><ul>${t.feil.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+   <p class="small" style="margin:10px 0 0"><b>Vanskeligere:</b> ${t.prog}</p></div>`).join("")}`;
+}
+function vLogg(){
+  const keys=Object.keys(LOG).sort().reverse(), {y:cy,w:cw}=isoWeek(cur);
+  let grid=`<div class="grid g6"><div></div>${["Man","Tir","Ons","Tor","Lør"].map(d=>`<div class="h">${d}</div>`).join("")}`;
+  for(const {y,w} of SEASON){ const m=mondayOf(y,w); if(m>addDays(cur,7)) break;
+    grid+=`<div class="wk ${y===cy&&w===cw?"cur":""}">Uke ${w}</div>`;
+    for(const k of [0,1,2,3,5]){ const e=LOG[ymd(addDays(m,k))]; grid+=`<div class="cell ${e&&e.farge?"f-"+e.farge:""}"></div>`; } }
+  grid+="</div>";
+  return `<h2 style="margin-top:18px">Logg</h2>
+  <p class="small muted">Loggen lagres bare på denne telefonen, i denne nettleseren. Logg en økt fra <a href="#idag">I dag</a> – bla til riktig dag med pilene.</p>
+  <div class="card"><h3 style="margin-top:0">Send til trener</h3>
+   <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn pri" data-share="uke">Del denne uka</button><button class="btn" data-share="alt">Del hele loggen</button></div>
+   <p class="small muted" style="margin:8px 0 0" id="shareMsg"></p><textarea id="shareFallback" hidden readonly style="margin-top:8px;min-height:140px"></textarea>
+   <h3>Sikkerhetskopi</h3><p class="small muted" style="margin:0 0 8px">Ta en kopi av og til, og før du bytter telefon eller sletter nettleserdata.</p>
+   <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" data-backup="1">Last ned kopi</button><label class="btn" style="display:inline-flex;align-items:center">Hent inn kopi<input type="file" accept=".json,application/json" id="restoreFile" hidden></label></div></div>
+  <div class="card"><h3 style="margin-top:0">Sesongen</h3>${grid}</div>
+  <div class="card"><h3 style="margin-top:0">Økter</h3>${keys.length?keys.map(k=>{ const e=LOG[k], d=parseYmd(k);
+    return `<div class="entry"><div class="eh"><span>${e.farge?`<span class="dot f-${e.farge}"></span> `:""}${DAY[isoWeek(d).dow]} ${fmt(d)}</span><small>uke ${isoWeek(d).w}</small></div>
+      <p>${esc(entryLine(k).split(": ").slice(1).join(": "))}</p><p><a href="#idag" data-go="${k}" class="small">Åpne</a></p></div>`; }).join(""):'<p class="muted">Ingen økter logget ennå.</p>'}</div>`;
+}
+
+/* ============ RUTING ============ */
+function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
+function render(){
+  const t=route();
+  document.getElementById("tabs").innerHTML=tabsHtml(t);
+  const v=({idag:vIdag,uka:vUka,konk:vKonk,plan:vPlan,regler:vRegler,rpe:vRpe,teknikk:vTeknikk,logg:vLogg}[t]||VIEWS[t])();
+  const focus=document.activeElement;
+  if(t==="idag"&&focus&&focus.closest&&focus.closest("#logform")&&focus.tagName!=="BUTTON") return;
+  document.getElementById("view").innerHTML=v;
+  const on=document.querySelector("nav.tabs a.on"); if(on&&on.scrollIntoView) on.scrollIntoView({block:"nearest",inline:"nearest"});
+}
+window.addEventListener("hashchange",()=>{ render(); window.scrollTo(0,0); });
+document.addEventListener("click",async ev=>{
+  const el=ev.target.closest("button,a"); if(!el) return;
+  if(el.dataset.nav){ selDate=addDays(selDate,+el.dataset.nav); render(); return; }
+  if(el.dataset.today){ ev.preventDefault(); selDate=new Date(cur); render(); return; }
+  if(el.dataset.wk){ weekRef=addDays(weekRef,+el.dataset.wk); render(); return; }
+  if(el.dataset.wkreset){ weekRef=new Date(cur); render(); return; }
+  if(el.dataset.week){ ev.preventDefault(); weekRef=parseYmd(el.dataset.week); if(location.hash!=="#uka") location.hash="#uka"; else render(); return; }
+  if(el.dataset.go){ ev.preventDefault(); selDate=parseYmd(el.dataset.go); if(location.hash!=="#idag") location.hash="#idag"; else { render(); window.scrollTo(0,0);} return; }
+  if(el.dataset.farge){ draft.farge=el.dataset.farge; document.querySelectorAll(".colors button").forEach(b=>b.classList.toggle("on",b===el)); return; }
+  if(el.id==="fSave"){
+    const msg=document.getElementById("fMsg");
+    if(!draft.farge){ msg.textContent="Velg fargen på dagen."; return; }
+    const s=session(selDate,true);
+    const num=id=>{ const x=document.getElementById(id); return x&&x.value!==""?Math.max(0,Math.min(10,+x.value)):null; };
+    const entry={dato:ymd(selDate),uke:s.i.w,okt:s.title,farge:draft.farge,kUnder:num("kUnder"),kMorgen:num("kMorgen"),
+      hevelse:document.getElementById("kHev").checked,laas:document.getElementById("kLaas").checked,
+      kommentar:(document.getElementById("fKom").value||"").trim(),lagret:new Date().toISOString()};
+    document.querySelectorAll("#logform [data-field]").forEach(x=>{ if(x.value.trim()!==""){ entry[x.dataset.field]=x.value.trim(); entry[x.dataset.field+"Navn"]=x.dataset.label; } });
+    el.disabled=true; msg.textContent="Lagrer …";
+    const r=await saveEntry(ymd(selDate),entry);
+    document.activeElement&&document.activeElement.blur&&document.activeElement.blur();
+    render(); const m2=document.getElementById("fMsg"); if(m2) m2.textContent=r; return;
+  }
+  if(el.dataset.anchor){ ev.preventDefault(); const go=()=>{ const t=document.getElementById(el.dataset.anchor); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); };
+    const tab=el.getAttribute("href")||"#idag"; if(location.hash!==tab){ location.hash=tab; setTimeout(go,150); } else go(); return; }
+  if(el.dataset.share){ shareText(summary(el.dataset.share),document.getElementById("shareMsg")); return; }
+  if(el.dataset.backup){ downloadBackup(); return; }
+  if(el.id==="fDel"){ await deleteEntry(ymd(selDate)); render(); return; }
+});
+document.addEventListener("change",ev=>{ if(ev.target.id==="restoreFile"&&ev.target.files[0]) restoreBackup(ev.target.files[0],document.getElementById("shareMsg")); });
+initDb();
+render();
+
+/* ============ OPPDATERING ============ */
+const APP_VERSION="2026-11-05-103311";
+function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
+async function checkUpdate(){
+  if(APP_VERSION.startsWith("__")) return;
+  try{ const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"}); if(!r.ok) return;
+    const j=await r.json(); const v=j&&j[KEY]; if(!v||!v.versjon||v.versjon===APP_VERSION) return;
+    document.getElementById("updTxt").textContent="Ny versjon av planen."+(v.melding?" "+v.melding:"");
+    document.getElementById("upd").hidden=false; }catch(e){}
+}
+document.getElementById("ver").textContent=verLabel(APP_VERSION);
+document.getElementById("updBtn").addEventListener("click",()=>location.reload());
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") checkUpdate(); });
+setInterval(checkUpdate,30*60*1000);
+checkUpdate();
+
+</script>
+
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}</script>
+</body></html>
