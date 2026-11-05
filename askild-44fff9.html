@@ -402,16 +402,17 @@ function alerts(date){
 }
 
 /* ============ VISNINGER ============ */
-const TABS=[["idag","I dag"],["uka","Uka"],["man","Mandag"],["ons","Onsdag"],["tor","Torsdag"],["lor","Lørdag"],["styrke","Styrke"],["plan","Plan"],["regler","Regler"],["logg","Logg"]];
+const TABS=[["idag","I dag"],["uka","Uka"],["man","Mandag"],["ons","Onsdag"],["tor","Torsdag"],["lor","Lørdag"],["styrke","Styrke"],["plan","Plan"],["rpe","RPE"],["regler","Regler"],["logg","Logg"]];
 let cur = new Date(); cur = new Date(cur.getFullYear(),cur.getMonth(),cur.getDate());
 let selDate = new Date(cur);
 let weekRef = new Date(cur);
 
 function tabsHtml(t){ return TABS.map(([k,n])=>`<a href="#${k}" class="${k===t?"on":""}">${n}</a>`).join(""); }
 function notesHtml(n){ return n.map(([c,t])=>`<div class="note ${c==="warn"?"":c}">${t}</div>`).join(""); }
+function rpeLink(t){ return t.replace(/RPE \d+(–\d+)?/g,m=>`<a href="#rpe">${m}</a>`); }
 function sessHtml(s){
   if(!s.blocks.length) return "";
-  return s.blocks.map(b=>`<div class="blk"><h4>${b.h}${b.dur?`<span class="dur">${b.dur}</span>`:""}</h4><ul>${b.items.map(x=>`<li>${x}</li>`).join("")}</ul></div>`).join("");
+  return s.blocks.map(b=>`<div class="blk"><h4>${b.h}${b.dur?`<span class="dur">${b.dur}</span>`:""}</h4><ul>${b.items.map(x=>`<li>${rpeLink(x)}</li>`).join("")}</ul></div>`).join("");
 }
 function tagsHtml(i){
   let t=`<span class="tag">Uke ${i.w}</span><span class="tag acc">${i.label}</span>`;
@@ -501,7 +502,8 @@ function vLor(){ return `<h2 style="margin-top:18px">Lørdag</h2>${curPhaseLabel
   ${phaseCard("Oddetallsuker · jam-format",D(2026,45,6))}${phaseCard("Partall uke 46–50 og 2 · ledvolum",D(2026,50,6))}
   ${phaseCard("Partall uke 4–6 · onsight",D(2027,4,6))}${phaseCard("Partall uke 10–14 · 4 × 4",D(2027,10,6))}${phaseCard("Partall uke 16–20 · konkurranselikt",D(2027,18,6))}`; }
 
-function vStyrke(){
+function vStyrke(){ return rpeLink(vStyrke0()); }
+function vStyrke0(){
   const i=info(cur); const st=strengthSets(i.phase==="jul"||i.phase==="før"?{...i,phase:"f1"}:i);
   return `<h2 style="margin-top:18px">Styrke A · torsdag, 35 min</h2>
   <div class="card small">Rett etter 3×10 · kroppsvekt, strikk og lette manualer · 2 s senkefase · supersett A1/A2 osv. – øvelsen med færre sett hoppes over i siste runde · aldri til utmattelse.
@@ -571,14 +573,31 @@ function vRegler(){
    <p><span class="dot f-gronn"></span> <b>Grønn</b> uthvilt, god kvalitet, neste økt føles sterkere<br>
    <span class="dot f-gul"></span> <b>Gul</b> vedlikehold<br><span class="dot f-oransje"></span> <b>Oransje</b> trente for sliten, lav kvalitet<br>
    <span class="dot f-rod"></span> <b>Rød</b> trenger flere hviledager<br><span class="dot f-svart"></span> <b>Svart</b> skade</p></div>
-  <div class="card"><h3 style="margin-top:0">RPE</h3><div class="tscroll"><table><thead><tr><th>RPE</th><th>Buldring, styrke</th><th>Linked, tau</th></tr></thead><tbody>
-   <tr><td>1–2</td><td>Ingen flytt krever noe.</td><td>Ingen pump.</td></tr>
-   <tr><td>3–4</td><td>Lette buldre, flytende.</td><td>Lett varme i underarmene.</td></tr>
-   <tr><td>5–6</td><td>Går på første–andre forsøk.</td><td>Pump som går tilbake i pausen.</td></tr>
-   <tr><td>7</td><td>Må ta i på nøkkelflyttet. Styrke: 3 reps igjen.</td><td>Tydelig pump, føttene krever jobb.</td></tr>
-   <tr><td>8</td><td>Full kraft, treffer og holder. Styrke: 2 igjen.</td><td>Hard pump, flyttene sitter.</td></tr>
-   <tr><td>9</td><td>Alt du har, treffer så vidt.</td><td>Kvaliteten holder akkurat.</td></tr>
-   <tr><td>10</td><td>Bom eller fall.</td><td>Falt av pump.</td></tr></tbody></table></div></div>`;
+`;
+}
+
+function vRpe(){
+  const i=info(cur), col={1:1,2:2,3:3}[lvl(i)]||1;
+  const R=[["1–2","Ingen flytt krever noe.","Kan snakke hele setninger. Ingen pump.","Oppvarming, nedtrapping"],
+   ["3–4","Lette buldre, flytende.","Rolig pust, lett varme i underarmene.","3×10, teknikkdriller"],
+   ["5–6","Middels buldre, går på første–andre forsøk.","Merkbar pump som går tilbake i pausen.","Oppvarmingspyramide, ledvolum"],
+   ["7","Må ta i på nøkkelflyttet, kontrollert.","Tydelig pump, føttene krever jobb.","Hard buldring fase 1, PE første runder, styrke (3 reps igjen)"],
+   ["8","Full kraft, treffer og holder.","Hard pump, flyttene sitter.","Hard buldring fase 2, PE siste runder, 4 × 4, styrke (2 reps igjen)"],
+   ["9","Alt du har, treffer så vidt.","Kvaliteten holder akkurat.","Hard buldring fase 3, onsight/konkurranselikt"],
+   ["10","Bom eller fall.","Falt av pump.","Skjer på grenseforsøk i fase 3 og jam. Ikke et mål i seg selv."]];
+  const I=[["Hard buldring (man)","1–2 grader under maks, RPE 7–8, 3 min, maks 18 forsøk. Stopp: bom to ganger på et flytt du har klart før.","Nær maks, RPE 8–9, 3–4 min, maks 15 forsøk. Stopp: første forsøk med tydelig teknikkfall.","På maks, RPE 9, 4–5 min, maks 12 forsøk. Stopp: oppvarmingsbuldre begynner å kreve noe."],
+   ["Onsdag","Linked: 3–4 grader under maks, RPE 6–7, 3–4 min.","Linked: 2–3 under maks, RPE 7–8, 3 min. Ingen PE uke 8.","Rutedag 2 × 4: 1–2 under onsight, RPE 7–8, 8 min."],
+   ["3×10 (tor)","4+ grader under onsight, RPE 3–4.","Samme.","Samme, 2 runder i konkurranseuker."],
+   ["Jam-format (lør)","Maks 3 forsøk per buldre, 20 totalt, 2 min mellom forsøk.","Samme.","Samme."],
+   ["Tau (lør)","Ledvolum: 3–4 under onsight, RPE 5.","Onsight: 1–2 under onsight, RPE 7, 8–10 min.","Uke 9–14 4 × 4: 3–4 under onsight, RPE 7–8, 10 min. Uke 15–20: maks, RPE 8–9, 10–15 min. Stopp: to fall på rad under eget onsight-nivå."],
+   ["Styrke A (tor)","2 sett, RPE 7, 45–60 s.","Fra uke 6: 3 sett (B2, C1, D, E: 2), RPE 7–8, 45–60 s. Ett sett ned når onsdagen ble oransje.","2 sett, RPE 7. Ingen styrke siste 5 dager før konkurranse."]];
+  const ph=["Fase 1 · uke 45–51, 1–2","Fase 2 · uke 3–7","Fase 3 · uke 9–20"];
+  return `<h2 style="margin-top:18px">RPE og intensitet</h2>
+  <p class="small muted">RPE = hvor hardt det kjennes, 1–10. Nå: uke ${i.w} · ${i.label}.</p>
+  <div class="card"><h3 style="margin-top:0">RPE-skala</h3>${R.map(r=>`<div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">${r[0]}</div><div>
+     <div class="small"><b>Buldring, styrke:</b> ${r[1]}</div><div class="small"><b>Linked, tau:</b> ${r[2]}</div><p class="small">Brukes i: ${r[3]}</p></div></div>`).join("")}</div>
+  <div class="card"><h3 style="margin-top:0">Intensitet per økt og fase</h3>${I.map(r=>`<div class="blk"><h4>${r[0]}</h4><ul>${[1,2,3].map(k=>`<li${k===col?' style="font-weight:600"':""}><span class="muted">${ph[k-1]}:</span> ${r[k]}</li>`).join("")}</ul></div>`).join("")}
+   <p class="small muted" style="margin-bottom:0">Uthevet: fasen du er i nå.</p></div>`;
 }
 
 function vLogg(){
@@ -615,7 +634,7 @@ function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=
 function render(){
   const t=route();
   document.getElementById("tabs").innerHTML=tabsHtml(t);
-  const v={idag:vIdag,uka:vUka,man:vMan,ons:vOns,tor:vTor,lor:vLor,styrke:vStyrke,plan:vPlan,regler:vRegler,logg:vLogg}[t]();
+  const v={idag:vIdag,uka:vUka,man:vMan,ons:vOns,tor:vTor,lor:vLor,styrke:vStyrke,plan:vPlan,regler:vRegler,rpe:vRpe,logg:vLogg}[t]();
   const focus=document.activeElement&&document.activeElement.id;
   // ikke overskriv skjema mens man skriver
   if(t==="idag"&&focus&&["fAntall","fTopper","fHoyde","fKom"].includes(focus)) return;
