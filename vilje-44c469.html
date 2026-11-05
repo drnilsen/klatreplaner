@@ -879,7 +879,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-221450";
+const APP_VERSION="2026-11-05-221955";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
