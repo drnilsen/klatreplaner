@@ -420,7 +420,7 @@ function sessionCard(s,withAlerts){
    ${withAlerts?notesHtml(alerts(s.i.date)):""}${notesHtml(s.notes.filter(n=>n[0]!=="acc"))}`;
   if(s.lead) h+=`<p class="small" style="margin:8px 0 0">${s.lead}</p>`;
   h+=sessHtml(s);
-  if(s.ex){ h+=`<div class="blk"><h4>Hoveddel</h4><p class="small" style="margin:0 0 4px">${strengthHead(i)}</p></div>${exHtml(s.ex[0],s.ex[1],i,t)}`; }
+  if(s.ex){ h+=`<div class="blk"><h4>Hoveddel<span class="dur">ca. 50 min</span></h4><p class="small" style="margin:0 0 4px">${strengthHead(i)}</p></div>${exHtml(s.ex[0],s.ex[1],i,t)}`; }
   if(s.climb){ const g=gripRules(t); if(g.length) h+=`<div class="note">${g.join(" ")}</div>`; }
   h+=s.notes.filter(n=>n[0]==="acc").map(n=>`<p class="small muted">${n[1]}</p>`).join("")+`</div>`;
   return h;
@@ -799,6 +799,67 @@ function fillRpe(root){
   });
 }
 
+
+/* ============ FELLES DAGMAL ============ */
+function normDay(root){
+  try{
+    if(!root||!["","#idag"].includes(location.hash)) return;
+    const card=[...root.querySelectorAll(".card")].find(c=>c.querySelector(":scope > h2")); if(!card) return;
+    const title=card.querySelector(":scope > h2").textContent.trim();
+    // 1. Merknader rett under Tid/tagger
+    const tid=[...card.children].find(e=>/^Tid:/.test(e.textContent.trim())&&e.tagName==="DIV");
+    const anchor=tid||card.querySelector(":scope > .meta")||card.querySelector(":scope > h2");
+    let after=anchor;
+    [...card.querySelectorAll(":scope > .note")].forEach(n=>{ after.insertAdjacentElement("afterend",n); after=n; });
+    // 2. Blokk med bare avsnitt -> punktliste
+    card.querySelectorAll(":scope > .blk").forEach(bl=>{
+      const h4=bl.querySelector("h4"); if(!h4||bl.querySelector("ul")) return;
+      const ps=[...bl.querySelectorAll(":scope > p")]; if(!ps.length) return;
+      const items=ps.map(x=>x.innerHTML).join(" · ").split(/\s+·\s+/).map(t=>t.trim()).filter(Boolean);
+      ps.forEach(x=>x.remove());
+      h4.insertAdjacentHTML("afterend","<ul>"+items.map(t=>"<li>"+t.charAt(0).toUpperCase()+t.slice(1).replace(/\.?$/,".")+"</li>").join("")+"</ul>");
+    });
+    // 3. Styrkeøkt: «Hoveddel» får styrkenavnet
+    if(/^Styrke/i.test(title)) card.querySelectorAll(":scope > .blk > h4").forEach(h=>{ const t=h.childNodes[0]; if(t&&/^\s*Hoveddel\s*$/i.test(t.textContent)) t.textContent=title; });
+    // 4. Oppvarming inne i en blokk -> egen oppvarmingsblokk foran
+    card.querySelectorAll(":scope > .blk").forEach(bl=>{
+      const h4=bl.querySelector("h4"); if(!h4||/OPPVARMING/i.test(h4.textContent)) return;
+      const li=[...bl.querySelectorAll(":scope > ul > li")].find(x=>/^Oppvarming\b/.test(x.textContent.trim())); if(!li) return;
+      const m=li.innerHTML.match(/^\s*Oppvarming\s*(\d+(?:–\d+)?\s*min)?[^:]*:\s*([\s\S]*)$/); if(!m) return;
+      const items=m[2].split(/\s+·\s+|\s*–\s+(?=[A-ZÆØÅ])/).map(t=>t.trim().replace(/\.$/,"")).filter(Boolean);
+      const had=[...card.querySelectorAll(":scope > .blk > h4")].some(h=>h!==h4&&/^\s*OPPVARMING\s*$/i.test(h.childNodes[0].textContent));
+      const name=had?"Oppvarming · "+h4.childNodes[0].textContent.trim().split(" · ")[0]:"Oppvarming";
+      const nb=document.createElement("div"); nb.className="blk";
+      nb.innerHTML=`<h4>${name}${m[1]?`<span class="dur">${m[1]}</span>`:""}</h4><ul>${/RPE/.test(m[2])?"":"<li><a href=\"#rpe\">RPE 2–5</a>, gradvis opp.</li>"}${items.map(t=>"<li>"+t.charAt(0).toUpperCase()+t.slice(1)+".</li>").join("")}</ul>`;
+      bl.insertAdjacentElement("beforebegin",nb); li.remove();
+    });
+    // 4b. Oppvarming som én lang linje -> én øvelse per punkt
+    card.querySelectorAll(":scope > .blk").forEach(bl=>{
+      const h4=bl.querySelector("h4"); if(!h4||!/OPPVARMING/i.test(h4.textContent)) return;
+      bl.querySelectorAll(":scope > ul > li").forEach(li=>{ const parts=li.innerHTML.split(/\s+·\s+/); if(parts.length<3) return;
+        li.insertAdjacentHTML("afterend",parts.map(t=>"<li>"+t.trim().charAt(0).toUpperCase()+t.trim().slice(1).replace(/\.?$/,".")+"</li>").join("")); li.remove(); });
+    });
+    // 4c. Innledende tekst foran første blokk -> punkt i hovedblokka
+    const fb=card.querySelector(":scope > .blk");
+    if(fb){ let pr=fb.previousElementSibling; const intro=[]; while(pr&&pr.tagName==="P"){ intro.unshift(pr); pr=pr.previousElementSibling; }
+      const main=[...card.querySelectorAll(":scope > .blk")].find(b=>!/OPPVARMING/i.test((b.querySelector("h4")||{}).textContent||""));
+      const ul=main&&main.querySelector(":scope > ul");
+      if(intro.length&&ul){ intro.reverse().forEach(x=>{ ul.insertAdjacentHTML("afterbegin","<li>"+x.innerHTML+"</li>"); x.remove(); }); } }
+    // 4d. Regler uten overskrift etter øvelseslista -> inn i styrkeblokka
+    card.querySelectorAll(":scope > .blk").forEach(bl=>{
+      if(bl.querySelector("h4")) return; const pv=bl.previousElementSibling; if(!pv||!pv.classList.contains("exlist")) return;
+      const head=pv.previousElementSibling; const ul=head&&head.classList.contains("blk")&&head.querySelector(":scope > ul"); if(!ul) return;
+      bl.querySelectorAll("li").forEach(li=>ul.appendChild(li)); bl.querySelectorAll(":scope > p").forEach(x=>ul.insertAdjacentHTML("beforeend","<li>"+x.innerHTML+"</li>")); bl.remove();
+    });
+    // 5. RPE-linja først i hver blokk
+    card.querySelectorAll(":scope > .blk").forEach(bl=>{
+      const ul=bl.querySelector(":scope > ul"); if(!ul) return;
+      const lis=[...ul.children]; if(!lis.length||/RPE/.test(lis[0].textContent)) return;
+      const r=lis.find(x=>/RPE/.test(x.textContent)); if(r) ul.insertBefore(r,lis[0]);
+    });
+  }catch(e){}
+}
+
 /* ============ LETTE UKER: ETT RPE-TRINN NED ============ */
 function lightRpe(root){
   try{
@@ -817,14 +878,18 @@ function lightRpe(root){
 
 /* ============ LINKED BOULDERS (Lattice) ============ */
 function lbItems(sets,lvl,enkel){
-  const grad=lvl===1?"1–2 grader under flash-graden, RPE 6–7":"rundt flash-graden, RPE 7–8";
-  const it=[enkel?`Velg 1–3 buldre på ca. 12 flytt, ${grad}. Ingen 12 flytt: legg 2–4 traversflytt til starten.`:`Velg 1–3 buldre på ca. 12 flytt, jevnt vanskelige hele veien, ${grad}. Finnes ikke 12 flytt: legg 2–4 harde traversflytt til starten.`,
-    `<span class="key">${sets} sett × 4</span>: klatre buldret 4 ganger med 2 min pause før hver gang. 5 min pause mellom settene.`,
+  const fl=lvl===1?"ca. 14–16 flytt":"ca. 12 flytt";
+  const grad=lvl===1?"RPE 6":"På flash-graden, RPE 7–8";
+  const it=[enkel?`Velg 1–3 buldre på ${fl}. ${grad}. For få flytt: legg 2–4 traversflytt til starten.`:`Velg 1–3 buldre på ${fl}, jevnt vanskelige hele veien. ${grad}. For få flytt: legg 2–4 harde traversflytt til starten.`,
+    `<span class="key">${sets} sett × 4 repetisjoner</span>`,
+    "1 repetisjon = én klatring på buldret fra start til topp eller fall. 2 min pause mellom repetisjonene.",
+    "1 sett = 4 repetisjoner på samme buldre. 5 min pause mellom settene. Har du valgt 2–3 buldre: bytt buldre mellom settene.",
     "Greit å falle på de siste flyttene på slutten av et sett. Faller du jevnlig før halvveis: lettere buldre. Alt uten fall: hardere neste økt.",
     "Bytt buldre med noen økters mellomrom."];
   return it;
 }
-function lbDur(sets){ return sets>=3?"ca. 45 min":sets===2?"ca. 30 min":"ca. 15 min"; }
+function lbDur(sets){ return "ca. "+sets*15+" min"; }
+function lbTot(sets,extra){ const m=sets*15+extra; return "ca. "+(m>=60?Math.floor(m/60)+" t"+(m%60?" "+m%60:""):m+" min"); }
 
 /* ============ RUTING ============ */
 function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
@@ -835,7 +900,7 @@ function render(){
   const v={idag:vIdag,uka:vUka,man:()=>vStyrkeTab(1),fre:()=>vStyrkeTab(5),klatring:vKlatring,finger:vFinger,plan:vPlan,regler:vRegler,rpe:vRpe,teknikk:vTeknikk,logg:vLogg}[t]();
   const focus=document.activeElement&&document.activeElement.id;
   if(t==="idag"&&focus&&FORM_IDS.includes(focus)) return;
-  document.getElementById("view").innerHTML=v; fillRpe(document.getElementById("view")); lightRpe(document.getElementById("view"));
+  document.getElementById("view").innerHTML=v; normDay(document.getElementById("view")); fillRpe(document.getElementById("view")); lightRpe(document.getElementById("view"));
   const on=document.querySelector("nav.tabs a.on"); if(on&&on.scrollIntoView) on.scrollIntoView({block:"nearest",inline:"nearest"});
 }
 window.addEventListener("hashchange",()=>{ render(); window.scrollTo(0,0); });
@@ -879,7 +944,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-223543";
+const APP_VERSION="2026-11-05-224055";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
