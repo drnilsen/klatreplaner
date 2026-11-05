@@ -763,7 +763,7 @@ function fillRpe(root){
     if(/RPE/.test(t)) return;
     const r=RPE_DEF.find(x=>x[0].test(head)); if(!r||!r[1]) return;
     let txt=typeof r[1]==="function"?r[1](t):r[1]; if(!txt) return;
-    if(txt==="__OPPV__"){ const card=bl.closest(".card")||root; const nums=[...(card.textContent.matchAll(/RPE (\d+)(?:–(\d+))?/g))].map(m=>+(m[2]||m[1])); const mx=nums.length?Math.max(...nums):0;
+    if(txt==="__OPPV__"){ const card=bl.closest(".card")||root; const klatr=[...card.querySelectorAll(".blk")].filter(x=>x!==bl&&!/\b(reps|sett)\b/i.test(x.textContent)&&!(x.nextElementSibling&&x.nextElementSibling.classList.contains("exlist"))).map(x=>x.textContent).join(" "); const nums=[...(klatr.matchAll(/RPE (\d+)(?:–(\d+))?/g))].map(m=>+(m[2]||m[1])); const mx=nums.length?Math.max(...nums):0;
       txt=mx>=8?"RPE 2 → 6–7, gradvis opp. Siste 1–2 buldre rett under øktas arbeidsintensitet.":"RPE 2–5, gradvis opp."; }
     const html=txt.replace(/RPE \d+(–\d+)?/,m=>`<a href="#rpe">${m}</a>`);
     const ul=bl.querySelector("ul");
@@ -819,7 +819,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-203110";
+const APP_VERSION="2026-11-05-205621";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
