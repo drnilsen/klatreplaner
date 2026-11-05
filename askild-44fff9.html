@@ -186,7 +186,7 @@ const half=n=>Math.max(1,Math.round(n/2));
 /* ============ ØKTENE ============ */
 const B=(h,items,dur)=>({h,items,dur});
 
-function session(date){
+function session(date,noTheme){
   const i=info(date);
   const s={i,key:"hvile",title:"Hvile",time:"–",blocks:[],notes:[],count:null};
   if(i.phase==="før"||i.phase==="etter"){ s.title=i.label; s.key="utenfor"; return s; }
@@ -212,7 +212,7 @@ function session(date){
     if(i.phase==="nm") max=8; else if(i.light) max=half(max);
     s.count={label:"Forsøk",max};
     s.blocks=[
-      B("Oppvarming",["5 min puls, mobilitet skulder/hofte.","20 min lett klatring med dagens teknikktema – pyramide lett → middels, 10–12 buldre."],"30 min"),
+      B("Oppvarming",["5 min puls, mobilitet skulder/hofte.","20 min lett klatring med teknikktemaet – pyramide lett → middels, 10–12 buldre."],"30 min"),
       B("Hoveddel",[hov, `<span class="key">Maks ${max} forsøk.</span>`,"Les hele buldret før første forsøk. <a href='#regler' data-anchor='rutine'>Rutinen før hvert forsøk</a>. Sitt ned i pausene.","Stopp: "+stopp,
         "Spraywall eller board. Board: maks 6 forsøk, vinkel ≤ 35°."],"60–70 min"),
       B("Nedtrapping",["Lett klatring, rist ut."],"10–15 min")];
@@ -239,7 +239,7 @@ function session(date){
       main=["12–20 flytt, 3–4 grader under maks, RPE 6–7.",`<span class="key">${r} runder, 3–4 min pause.</span>`]; }
     else { const ser=i.light?1:2; s.count={label:"Runder",max:ser*3};
       main=["12–16 hardere flytt, 2–3 grader under maks, RPE 7–8.",`<span class="key">${ser} serie${ser>1?"r":""} × 3 runder, 3 min pause${ser>1?", 8 min mellom seriene":""}.</span>`]; }
-    s.blocks=[B("Oppvarming",["Som mandag, med teknikktema."],"25 min"),
+    s.blocks=[B("Oppvarming",["Som mandag."],"25 min"),
       B("Linked boulders",["2–3 buldre satt sammen, 45–90 s arbeid, alltid fullføre.",...main,
         "Nye buldre hver uke. Hopp ned på siste tak. Fall → neste runde én grad lettere.","Tak: volumvegg, slopere og pinch – ikke bare lister."],L===1?"ca. 25 min":"ca. 35 min"),
       B("Nedtrapping",["Lett klatring."],"15 min")];
@@ -296,7 +296,39 @@ function session(date){
   }
   if(s.key!=="hvile"){ [jan1,compNote,lightNote].forEach(n=>n&&s.notes.unshift(["warn",n])); }
   if(i.phase==="nm"&&s.key!=="hvile") s.notes.unshift(["warn","NM-uka: ingen styrke siste 5 dager."]);
+  if(!noTheme) addTheme(s,date);
   return s;
+}
+/* Teknikktema – roterer per økt */
+const TEMA_GEN=[["Stille føtter","Ingen lyd fra føttene. Se på taket til foten står."],
+ ["Hofta inn","Hofta på samme side roteres inn før hånden flyttes."],
+ ["Lese før du klatrer","1 min foran buldret eller ruta, pek ut hvert flytt, klatre uten å stoppe."],
+ ["Flagg og dropknee","Lett klatring uten fotbytte."],
+ ["Rette armer","Albuene strake mellom hvert flytt."]];
+const TEMA_TAU=[["Klipping","Riktig fot, begge hender."],["Hvile på tau","Tre hvilestillinger på en rute, 10 pust i hver, rist ut."],
+ ["Stille føtter","Ingen lyd fra føttene på de lette rutene."],["Rette armer","Albuene strake mellom hvert flytt."]];
+function themeCat(s){
+  if(["jul","utenfor","hvile"].includes(s.key)) return null;
+  if(s.i.phase==="nm") return null;
+  if(s.key==="lor") return s.title.startsWith("Tau")?"tau":null;
+  if(s.key==="ons"&&s.title.startsWith("Rutedag")) return "tau";
+  if(s.key==="ons"&&s.title==="Regenerering") return null;
+  return "gen";
+}
+const themeCache={};
+function themeFor(date,cat){
+  const key=ymd(date)+cat; if(themeCache[key]) return themeCache[key];
+  let n=0; for(let d=new Date(2026,10,2); d<date; d=addDays(d,1)){ if(themeCat(session(d,true))===cat) n++; }
+  const bank=cat==="tau"?TEMA_TAU:TEMA_GEN;
+  return themeCache[key]=bank[n%bank.length];
+}
+function addTheme(s,date){
+  const cat=themeCat(s); if(!cat) return;
+  const [t,d]=themeFor(date,cat);
+  const txt=`Teknikktema: <span class="key">${t}</span> – ${d}`;
+  s.theme=t;
+  const blk = s.key==="tor" ? s.blocks.find(b=>b.h==="3×10") : s.blocks.find(b=>b.h==="Oppvarming");
+  if(blk) blk.items.unshift(txt);
 }
 
 /* ============ STYRKE ============ */
@@ -557,7 +589,7 @@ function vRegler(){
   <div class="card" id="rutine"><h3 style="margin-top:0">Rutine før hvert forsøk</h3><ul>
    <li>Pust ut langsomt – lengre ut enn inn, 3 ganger.</li><li>Si de tre første flyttene stille for deg selv.</li>
    <li>Skuldrene ned, rist hendene.</li><li>Første fot.</li></ul></div>
-  <div class="card"><h3 style="margin-top:0">Teknikkbank – ett tema per økt</h3><ul>
+  <div class="card"><h3 style="margin-top:0">Teknikkbank – ett tema per økt</h3><p class="small muted" style="margin:0 0 4px">Temaet roterer automatisk og står under «I dag».</p><ul>
    <li><b>Stille føtter:</b> 3 lette buldre uten lyd fra føttene.</li><li><b>Hofta inn:</b> hofta roteres inn før hånden flyttes.</li>
    <li><b>Lese før du klatrer:</b> 1 min foran buldret, pek ut hvert flytt.</li><li><b>Flagg og dropknee:</b> lette buldre uten fotbytte.</li>
    <li><b>Rette armer:</b> albuene strake mellom hvert flytt.</li><li><b>Hvile på tau:</b> tre hvilestillinger, 10 pust i hver.</li>
