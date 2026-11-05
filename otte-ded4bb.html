@@ -243,11 +243,11 @@ function spenst(i){ // [[key,sets,reps]], kontakter
 
 /* ============ ØKTENE ============ */
 const B=(h,items,dur)=>({h,items,dur});
-function serTxt(r){ const [a,b]=r.split(" × "); return `${a} ${a==="1"?"serie":"serier"} × ${b} runder`; }
+function serTxt(r){ const [a,b]=r.split(" × ").map(Number); return `${a*b} lange buldre`; }
 function linked(i){
   const w=i.w,y=i.y;
-  const f1="12–20 flytt, 3–4 grader under maks, RPE 6–7, 3–4 min pause.";
-  const f2=(p)=>`10–14 flytt, 2–3 grader under maks, ${p} pause. RPE runde 1–2: 7–8 · runde 3–4: 8–9.`;
+  const f1="12–20 flytt per buldre, 3–4 grader under maks, RPE 6–7, 3–4 min pause mellom hvert.";
+  const f2=(p)=>`10–14 flytt per buldre, 2–3 grader under maks, ${p} pause mellom hvert. RPE i hver bolk: de to første 7–8, resten 8–9.`;
   if(y===2026&&w<=46) return ["2 × 3",f1];
   if(y===2026||w===1) return [w===1?"2 × 3":(i.light?"1 × 4":"2 × 4"),f1];
   if(w===2) return ["2 × 4",f1];
@@ -308,8 +308,8 @@ function session(date,noTheme){
       s.fields=[["antall","Ruter"]]; break; }
     const [r,txt]=linked(i);
     s.title="Linked boulders"; s.time="ca. 1 t 15"; s.hard=true;
-    s.blocks=[warm("25 min"),B("Linked boulders",["2–3 buldre satt sammen, 45–90 s arbeid.",`<span class="key">${serTxt(r)}</span>${r.startsWith("2")?", 8 min mellom seriene":""}.`,txt,
-      "Fullfør runden og land på to bein. Fall → neste runde én grad lettere.","Nye buldre hver uke. Tak: volumvegg, slopere og pinch – ikke bare lister."],"ca. 25 min"),
+    s.blocks=[warm("25 min"),B("Linked boulders",["Lange buldre: så mange flytt at det tilsvarer 2–3 vanlige buldre satt sammen (45–90 s). Alltid fullføre.",`<span class="key">${serTxt(r)}</span>${r.startsWith("2")?`, 8 min ekstra pause etter de ${r.split(" × ")[1]==="3"?"tre":"fire"} første`:""}.`,txt,
+      "Land på to bein. Fall → neste lange buldre én grad lettere.","Nye buldre hver uke. Tak: volumvegg, slopere og pinch – ikke bare lister."],"ca. 25 min"),
       B("Nedtrapping",["Lett klatring, 5 min henge og strekke skulder."],"15 min")];
     s.fields=[["antall","Runder"]];
     break; }
@@ -554,13 +554,13 @@ const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,1))}${refCard("Fase 2 og etter NM",D(2027,4,1))}${refCard("Topping",D(2027,7,1))}${refCard("Konkurranseuke",D(2027,9,1))}`,
  tir:()=>`<h2 style="margin-top:18px">Tirsdag · Styrke A</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,49,2)))}${refCard("Topping",D(2027,7,2))}`,
  ons:()=>`<h2 style="margin-top:18px">Onsdag · Linked boulders</h2>${curLabel()}
-   <div class="card"><h3 style="margin-top:0">Serier og runder per uke</h3><p class="small muted" style="margin:0 0 6px">2 × 3 = 2 serier à 3 runder. Pause mellom rundene som i tabellen, 8 min mellom seriene. Én runde = ett linked-problem (2–3 buldre satt sammen).</p><div class="tscroll"><table><thead><tr><th>Uker</th><th>Serier × runder</th><th>Nivå</th><th>Pause</th></tr></thead><tbody>
-   <tr><td>45–46, 1</td><td>2 × 3</td><td>12–20 flytt, 3–4 under maks, RPE 6–7</td><td>3–4 min</td></tr>
-   <tr><td>47–51, 2</td><td>2 × 4</td><td>samme</td><td>3–4 min</td></tr>
-   <tr><td>3</td><td>2 × 4</td><td>10–14 flytt, 2–3 under maks, RPE 7–8 → 8–9</td><td>3–4 min</td></tr>
-   <tr><td>4–6, 11–14, 18</td><td>2 × 4</td><td>samme</td><td>3 min</td></tr>
-   <tr><td>7, 15</td><td>2 × 3</td><td>samme</td><td>3 min</td></tr>
-   <tr><td>8, 16 · lette uker 48, 10</td><td>1 × 4</td><td>samme</td><td>3 min</td></tr>
+   <div class="card"><h3 style="margin-top:0">Lange buldre per uke</h3><p class="small muted" style="margin:0 0 6px">Ett lange buldre = så mange flytt at det tilsvarer 2–3 vanlige buldre satt sammen. «6 (3 + 3)» = 3 lange buldre, 8 min ekstra pause, 3 til. Pausen mellom hvert står i tabellen.</p><div class="tscroll"><table><thead><tr><th>Uker</th><th>Lange buldre</th><th>Nivå</th><th>Pause</th></tr></thead><tbody>
+   <tr><td>45–46, 1</td><td>6 (3 + 3)</td><td>12–20 flytt, 3–4 under maks, RPE 6–7</td><td>3–4 min</td></tr>
+   <tr><td>47–51, 2</td><td>8 (4 + 4)</td><td>samme</td><td>3–4 min</td></tr>
+   <tr><td>3</td><td>8 (4 + 4)</td><td>10–14 flytt, 2–3 under maks, RPE 7–8 → 8–9 i hver bolk</td><td>3–4 min</td></tr>
+   <tr><td>4–6, 11–14, 18</td><td>8 (4 + 4)</td><td>samme</td><td>3 min</td></tr>
+   <tr><td>7, 15</td><td>6 (3 + 3)</td><td>samme</td><td>3 min</td></tr>
+   <tr><td>8, 16 · lette uker 48, 10</td><td>4</td><td>samme</td><td>3 min</td></tr>
    <tr><td>9, 17, 19</td><td>–</td><td>hvile eller 20 min lett</td><td></td></tr>
    <tr><td>20</td><td colspan="3">Rutedag på led: 6–8 ruter 2–3 under onsight, RPE 6</td></tr></tbody></table></div></div>${refCard("Denne uka",nowOr(3,D(2026,47,3)))}`,
  tor:()=>`<h2 style="margin-top:18px">Torsdag · Spenst + 3×10 + skulder</h2>${curLabel()}
@@ -583,9 +583,9 @@ function vKonk(){
    <li><b>Tor:</b> 3×10 med 2 runder. Aktivering: 3–4 middels buldre på første forsøk, RPE 5–6.</li><li><b>Fre:</b> hvile, eller 15 min aktivering.</li>
    <li><b>Lør:</b> oppvarming 30–40 min før isolasjon (pyramide 6–8 buldre), rutinen, mat og drikke mellom runder.</li>
    <li><b>Søn:</b> semi/finale, samme rutine. Mandag etter NM: hvile.</li><li>Ingen styrke og ingen spenst siste 5 dager.</li></ul></div>
-  <div class="card"><h3 style="margin-top:0">Topping (uke 7–8 og 15–16)</h3><div class="tscroll"><table><thead><tr><th>Uke</th><th>Harde forsøk (man + lør)</th><th>Linked (serier × runder)</th><th>Styrke</th></tr></thead><tbody>
-   <tr><td>Fase 2</td><td>14 + 26 = 40</td><td>2 × 4</td><td>Fullt</td></tr><tr><td>7 / 15</td><td>12 + 18 = 30</td><td>2 × 3</td><td>Tirsdag 30 min</td></tr>
-   <tr><td>8 / 16</td><td>10 + 12 = 22</td><td>1 × 4</td><td>2 sett, RPE 8</td></tr><tr><td>9 / 17 / 19</td><td>Man: 12–16</td><td>0</td><td>0</td></tr></tbody></table></div>
+  <div class="card"><h3 style="margin-top:0">Topping (uke 7–8 og 15–16)</h3><div class="tscroll"><table><thead><tr><th>Uke</th><th>Harde forsøk (man + lør)</th><th>Linked (lange buldre)</th><th>Styrke</th></tr></thead><tbody>
+   <tr><td>Fase 2</td><td>14 + 26 = 40</td><td>8 (4 + 4)</td><td>Fullt</td></tr><tr><td>7 / 15</td><td>12 + 18 = 30</td><td>6 (3 + 3)</td><td>Tirsdag 30 min</td></tr>
+   <tr><td>8 / 16</td><td>10 + 12 = 22</td><td>4</td><td>2 sett, RPE 8</td></tr><tr><td>9 / 17 / 19</td><td>Man: 12–16</td><td>0</td><td>0</td></tr></tbody></table></div>
    <p class="small muted" style="margin-bottom:0">Intensitet og antall økter som i fase 2.</p></div>`;
 }
 function vPlan(){
@@ -638,7 +638,7 @@ function vRegler(){
   <div class="card"><h3 style="margin-top:0">Justering</h3><ul>
    <li><b>Skulder:</b> smerte foran i skulderen ved press eller push-ups → kutt press, dobbel dose utadrotasjon og Y-hev i to uker.</li>
    <li><b>To oransje dager på rad</b> → neste harde økt blir 3×10.</li><li><b>Etter ≥ 5 dager fri:</b> første uke på fase 1-intensitet. Etter lett uke: rett tilbake.</li>
-   <li><b>Lavenergi-uke</b> (prøver, eksamen, sykdom, reise): man og tor som normalt, tir 2 sett, ons linked 1 × 4, lør bare del 1 / halv ledøkt.</li>
+   <li><b>Lavenergi-uke</b> (prøver, eksamen, sykdom, reise): man og tor som normalt, tir 2 sett, ons linked 4 lange buldre, lør bare del 1 / halv ledøkt.</li>
    <li><b>Eksamen tidlig i mai:</b> uke 18 kan bli lavenergi-uke.</li>
    <li><b>Uteprosjekt:</b> én hviledag kan godtas en kort periode – da går intensiteten inne ned før og etter.</li></ul></div>
   <div class="card"><h3 style="margin-top:0">Fargen på dagen</h3>
@@ -746,7 +746,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-103846";
+const APP_VERSION="2026-11-05-104207";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

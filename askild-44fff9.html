@@ -242,13 +242,13 @@ function session(date,noTheme){
       break; }
     s.key="ons"; s.title="Linked boulders"; s.time="ca. 1 t 15";
     let main;
-    if(L===1){ const r=i.light?3:5; s.count={label:"Runder",max:r};
-      main=["12–20 flytt, 3–4 grader under maks, RPE 6–7.",`<span class="key">${r} runder, 3–4 min pause.</span>`]; }
-    else { const ser=i.light?1:2; s.count={label:"Runder",max:ser*3};
-      main=["12–16 hardere flytt, 2–3 grader under maks, RPE 7–8.",`<span class="key">${ser} serie${ser>1?"r":""} × 3 runder, 3 min pause${ser>1?", 8 min mellom seriene":""}.</span>`]; }
+    if(L===1){ const r=i.light?3:5; s.count={label:"Lange buldre",max:r};
+      main=["12–20 flytt per buldre, 3–4 grader under maks, RPE 6–7.",`<span class="key">${r} lange buldre, 3–4 min pause mellom hvert.</span>`]; }
+    else { const ser=i.light?1:2; s.count={label:"Lange buldre",max:ser*3};
+      main=["12–16 hardere flytt per buldre, 2–3 grader under maks, RPE 7–8.",`<span class="key">${ser*3} lange buldre, 3 min pause mellom hvert${ser>1?", 8 min ekstra pause etter de tre første":""}.</span>`]; }
     s.blocks=[B("Oppvarming",["Som mandag."],"25 min"),
-      B("Linked boulders",["2–3 buldre satt sammen, 45–90 s arbeid, alltid fullføre.",...main,
-        "Nye buldre hver uke. Hopp ned på siste tak. Fall → neste runde én grad lettere.","Tak: volumvegg, slopere og pinch – ikke bare lister."],L===1?"ca. 25 min":"ca. 35 min"),
+      B("Linked boulders",["Lange buldre: så mange flytt at det tilsvarer 2–3 vanlige buldre satt sammen (45–90 s). Alltid fullføre.",...main,
+        "Nye buldre hver uke. Hopp ned på siste tak. Fall → neste lange buldre én grad lettere.","Tak: volumvegg, slopere og pinch – ikke bare lister."],L===1?"ca. 25 min":"ca. 35 min"),
       B("Nedtrapping",["Lett klatring."],"15 min")];
     break; }
   case 4: { // TORSDAG
@@ -762,7 +762,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-103408";
+const APP_VERSION="2026-11-05-104207";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
