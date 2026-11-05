@@ -386,7 +386,7 @@ function formHtml(date,s){
    <div class="colors">${colors.map(([k,n])=>`<button type="button" data-farge="${k}" class="${e.farge===k?"on":""}"><span class="dot f-${k}"></span>${n}</button>`).join("")}</div>
    ${s.fields.length?`<div class="row2">${s.fields.map(([k,l])=>`<div><label class="f">${l}</label><input type="text" data-field="${k}" data-label="${l.replace(/ \(.*/,"")}" value="${esc(e[k]??"")}"></div>`).join("")}</div>`:""}
    ${s.checks.map(([k,l])=>`<label class="chk"><input type="checkbox" data-check="${k}" ${e[k]?"checked":""}> ${l}</label>`).join("")}
-   <label class="chk"><input type="checkbox" id="fMiljo" ${e.miljo?"checked":""}> Ga en yngre utøver oppmerksomhet i økta</label>
+   <label class="chk"><input type="checkbox" id="fMiljo" ${e.miljo?"checked":""}> Ga en yngre utøver oppmerksomhet i løpet av økta</label>
    <label class="f">Kommentar</label><textarea id="fKom" placeholder="Hva gikk bra, hva kjentes?">${esc(e.kommentar||"")}</textarea>
    <div style="margin-top:12px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
      <button class="btn pri" id="fSave">${LOG[ds]?"Oppdater":"Lagre"}</button>${LOG[ds]?'<button class="btn" id="fDel">Slett</button>':""}
@@ -666,7 +666,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-164134";
+const APP_VERSION="2026-11-05-164239";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
