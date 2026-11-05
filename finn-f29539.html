@@ -309,7 +309,7 @@ function session(date,noTheme){
     if(c){ s.title="Hvile eller lett klatring"; s.time="20 min"; s.blocks=[B("I dag",["Hvile, eller 20 min lett klatring."])]; break; }
     if(i.phase==="tau"){ s.title="Rutedag på led"; s.time="ca. 1 t 30"; s.blocks=[B("Oppvarming",["Lette ruter."],"20 min"),B("Ruter",["6–8 ruter 2–3 grader under onsight, RPE 6."],"60 min"),B("Nedtrapping",["Lett klatring."],"10 min")]; s.fields=[["antall","Ruter"]]; break; }
     const f2=i.M===2;
-    let sets=f2?3:4; if(i.y===2027&&(w===8||w===16)) sets=1; else if(i.y===2027&&w===15) sets=2; else if(i.light) sets=2;
+    let sets=3; if(i.y===2027&&(w===8||w===16)) sets=1; else if(i.y===2027&&w===15) sets=2; else if(i.light) sets=2;
     s.title="Linked boulders"; s.time=lbTot(sets,40);
     s.blocks=[B("Oppvarming",["Som mandag."],"25 min"),B("Linked boulders",[...lbItems(sets,f2?2:1),"Volumvegg, slopere og pinch, kompresjonsflytt."],lbDur(sets)),
       B("Nedtrapping",["Lett klatring."],"15 min")];
@@ -476,7 +476,7 @@ function nowOr(dow,fb){ const i=info(cur); return ["før","etter","jul"].include
 const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring – mengde</h2>${curLabel()}${refCard("Fase 1 og uke 2",D(2026,46,1))}${refCard("Fra uke 3",D(2027,3,1))}${refCard("Konkurranseuke",D(2027,5,1))}`,
  tir:()=>`<h2 style="margin-top:18px">Tirsdag · Bein + skulderprogram</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,46,2)))}`,
- ons:()=>`<h2 style="margin-top:18px">Onsdag · Linked boulders</h2>${curLabel()}${refCard("Fase 1 og uke 2",D(2026,46,3))}${refCard("Fra uke 3",D(2027,3,3))}<div class="card small"><b>Linked, sett × 4:</b> fase 1 og uke 2: 4 · fra uke 3: 3 · lette uker 2 · uke 15: 2 · uke 8 og 16: 1 · konkurranseuker: ingen · uke 20: rutedag på led.</div>`,
+ ons:()=>`<h2 style="margin-top:18px">Onsdag · Linked boulders</h2>${curLabel()}${refCard("Fase 1 og uke 2",D(2026,46,3))}${refCard("Fra uke 3",D(2027,3,3))}<div class="card small"><b>Linked, sett × 4:</b> 3 · lette uker 2 · uke 15: 2 · uke 8 og 16: 1 · konkurranseuker: ingen · uke 20: rutedag på led.</div>`,
  tor:()=>`<h2 style="margin-top:18px">Torsdag · 3×10 + Styrke B</h2>${curLabel()}${refCard("Denne uka",nowOr(4,D(2026,46,4)))}`,
  lor:()=>`<h2 style="margin-top:18px">Lørdag · Board og prosjekter</h2>${curLabel()}${refCard("Fase 1",D(2026,46,6))}${refCard("Fra uke 3",D(2027,3,6))}${refCard("Topping",D(2027,8,6))}`,
 };
@@ -813,7 +813,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-223240";
+const APP_VERSION="2026-11-05-223543";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

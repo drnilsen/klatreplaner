@@ -302,7 +302,7 @@ function session(date,noTheme){
     if(i.phase==="f3"){ const r=i.light?2:4; s.title="Rutedag på led · 2 × 4"; s.time="ca. 1 t 30";
       s.blocks=[B("Oppvarming",["Lett buldring, 2 lette ruter på led."],"20 min"),B("2 × 4",["2 ruter på rad, bare sikringsbyttet som pause, 1–2 grader under onsight, RPE 7–8.",`<span class="key">${r} runder, 8 min pause.</span>`,"Fall eller heng → neste runde ett hakk lettere. Alt lett → ett hakk hardere neste økt."],"55 min"),B("Nedtrapping",["Lett klatring."],"10 min")];
       s.fields=[["antall","Runder"]]; break; }
-    const lv=(i.y===2026||w<=1)?1:2, sets=lv===1?(i.light?2:4):(i.light?2:3);
+    const lv=(i.y===2026||w<=1)?1:2, sets=i.light?2:3;
     s.title="Linked boulders"; s.time=lbTot(sets,40);
     s.blocks=[warm(false),B("Linked boulders",[...lbItems(sets,lv),"Tak: volumvegg, slopere og pinch – ikke bare lister."],lbDur(sets)),
       B("Nedtrapping",["Lett klatring."],"15 min")];
@@ -850,7 +850,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-223240";
+const APP_VERSION="2026-11-05-223543";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
