@@ -528,6 +528,7 @@ function formHtml(date,s){
      <div><label class="f">Kne neste morgen</label><input type="number" min="0" max="10" inputmode="numeric" placeholder="0–10" id="kMorgen" value="${e.kMorgen??""}"></div></div>
    <label class="chk"><input type="checkbox" id="kHev" ${e.hevelse?"checked":""}> Hevelse i kneet</label>
    <label class="chk"><input type="checkbox" id="kLaas" ${e.laas?"checked":""}> Låsning, kneet tok tak eller sviktet</label>
+   <label class="chk"><input type="checkbox" id="fMiljo" ${e.miljo?"checked":""}> Ga en yngre utøver oppmerksomhet i økta</label>
    <label class="f">Kommentar</label><textarea id="fKom" placeholder="Hva gikk bra, hva kjentes?">${esc(e.kommentar||"")}</textarea>
    <div style="margin-top:12px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
      <button class="btn pri" id="fSave">${LOG[ds]?"Oppdater":"Lagre"}</button>${LOG[ds]?'<button class="btn" id="fDel">Slett</button>':""}
@@ -696,7 +697,7 @@ function vLogg(){
 }
 
 const METRIC={title:"Kne (0–10)",fixed:[0,10],limit:2,series:[{k:"kUnder",name:"under økta",color:"#0f6b5f"},{k:"kMorgen",name:"neste morgen",color:"#ec7d10"}]};
-function reportDetail(e){ const t=[]; for(const f of ["antall","rdl","poeng","topper"]) if(has(e[f])) t.push(`${e[f+"Navn"]||f} ${e[f]}`); if(has(e.kUnder)||has(e.kMorgen)) t.push(`kne ${has(e.kUnder)?e.kUnder:"–"}/${has(e.kMorgen)?e.kMorgen:"–"}`); if(e.hevelse) t.push("hevelse"); if(e.laas) t.push("låsning/svikt"); if(e.kommentar) t.push(e.kommentar); return t.join(" · "); }
+function reportDetail(e){ const t=[]; if(e.miljo) t.push("ga en yngre utøver oppmerksomhet"); for(const f of ["antall","rdl","poeng","topper"]) if(has(e[f])) t.push(`${e[f+"Navn"]||f} ${e[f]}`); if(has(e.kUnder)||has(e.kMorgen)) t.push(`kne ${has(e.kUnder)?e.kUnder:"–"}/${has(e.kMorgen)?e.kMorgen:"–"}`); if(e.hevelse) t.push("hevelse"); if(e.laas) t.push("låsning/svikt"); if(e.kommentar) t.push(e.kommentar); return t.join(" · "); }
 /* ============ RAPPORT OG GRAFER (felles) ============ */
 const FARGER={gronn:"#2f9e44",gul:"#e9b92f",oransje:"#ec7d10",rod:"#d62f2f",svart:"#1b1b1b"};
 const FORDER=["gronn","gul","oransje","rod","svart"];
@@ -860,6 +861,7 @@ document.addEventListener("click",async ev=>{
     const entry={dato:ymd(selDate),uke:s.i.w,okt:s.title,farge:draft.farge,kUnder:num("kUnder"),kMorgen:num("kMorgen"),
       hevelse:document.getElementById("kHev").checked,laas:document.getElementById("kLaas").checked,
       kommentar:(document.getElementById("fKom").value||"").trim(),lagret:new Date().toISOString()};
+    entry.miljo=!!(document.getElementById("fMiljo")||{}).checked;
     document.querySelectorAll("#logform [data-field]").forEach(x=>{ if(x.value.trim()!==""){ entry[x.dataset.field]=x.value.trim(); entry[x.dataset.field+"Navn"]=x.dataset.label; } });
     el.disabled=true; msg.textContent="Lagrer …";
     const r=await saveEntry(ymd(selDate),entry);
@@ -878,7 +880,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-162800";
+const APP_VERSION="2026-11-05-164134";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

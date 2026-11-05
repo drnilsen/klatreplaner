@@ -448,6 +448,7 @@ function formHtml(date,s){
    ${f.pilates?`<label class="chk"><input type="checkbox" id="fPil" ${e.pilates?"checked":""}> ${f.pilates}</label>`:""}
    <div class="row2"><div><label class="f">Finger under økta</label><input type="number" min="0" max="10" inputmode="numeric" placeholder="0–10" id="fUnder" value="${e.fUnder??""}"></div>
      <div><label class="f">Finger neste morgen</label><input type="number" min="0" max="10" inputmode="numeric" placeholder="0–10" id="fMorgen" value="${e.fMorgen??""}"></div></div>
+   <label class="chk"><input type="checkbox" id="fMiljo" ${e.miljo?"checked":""}> Ga en yngre utøver oppmerksomhet i økta</label>
    <label class="f">Kommentar</label><textarea id="fKom" placeholder="Hva gikk bra, hva kjentes?">${esc(e.kommentar||"")}</textarea>
    <div style="margin-top:12px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
      <button class="btn pri" id="fSave">${LOG[ds]?"Oppdater":"Lagre"}</button>${LOG[ds]?'<button class="btn" id="fDel">Slett</button>':""}
@@ -628,7 +629,7 @@ function vLogg(){
 }
 
 const METRIC={title:"Finger (0–10)",fixed:[0,10],limit:2,series:[{k:"fUnder",name:"under økta",color:"#0f6b5f"},{k:"fMorgen",name:"neste morgen",color:"#ec7d10"}]};
-function reportDetail(e){ const t=[`trinn ${e.trinn||"?"}`]; if(has(e.reps)) t.push(`${e.repsNavn||"reps"} ${e.reps}`); if(has(e.ekstra)) t.push(e.ekstra); if(e.pilates) t.push("pilates"); if(has(e.fUnder)||has(e.fMorgen)) t.push(`finger ${has(e.fUnder)?e.fUnder:"–"}/${has(e.fMorgen)?e.fMorgen:"–"}`); if(e.kommentar) t.push(e.kommentar); return t.join(" · "); }
+function reportDetail(e){ const t=[`trinn ${e.trinn||"?"}`]; if(e.miljo) t.push("ga en yngre utøver oppmerksomhet"); if(has(e.reps)) t.push(`${e.repsNavn||"reps"} ${e.reps}`); if(has(e.ekstra)) t.push(e.ekstra); if(e.pilates) t.push("pilates"); if(has(e.fUnder)||has(e.fMorgen)) t.push(`finger ${has(e.fUnder)?e.fUnder:"–"}/${has(e.fMorgen)?e.fMorgen:"–"}`); if(e.kommentar) t.push(e.kommentar); return t.join(" · "); }
 /* ============ RAPPORT OG GRAFER (felles) ============ */
 const FARGER={gronn:"#2f9e44",gul:"#e9b92f",oransje:"#ec7d10",rod:"#d62f2f",svart:"#1b1b1b"};
 const FORDER=["gronn","gul","oransje","rod","svart"];
@@ -797,6 +798,7 @@ document.addEventListener("click",async ev=>{
       pilates:!!(document.getElementById("fPil")&&document.getElementById("fPil").checked),
       fUnder:num("fUnder"),fMorgen:num("fMorgen"),
       kommentar:(document.getElementById("fKom").value||"").trim(),lagret:new Date().toISOString()};
+    entry.miljo=!!(document.getElementById("fMiljo")||{}).checked;
     if(LOG[ymd(selDate)]&&LOG[ymd(selDate)].trinn) entry.trinn=LOG[ymd(selDate)].trinn;
     el.disabled=true; msg.textContent="Lagrer …";
     const r=await saveEntry(ymd(selDate),entry);
@@ -815,7 +817,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-162800";
+const APP_VERSION="2026-11-05-164134";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

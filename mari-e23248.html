@@ -382,7 +382,7 @@ async function deleteEntry(date){ delete LOG[date]; lsSet(LS_KEY,JSON.stringify(
 const FN={gronn:"grønn",gul:"gul",oransje:"oransje",rod:"rød",svart:"svart"};
 const has=v=>v!=null&&v!=="";
 const FIELDS=["antall","swing","vektet","resultat"];
-function reportDetail(e){ const t=[]; for(const f of FIELDS) if(has(e[f])) t.push(`${e[f+"Navn"]||f} ${e[f]}`);
+function reportDetail(e){ const t=[]; if(e.miljo) t.push("ga en yngre utøver oppmerksomhet"); for(const f of FIELDS) if(has(e[f])) t.push(`${e[f+"Navn"]||f} ${e[f]}`);
   if(e.knebHael!=null&&e.knebHael!=="") t.push(`knebøy hæler nede: ${e.knebHael?"ja":"nei"}`); if(has(e.fot)) t.push(`høyeste fot ${e.fot} cm`);
   if(e.rygg) t.push("rygg vond etter styrke"); if(e.kommentar) t.push(e.kommentar); return t.join(" · "); }
 function entryLine(k){ const e=LOG[k], d=parseYmd(k); const det=reportDetail(e); return `${DAYS[isoWeek(d).dow]} ${fmt(d)}: ${FN[e.farge]||"–"} · ${e.okt||""}${det?" · "+det:""}`; }
@@ -482,6 +482,7 @@ function formHtml(date,s){
    ${s.testFields?`<label class="chk"><input type="checkbox" id="tKneb" ${e.knebHael?"checked":""}> Dyp knebøy med hæler nede</label>
      <label class="f">Høyeste fot uten armtrekk (cm fra gulv)</label><input type="number" inputmode="numeric" id="tFot" value="${e.fot??""}">`:""}
    <label class="chk"><input type="checkbox" id="fRygg" ${e.rygg?"checked":""}> Rygg vond dagen etter forrige styrkeøkt</label>
+   <label class="chk"><input type="checkbox" id="fMiljo" ${e.miljo?"checked":""}> Ga en yngre utøver oppmerksomhet i økta</label>
    <label class="f">Kommentar</label><textarea id="fKom" placeholder="Hva gikk bra, hva kjentes?">${esc(e.kommentar||"")}</textarea>
    <div style="margin-top:12px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
      <button class="btn pri" id="fSave">${LOG[ds]?"Oppdater":"Lagre"}</button>${LOG[ds]?'<button class="btn" id="fDel">Slett</button>':""}
@@ -761,6 +762,7 @@ document.addEventListener("click",async ev=>{
     const s=session(selDate,true);
     const entry={dato:ymd(selDate),uke:s.i.w,okt:s.title,farge:draft.farge,rygg:document.getElementById("fRygg").checked,
       kommentar:(document.getElementById("fKom").value||"").trim(),lagret:new Date().toISOString()};
+    entry.miljo=!!(document.getElementById("fMiljo")||{}).checked;
     const kb=document.getElementById("tKneb"), fo=document.getElementById("tFot");
     if(kb) entry.knebHael=kb.checked; if(fo&&fo.value!=="") entry.fot=+fo.value;
     document.querySelectorAll("#logform [data-field]").forEach(x=>{ if(x.value.trim()!==""){ entry[x.dataset.field]=x.value.trim(); entry[x.dataset.field+"Navn"]=x.dataset.label; } });
@@ -781,7 +783,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-162800";
+const APP_VERSION="2026-11-05-164134";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
