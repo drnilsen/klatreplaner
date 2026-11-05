@@ -520,14 +520,7 @@ function vPlan(){
 }
 function vRpe(){
   return `<h2 style="margin-top:18px">RPE og intensitet</h2><p class="small muted">RPE = hvor hardt det kjennes, 1–10. Nå: uke ${info(cur).w} · ${info(cur).label}.</p>
-  <div class="card"><div class="tscroll"><table><thead><tr><th>RPE</th><th>Buldring, styrke</th><th>Linked, tau</th><th>Brukes i</th></tr></thead><tbody>
-   <tr><td>1–2</td><td>Ingen flytt krever noe.</td><td>Kan snakke hele setninger.</td><td>Oppvarming, nedtrapping</td></tr>
-   <tr><td>3–4</td><td>Lette buldre, flytende.</td><td>Rolig pust, lett varme i underarmene.</td><td>3×10</td></tr>
-   <tr><td>5–6</td><td>Middels buldre. Styrke: 4+ reps igjen.</td><td>Merkbar pump som går tilbake i pausen.</td><td>Enkel ledøkt, rutedag</td></tr>
-   <tr><td>7</td><td>Må ta i på nøkkelflyttet, kontrollert. Styrke: 3 reps igjen.</td><td>Tydelig pump, føttene krever jobb.</td><td>Buldring og board fase 1, linked fase 1</td></tr>
-   <tr><td>8</td><td>Full kraft, treffer og holder. Styrke: 2 reps igjen.</td><td>Hard pump, flyttene sitter.</td><td>Buldring og linked fra uke 3, styrke</td></tr>
-   <tr><td>9</td><td>Alt du har, treffer så vidt.</td><td>Kvaliteten holder akkurat.</td><td>Konkurranseformat</td></tr>
-   <tr><td>10</td><td>Bom eller fall. Styrke: svikt – brukes ikke.</td><td>Falt av pump.</td><td>Grenseforsøk</td></tr></tbody></table></div></div>`;
+  <div class="card"><h3 style="margin-top:0">RPE-skala</h3><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">1–2</div><div><div class="small"><b>Buldring, styrke:</b> Ingen flytt krever noe.</div><div class="small"><b>Linked, tau:</b> Kan snakke hele setninger.</div><p class="small">Brukes i: Oppvarming, nedtrapping</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">3–4</div><div><div class="small"><b>Buldring, styrke:</b> Lette buldre, flytende.</div><div class="small"><b>Linked, tau:</b> Rolig pust, lett varme i underarmene.</div><p class="small">Brukes i: 3×10</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">5–6</div><div><div class="small"><b>Buldring, styrke:</b> Middels buldre. Styrke: 4+ reps igjen.</div><div class="small"><b>Linked, tau:</b> Merkbar pump som går tilbake i pausen.</div><p class="small">Brukes i: Enkel ledøkt, rutedag</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">7</div><div><div class="small"><b>Buldring, styrke:</b> Må ta i på nøkkelflyttet, kontrollert. Styrke: 3 reps igjen.</div><div class="small"><b>Linked, tau:</b> Tydelig pump, føttene krever jobb.</div><p class="small">Brukes i: Buldring og board fase 1, linked fase 1</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">8</div><div><div class="small"><b>Buldring, styrke:</b> Full kraft, treffer og holder. Styrke: 2 reps igjen.</div><div class="small"><b>Linked, tau:</b> Hard pump, flyttene sitter.</div><p class="small">Brukes i: Buldring og linked fra uke 3, styrke</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">9</div><div><div class="small"><b>Buldring, styrke:</b> Alt du har, treffer så vidt.</div><div class="small"><b>Linked, tau:</b> Kvaliteten holder akkurat.</div><p class="small">Brukes i: Konkurranseformat</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">10</div><div><div class="small"><b>Buldring, styrke:</b> Bom eller fall. Styrke: svikt – brukes ikke.</div><div class="small"><b>Linked, tau:</b> Falt av pump.</div><p class="small">Brukes i: Grenseforsøk</p></div></div></div>`;
 }
 function vRegler(){
   return `<h2 style="margin-top:18px">Regler</h2>
@@ -749,7 +742,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-152236";
+const APP_VERSION="2026-11-05-162800";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

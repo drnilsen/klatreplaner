@@ -446,12 +446,8 @@ function vPlan(){
   <div class="card"><div class="tscroll"><table><thead><tr><th>Uke</th><th>Fra</th><th>Periode</th><th>Nytt</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
 function vRpe(){
-  return `<h2 style="margin-top:18px">RPE</h2><p class="small muted">RPE = hvor hardt det kjennes, 1–10.</p>
-  <div class="card"><div class="tscroll"><table><thead><tr><th>RPE</th><th>Buldring, styrke</th><th>Linked</th><th>Brukes i</th></tr></thead><tbody>
-   <tr><td>6–7</td><td>Krevende, kontrollert. Styrke: 3–4 reps igjen.</td><td>Merkbar pump som går tilbake i pausen.</td><td>Linked fase 1, styrke</td></tr>
-   <tr><td>7–8</td><td>Må ta i på nøkkelflyttet.</td><td>Tydelig pump, føttene krever jobb.</td><td>Maksbuldring fase 1, board, linked fra uke 4</td></tr>
-   <tr><td>8–9</td><td>Full kraft, treffer og holder.</td><td>–</td><td>Maksbuldring fra uke 3</td></tr>
-   <tr><td>9</td><td>Alt du har, treffer så vidt.</td><td>–</td><td>Nye buldre fra uke 3</td></tr></tbody></table></div></div>`;
+  return `<h2 style="margin-top:18px">RPE og intensitet</h2><p class="small muted">RPE = hvor hardt det kjennes, 1–10.</p>
+  <div class="card"><h3 style="margin-top:0">RPE-skala</h3><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">6–7</div><div><div class="small"><b>Buldring, styrke:</b> Krevende, kontrollert. Styrke: 3–4 reps igjen.</div><div class="small"><b>Linked:</b> Merkbar pump som går tilbake i pausen.</div><p class="small">Brukes i: Linked fase 1, styrke</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">7–8</div><div><div class="small"><b>Buldring, styrke:</b> Må ta i på nøkkelflyttet.</div><div class="small"><b>Linked:</b> Tydelig pump, føttene krever jobb.</div><p class="small">Brukes i: Maksbuldring fase 1, board, linked fra uke 4</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">8–9</div><div><div class="small"><b>Buldring, styrke:</b> Full kraft, treffer og holder.</div><p class="small">Brukes i: Maksbuldring fra uke 3</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">9</div><div><div class="small"><b>Buldring, styrke:</b> Alt du har, treffer så vidt.</div><p class="small">Brukes i: Nye buldre fra uke 3</p></div></div></div>`;
 }
 function vRegler(){
   return `<h2 style="margin-top:18px">Regler</h2>
@@ -668,7 +664,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-152757";
+const APP_VERSION="2026-11-05-162800";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
