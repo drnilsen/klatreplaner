@@ -123,6 +123,10 @@ a{color:var(--accent)}
 .ex .exh .sets{white-space:nowrap;font-weight:600;color:var(--accent)}
 .ex p{margin:3px 0 0;font-size:14.5px;color:var(--muted)}
 .ok{color:var(--accent)}
+.upd{position:fixed;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));z-index:20;
+  background:var(--accent);color:var(--accent-ink);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:736px;margin:0 auto}
+.upd p{margin:0;flex:1;font-size:14.5px}.upd .btn{background:var(--accent-ink);color:var(--accent);font-weight:700}
+.ver{font-size:12px;color:var(--muted);text-align:center;margin:28px 0 0}
 @media (min-width:640px){ .brand h1{font-size:20px} h2{font-size:26px} }
 </style>
 
@@ -132,6 +136,8 @@ a{color:var(--accent)}
   <nav class="tabs" id="tabs"></nav>
 </header>
 <main id="view"></main>
+<p class="ver" id="ver"></p>
+<div class="upd" id="upd" hidden><p id="updTxt">Ny versjon av planen.</p><button class="btn sm" id="updBtn">Oppdater</button></div>
 </div>
 
 <script>
@@ -753,6 +759,25 @@ document.addEventListener("click",async ev=>{
 document.addEventListener("change",ev=>{ if(ev.target.id==="restoreFile"&&ev.target.files[0]) restoreBackup(ev.target.files[0],document.getElementById("shareMsg")); });
 initDb();
 render();
+
+/* ============ OPPDATERING ============ */
+const APP_VERSION="2026-11-05-085043";
+function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
+async function checkUpdate(){
+  if(APP_VERSION.startsWith("__")) return;
+  try{
+    const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"}); if(!r.ok) return;
+    const j=await r.json(); const v=j&&j.askild; if(!v||!v.versjon||v.versjon===APP_VERSION) return;
+    document.getElementById("updTxt").textContent="Ny versjon av planen."+(v.melding?" "+v.melding:"");
+    document.getElementById("upd").hidden=false;
+  }catch(e){}
+}
+document.getElementById("ver").textContent=verLabel(APP_VERSION);
+document.getElementById("updBtn").addEventListener("click",()=>location.reload());
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") checkUpdate(); });
+setInterval(checkUpdate,30*60*1000);
+checkUpdate();
+
 </script>
 
 <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}</script>
