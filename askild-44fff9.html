@@ -125,6 +125,7 @@ a{color:var(--accent)}
 .ok{color:var(--accent)}
 .upd{position:fixed;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));z-index:20;
   background:var(--accent);color:var(--accent-ink);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:736px;margin:0 auto}
+.upd[hidden]{display:none}
 .upd p{margin:0;flex:1;font-size:14.5px}.upd .btn{background:var(--accent-ink);color:var(--accent);font-weight:700}
 .ver{font-size:12px;color:var(--muted);text-align:center;margin:28px 0 0}
 @media (min-width:640px){ .brand h1{font-size:20px} h2{font-size:26px} }
@@ -761,7 +762,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-085043";
+const APP_VERSION="2026-11-05-085056";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
