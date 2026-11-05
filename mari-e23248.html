@@ -1,0 +1,804 @@
+<!doctype html><html lang="no"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mari">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icon.png"><link rel="manifest" href="manifest-mari.webmanifest"><meta name="theme-color" content="#0f6b5f"><link rel="icon" href="icon.svg">
+</head><body>
+<title>Mari – treningsplan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{
+  --bg:#f4f3ef; --card:#ffffff; --ink:#1d2321; --muted:#5f6a66; --line:#dedbd2;
+  --accent:#0f6b5f; --accent-ink:#ffffff; --accent-soft:#dcefe9;
+  --warn:#9a5b00; --warn-soft:#fff1d6; --stop:#a61e1e; --stop-soft:#fde4e4;
+  --chip:#ecebe5;
+  --c-gronn:#2f9e44; --c-gul:#e9b92f; --c-oransje:#ec7d10; --c-rod:#d62f2f; --c-svart:#1b1b1b;
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121615; --card:#1b2120; --ink:#e8ece9; --muted:#9aa6a1; --line:#2c3533;
+    --accent:#4cc2ac; --accent-ink:#0b1513; --accent-soft:#1d3531;
+    --warn:#f2b45a; --warn-soft:#3a2c14; --stop:#ff8a8a; --stop-soft:#3c1d1d;
+    --chip:#252d2b; --c-svart:#000000;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121615; --card:#1b2120; --ink:#e8ece9; --muted:#9aa6a1; --line:#2c3533;
+  --accent:#4cc2ac; --accent-ink:#0b1513; --accent-soft:#1d3531;
+  --warn:#f2b45a; --warn-soft:#3a2c14; --stop:#ff8a8a; --stop-soft:#3c1d1d;
+  --chip:#252d2b; --c-svart:#000000;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:760px;margin:0 auto;
+  padding:0 max(16px,env(safe-area-inset-right)) 48px max(16px,env(safe-area-inset-left))}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);
+  padding-top:env(safe-area-inset-top);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:12px 0 6px}
+.brand h1{font-size:18px;margin:0;letter-spacing:.01em}
+.brand .sub{font-size:12.5px;color:var(--muted);white-space:nowrap}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{flex:0 0 auto;text-decoration:none;color:var(--ink);background:var(--chip);
+  padding:7px 13px;border-radius:999px;font-size:14px;font-weight:500;white-space:nowrap}
+nav.tabs a.on{background:var(--accent);color:var(--accent-ink)}
+.banner{margin:18px 0 4px;font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--accent)}
+h2{font-size:22px;margin:4px 0 10px;line-height:1.25}
+h3{font-size:16px;margin:18px 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin:12px 0}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.tag{font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--chip);color:var(--ink);white-space:nowrap}
+.tag.acc{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.tag.warn{background:var(--warn-soft);color:var(--warn);font-weight:600}
+.tag.stop{background:var(--stop-soft);color:var(--stop);font-weight:600}
+.daynav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}
+.daynav .d{font-weight:600;text-align:center;flex:1}
+.daynav .d small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{background:var(--chip);border:0;border-radius:10px;padding:9px 14px;min-height:42px}
+.btn.pri{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.sm{min-height:34px;padding:5px 11px;font-size:14px}
+.blk{margin:14px 0 0}
+#rutine{scroll-margin-top:110px}
+.blk h4{margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.blk .dur{float:right;font-weight:500;text-transform:none;letter-spacing:0}
+ul{margin:4px 0 0;padding-left:20px}
+li{margin:3px 0}
+.key{font-weight:700}
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:9px 12px;border-radius:0 10px 10px 0;margin:10px 0;font-size:14.5px}
+.note.stop{border-color:var(--stop);background:var(--stop-soft)}
+.note.acc{border-color:var(--accent);background:var(--accent-soft)}
+.rest{color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:7px 6px;border-bottom:1px solid var(--line)}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.tscroll{overflow-x:auto;margin:0 -4px}
+tr.now td{background:var(--accent-soft)}
+.week-row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:flex-start;text-decoration:none;color:inherit}
+.week-row:last-child{border-bottom:0}
+.week-row .wd{width:46px;flex:0 0 46px;font-weight:600}
+.week-row .wd small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.week-row .wt{flex:1}
+.week-row .wt small{color:var(--muted)}
+.week-row.today{background:var(--accent-soft);border-radius:10px;padding-left:8px;padding-right:8px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;border:1px solid rgba(0,0,0,.15)}
+.f-gronn{background:var(--c-gronn)} .f-gul{background:var(--c-gul)} .f-oransje{background:var(--c-oransje)}
+.f-rod{background:var(--c-rod)} .f-svart{background:var(--c-svart)}
+/* logg form */
+.colors{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0 12px}
+.colors button{border:2px solid transparent;border-radius:10px;padding:9px 2px 7px;background:var(--chip);font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.colors button .dot{width:20px;height:20px}
+.colors button.on{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+input[type=number],input[type=text],textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+textarea{min-height:76px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.saved{font-size:13px;color:var(--muted);margin-left:10px}
+.grid{display:grid;grid-template-columns:52px repeat(4,1fr);gap:4px;font-size:12.5px;align-items:center}
+.grid .h{color:var(--muted);text-align:center;font-weight:600}
+.grid .wk{color:var(--muted)}
+.grid .cell{height:22px;border-radius:6px;background:var(--chip)}
+.grid .cell.f-gronn{background:var(--c-gronn)} .grid .cell.f-gul{background:var(--c-gul)} .grid .cell.f-oransje{background:var(--c-oransje)} .grid .cell.f-rod{background:var(--c-rod)} .grid .cell.f-svart{background:var(--c-svart)}
+a{color:var(--accent)}
+.grid .cur{color:var(--accent);font-weight:700}
+.entry{padding:10px 0;border-bottom:1px solid var(--line)}
+.entry:last-child{border-bottom:0}
+.entry .eh{display:flex;justify-content:space-between;gap:8px;font-weight:600}
+.entry .eh small{color:var(--muted);font-weight:400}
+.entry p{margin:4px 0 0;font-size:14.5px}
+.muted{color:var(--muted)}
+.small{font-size:13.5px}
+.ex{padding:12px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-items:start}
+.ex .fig{max-width:340px;background:#fbfbf8;border-radius:10px;border:1px solid var(--line);line-height:0}
+.ex .fig svg{width:100%;height:auto;display:block}
+@media (min-width:560px){.ex{grid-template-columns:220px minmax(0,1fr);gap:14px}}
+.ex:last-child{border-bottom:0}
+.ex .exh{display:flex;flex-direction:column;gap:2px;font-weight:600}
+.ex .exh span.code{color:var(--accent);margin-right:6px}
+.ex .exh .sets{white-space:nowrap;font-weight:600;color:var(--accent)}
+.ex p{margin:3px 0 0;font-size:14.5px;color:var(--muted)}
+.ok{color:var(--accent)}
+.upd{position:fixed;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));z-index:20;
+  background:var(--accent);color:var(--accent-ink);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:736px;margin:0 auto}
+.upd[hidden]{display:none}
+.upd p{margin:0;flex:1;font-size:14.5px}.upd .btn{background:var(--accent-ink);color:var(--accent);font-weight:700}
+.ver{font-size:12px;color:var(--muted);text-align:center;margin:28px 0 0}
+.trinn{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:12px 0 0}
+.tbtn{border:2px solid var(--line);background:var(--card);border-radius:10px;min-width:40px;min-height:38px;font-weight:700}
+.tbtn.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chk{display:flex;align-items:center;gap:8px;margin:12px 0 0;font-size:15px}
+.chk input{width:20px;height:20px}
+.exlist .ex{grid-template-columns:118px minmax(0,1fr);gap:12px}
+@media (min-width:560px){.exlist .ex{grid-template-columns:200px minmax(0,1fr)}}
+.grid.g6{grid-template-columns:52px repeat(5,1fr)}
+@media (min-width:640px){ .brand h1{font-size:20px} h2{font-size:26px} }
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="brand"><h1>Mari <span style="font-weight:400;color:var(--muted)">· 2026/27</span></h1><span class="sub" id="syncState"></span></div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main id="view"></main>
+<p class="ver" id="ver"></p>
+<div class="upd" id="upd" hidden><p id="updTxt">Ny versjon av planen.</p><button class="btn sm" id="updBtn">Oppdater</button></div>
+</div>
+
+<script>
+/* ============ KALENDER ============ */
+const NAVN="Mari", KEY="mari";
+const DAY = ["", "Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag","Søndag"];
+const DAYS = ["", "Man","Tir","Ons","Tor","Fre","Lør","Søn"];
+const MON = ["jan","feb","mars","april","mai","juni","juli","aug","sep","okt","nov","des"];
+function ymd(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function parseYmd(s){ const [y,m,dd]=s.split("-").map(Number); return new Date(y,m-1,dd); }
+function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+function fmt(d){ return d.getDate()+". "+MON[d.getMonth()]; }
+function isoWeek(d){
+  const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  const dow=t.getUTCDay()||7; t.setUTCDate(t.getUTCDate()+4-dow);
+  const y=t.getUTCFullYear(); const y0=new Date(Date.UTC(y,0,1));
+  return {y, w:Math.ceil(((t-y0)/864e5+1)/7), dow};
+}
+function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; return addDays(jan4,(w-1)*7-(dow-1)); }
+const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
+const COMP={5:{navn:"NC buldring",sted:"Kristiansund",dato:"lør 6. feb"},7:{navn:"NC2 buldring",sted:"",dato:"lør 20. feb"},8:{navn:"NM junior",sted:"Trondheim",dato:"lør 27. feb"}};
+const TESTUKER=new Set(["2026-45","2026-51","2027-7","2027-13","2027-19"]);
+const CAMPUS=new Set([6,10,14,18,20]);
+const NYTT={45:"Fase 1 · test",47:"Vekt på tirsdag",48:"Lett uke",51:"Test",1:"Lett uke",2:"Linked fase 2",3:"Vektet pull-up",4:"Buldring over maks · tau onsight",
+  5:"Lett uke · NC",6:"Campus",7:"NC2 · test",8:"NM junior",9:"Fase 3",10:"4 × 4 · campus",11:"Tyngre kettlebell",12:"Påske, lett uke",13:"Test · tyngre kettlebell",
+  14:"Campus",15:"Tyngre kettlebell",16:"Lett uke · onsight",18:"Redpoint · campus",19:"Test",20:"Campus"};
+
+function info(date){
+  const {y,w,dow}=isoWeek(date);
+  const i={date,y,w,dow,light:false,phase:"utenfor",label:"Utenfor planen",M:1,S:1,comp:null,odd:w%2===1};
+  const inSeason=(y===2026&&w>=45)||(y===2027&&w<=20);
+  if(!inSeason){ i.phase=(y<2026||(y===2026&&w<45))?"før":"etter"; i.label=i.phase==="før"?"Før sesongstart":"Planen er ferdig"; return i; }
+  i.test=TESTUKER.has(`${y}-${w}`);
+  if(y===2026&&w<=51){ i.phase="f1"; i.label="Fase 1 · Innlæring"; i.light=w===48; }
+  else if(y===2026){ i.phase="jul"; i.label="Jul"; }
+  else if(w===1){ i.phase="f1"; i.label="Jul · lett uke"; i.light=true; }
+  else if(w<=7){ i.phase="f2"; i.label="Fase 2 · Belastning"; i.M=w>=4?2:1; i.S=w>=3?2:1; i.light=w===5; }
+  else if(w===8){ i.phase="nm"; i.label="NM junior"; i.M=2; i.S=2; }
+  else { i.phase="f3"; i.label="Fase 3 · Konkurranseperiode"; i.M=3; i.S=3; i.light=(w===12||w===16); }
+  if(COMP[w]&&y===2027) i.comp=COMP[w];
+  return i;
+}
+const halfDown=n=>Math.max(1,Math.floor(n/2));
+
+/* ============ STYRKE ============ */
+// [kode, navn, utførelse, [f1,f2,f3], pause, figur]
+const STYRKE_A=[
+ ["A1","Kettlebell swing","Hofta bakover, ryggen lang, kula mellom beina – eksplosiv hoftestrekk, armene passive.",["3 × 6","4 × 6","2 × 6"],"","swing"],
+ ["A2","Eksplosivt rotasjonsdrag (kabel/strikk)","Sidelengs, strake armer. Bekken og brystkasse roterer samlet fra hofta, raskt bort fra tårnet, rolig tilbake. Lett motstand, høy fart.",["3 × 4 /side","4 × 4 /side","2 × 4 /side"],"90 s","rot_pull"],
+ ["B1","Turkish get-up","Fra liggende til stående med kula strak over hodet, og ned igjen. Lær med sko på hånden, så lett kule. Øynene på kula.",["2 × 2 /side","3 × 2 /side","2 × 2 /side"],"","tgu"],
+ ["B2","Enbeins markløft → enarms roing","Manual (6–12 kg) i motsatt hånd av standbeinet. Vipp fram til vannrett, ro til hofta i bunnen, senk, reis deg. Ryggen lang.",["2 × 6 /side","3 × 6 /side","2 × 6 /side"],"90 s","rdl_row"],
+ ["C1","Ringdips eller pike push-up","Ringdips: ringene vendt litt ut i topp, senk til overarmen er vannrett. Lettere: pike push-up med føtter på kasse.",["2 × 5","3 × 5","2 × 5"],"","ring_dip"],
+ ["C2","Hollow body","Korsryggen i gulvet, skuldre og bein løftet, armer over hodet. Lettere: armer og bein høyere.",["2 × 20–30 s","3 × 20–40 s","2 × 30 s"],"90 s","hollow"],
+ ["D1","Ringroing med rotasjon","Ringer lavt, kroppen rett. Håndflatene ned → inn mens brystet dras til ringene, 2 s hold. Tyngre: føttene på kasse.",["2 × 8","3 × 8","2 × 8"],"","ringrow"],
+ ["D2","Pallof press","Kabel i brysthøyde, sidelengs, press rett fram, hold 2 s uten rotasjon.",["2 × 8 /side","3 × 8 /side","2 × 8 /side"],"60 s","pallof"],
+ ["E","Sideplanke med beinløft","Underarm i gulvet, kroppen rett, løft og senk øverste bein. Hofta høyt.",["2 × 8 /side","2 × 10 /side","2 × 10 /side"],"60 s","side_plank"]];
+const STYRKE_B={
+ C:["C","Campus-stige, store trinn (først i økta)","Største trinn, hånd over hånd, 1–2–3–4. Uke 6: første stige med føtter på. 1–3–5 tidligst etter to økter med raske stiger. Stopp ved første kontaktmiss.","3 min","campus"],
+ A:["A","Eksplosive pull-ups","Fra fullt heng med lett svikt i hofta, eksplosivt trekk så høyt du kan – brystet mot stangen. Kontrollert ned, 1–2 s. Stopp når høyden faller.","3 min","pullup"],
+ B:["B","Vektet pull-up","Vekt i belte. Eksplosiv opp, kontrollert ned. Startvekt = RPE 7 (3 reps igjen). Øk 1–2 kg når alle sett er raske. Tak RPE 8.","3–4 min","wpullup"],
+ B0:["B","Pull-up, kroppsvekt","1 s opp, 3 s ned.","3–4 min","pullup"],
+ D:["D","Eksplosive scapula pull-ups","Rette armer i heng, skulderbladene ned raskt så kroppen hopper 5–10 cm, rolig ned.","2 min","scap"]};
+const FIG={"swing": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M92.0 70.0 L134.0 90.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M134.0 90.0 L128.0 118.0 L130.0 147.0 L140.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"80\" cy=\"62\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M94.0 72.0 L110.0 96.0 L130.0 118.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"132\" cy=\"124\" r=\"7\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"0.22\"/><path d=\"M120.0 38.0 L122.0 86.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M122.0 86.0 L124.0 116.0 L124.0 147.0 L134.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"120\" cy=\"24\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M120.0 40.0 L150.0 50.0 L178.0 58.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"186\" cy=\"60\" r=\"7\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"1\"/><path d=\"M140 126 Q190 110 190.0 73.0\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M190.0 70.0 L196.0 79.6 L184.0 79.6 Z\" fill=\"#d9534f\"/><text x=\"120\" y=\"158\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">hofta driver, armene passive</text></svg>", "rot_pull": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"10\" y=\"40\" width=\"20\" height=\"108\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><circle cx=\"30\" cy=\"80\" r=\"4\" fill=\"#8a97a8\"/><path d=\"M140.0 50.0 L100.0 72.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><line x1=\"30\" y1=\"80\" x2=\"100\" y2=\"72\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"0.32\"/><path d=\"M140.0 92.0 L150.0 120.0 L152.0 147.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M140.0 44.0 L140.0 92.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M140.0 92.0 L132.0 120.0 L130.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"140\" cy=\"30\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M140.0 50.0 L186.0 62.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"30\" y1=\"80\" x2=\"186\" y2=\"62\" stroke=\"#8a97a8\" stroke-width=\"2.2\"/><path d=\"M110 110 Q140 130 175.3 111.4\" stroke=\"#d9534f\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M178.0 110.0 L172.3 119.8 L166.7 109.2 Z\" fill=\"#d9534f\"/><text x=\"200\" y=\"20\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"end\">forfra</text><text x=\"140\" y=\"158\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">bekken og brystkasse roterer samlet</text></svg>", "tgu": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M38.0 138.0 L80.0 138.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.35\" /><path d=\"M80.0 138.0 L104.0 124.0 L118.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.35\" /><circle cx=\"26\" cy=\"136\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.35\"/><path d=\"M38.0 138.0 L40.0 112.0 L42.0 90.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.35\" /><circle cx=\"42\" cy=\"86\" r=\"7\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"0.35\"/><path d=\"M110.0 104.0 L100.0 124.0 L96.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.6\" /><path d=\"M110.0 104.0 L124.0 140.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.6\" /><path d=\"M124.0 140.0 L150.0 128.0 L152.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.6\" /><circle cx=\"106\" cy=\"92\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.6\"/><path d=\"M110.0 104.0 L112.0 80.0 L114.0 56.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.6\" /><circle cx=\"114\" cy=\"52\" r=\"7\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"0.6\"/><path d=\"M198.0 100.0 L204.0 124.0 L206.0 147.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M196.0 54.0 L198.0 100.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M198.0 100.0 L194.0 124.0 L194.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"196\" cy=\"40\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M196.0 56.0 L198.0 32.0 L200.0 10.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"200\" cy=\"8\" r=\"7\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"1\"/><line x1=\"64\" y1=\"74\" x2=\"85.4\" y2=\"61.5\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M88.0 60.0 L82.7 70.0 L76.7 59.7 Z\" fill=\"#d9534f\"/><line x1=\"140\" y1=\"40\" x2=\"167.2\" y2=\"29.1\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M170.0 28.0 L163.3 37.1 L158.9 26.0 Z\" fill=\"#d9534f\"/><text x=\"120\" y=\"158\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">øynene på kula hele veien</text></svg>", "rdl_row": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M126.0 84.0 L160.0 82.0 L194.0 80.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M78.0 70.0 L126.0 84.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M126.0 84.0 L122.0 116.0 L122.0 147.0 L132.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"66\" cy=\"62\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M80.0 72.0 L80.0 96.0 L80.0 118.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><g transform=\"translate(80 121) rotate(90)\" opacity=\"0.22\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><path d=\"M126.0 84.0 L160.0 82.0 L194.0 80.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M78.0 70.0 L126.0 84.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M126.0 84.0 L122.0 116.0 L122.0 147.0 L132.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"66\" cy=\"62\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M80.0 72.0 L104.0 62.0 L100.0 86.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><g transform=\"translate(100 89) rotate(90)\" opacity=\"1\"><line x1=\"-7\" y1=\"0\" x2=\"7\" y2=\"0\" stroke=\"#8a97a8\" stroke-width=\"3\"/><rect x=\"-11\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"-5\" width=\"5\" height=\"10\" rx=\"1\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.5\"/></g><line x1=\"60\" y1=\"118\" x2=\"60.0\" y2=\"97.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M60.0 94.0 L66.0 103.6 L54.0 103.6 Z\" fill=\"#d9534f\"/><text x=\"130\" y=\"20\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">motsatt hånd og standbein</text></svg>", "ring_dip": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><line x1=\"70\" y1=\"4\" x2=\"76\" y2=\"70\" stroke=\"#8a97a8\" stroke-width=\"2.5\"/><circle cx=\"78\" cy=\"78\" r=\"8\" fill=\"none\" stroke=\"#8a97a8\" stroke-width=\"3.5\"/><path d=\"M76.0 36.0 L80.0 82.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M80.0 82.0 L74.0 106.0 L92.0 118.0 L96.0 114.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"74\" cy=\"22\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M76.0 38.0 L77.0 58.0 L78.0 78.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M56.0 64.0 L70.0 108.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M70.0 108.0 L62.0 130.0 L82.0 142.0 L86.0 138.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"48\" cy=\"52\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M56.0 64.0 L80.0 62.0 L78.0 78.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><rect x=\"214\" y=\"118\" width=\"24\" height=\"30\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><path d=\"M160.0 112.0 L196.0 70.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.55\" /><path d=\"M196.0 70.0 L210.0 96.0 L222.0 118.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.55\" /><circle cx=\"150\" cy=\"104\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.55\"/><path d=\"M160.0 112.0 L160.0 130.0 L158.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.55\" /><text x=\"70\" y=\"158\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">ringdips</text><text x=\"190\" y=\"158\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">lettere: pike push-up</text></svg>", "hollow": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M82.0 128.0 L130.0 140.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M130.0 140.0 L170.0 128.0 L206.0 116.0 L212.0 110.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"70\" cy=\"120\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M82.0 128.0 L56.0 116.0 L32.0 108.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><text x=\"120\" y=\"40\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">korsryggen i gulvet</text><line x1=\"130\" y1=\"124\" x2=\"130.0\" y2=\"137.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M130.0 140.0 L124.0 130.4 L136.0 130.4 Z\" fill=\"#d9534f\"/></svg>", "ringrow": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><line x1=\"40\" y1=\"6\" x2=\"120\" y2=\"6\" stroke=\"#8a97a8\" stroke-width=\"4\"/><line x1=\"76\" y1=\"6\" x2=\"76\" y2=\"83\" stroke=\"#8a97a8\" stroke-width=\"2.5\" opacity=\"0.22\"/><circle cx=\"76\" cy=\"90\" r=\"7\" fill=\"none\" stroke=\"#8a97a8\" stroke-width=\"3.5\" opacity=\"0.22\"/><path d=\"M76.0 126.0 L140.0 135.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M140.0 135.0 L172.0 140.0 L204.0 144.0 L206.0 138.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"62\" cy=\"124\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M76.0 126.0 L76.0 108.0 L76.0 90.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><line x1=\"76\" y1=\"6\" x2=\"86\" y2=\"89\" stroke=\"#8a97a8\" stroke-width=\"2.5\" opacity=\"1\"/><circle cx=\"86\" cy=\"96\" r=\"7\" fill=\"none\" stroke=\"#8a97a8\" stroke-width=\"3.5\" opacity=\"1\"/><path d=\"M84.0 92.0 L140.0 119.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M140.0 119.0 L172.0 131.0 L204.0 144.0 L206.0 136.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"70\" cy=\"84\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M84.0 92.0 L100.0 112.0 L86.0 96.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"124\" y1=\"92\" x2=\"124.0\" y2=\"79.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M124.0 76.0 L130.0 85.6 L118.0 85.6 Z\" fill=\"#d9534f\"/></svg>", "pallof": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><rect x=\"196\" y=\"30\" width=\"22\" height=\"118\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><circle cx=\"196\" cy=\"84\" r=\"4\" fill=\"#8a97a8\"/><path d=\"M100.0 92.0 L108.0 120.0 L110.0 147.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M100.0 44.0 L100.0 92.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M100.0 92.0 L94.0 120.0 L92.0 147.0 L84.0 147.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"100\" cy=\"30\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M100.0 50.0 L110.0 70.0 L102.0 84.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><line x1=\"196\" y1=\"84\" x2=\"102\" y2=\"84\" stroke=\"#8a97a8\" stroke-width=\"2\" opacity=\"0.32\"/><path d=\"M100.0 50.0 L118.0 70.0 L140.0 82.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"196\" y1=\"84\" x2=\"140\" y2=\"82\" stroke=\"#8a97a8\" stroke-width=\"2.2\"/><line x1=\"112\" y1=\"104\" x2=\"137.0\" y2=\"104.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M140.0 104.0 L130.4 110.0 L130.4 98.0 Z\" fill=\"#d9534f\"/><text x=\"120\" y=\"16\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">ingen rotasjon</text></svg>", "side_plank": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"10\" y1=\"148\" x2=\"230\" y2=\"148\" stroke=\"#c3ccd7\" stroke-width=\"2\"/><path d=\"M52.0 108.0 L52.0 146.0 L78.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M52.0 108.0 L130.0 138.0 L206.0 144.0\" stroke=\"#1f3a5f\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M205.0 140.0 L210.0 130.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"40\" cy=\"96\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M60.0 106.0 L88.0 92.0 L128.0 130.0\" stroke=\"#1f3a5f\" stroke-width=\"6.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M52.0 108.0 L52.0 146.0 L78.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M52.0 108.0 L130.0 126.0 L206.0 144.0\" stroke=\"#1f3a5f\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M205.0 140.0 L210.0 130.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"40\" cy=\"96\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M60.0 106.0 L88.0 92.0 L128.0 118.0\" stroke=\"#1f3a5f\" stroke-width=\"6.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><line x1=\"150\" y1=\"104\" x2=\"150.0\" y2=\"93.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M150.0 90.0 L156.0 99.6 L144.0 99.6 Z\" fill=\"#d9534f\"/><text x=\"232\" y=\"16\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"end\">forfra</text></svg>", "campus": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"92\" y=\"10\" width=\"56\" height=\"140\" rx=\"3\" fill=\"none\" stroke=\"#8a97a8\" stroke-width=\"2\"/><rect x=\"96\" y=\"18\" width=\"48\" height=\"5\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.2\"/><rect x=\"96\" y=\"36\" width=\"48\" height=\"5\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.2\"/><rect x=\"96\" y=\"54\" width=\"48\" height=\"5\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.2\"/><rect x=\"96\" y=\"72\" width=\"48\" height=\"5\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.2\"/><rect x=\"96\" y=\"90\" width=\"48\" height=\"5\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.2\"/><rect x=\"96\" y=\"108\" width=\"48\" height=\"5\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.2\"/><rect x=\"96\" y=\"126\" width=\"48\" height=\"5\" rx=\"2\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"1.2\"/><path d=\"M124.0 106.0 L132.0 94.0 L132.0 90.0\" stroke=\"#1f3a5f\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M120.0 106.0 L122.0 150.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"120\" cy=\"94\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M116.0 106.0 L108.0 94.0 L108.0 90.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M124.0 70.0 L134.0 82.0 L132.0 90.0\" stroke=\"#5b7697\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M120.0 70.0 L122.0 114.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"120\" cy=\"58\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M116.0 70.0 L106.0 48.0 L108.0 36.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><text x=\"190\" y=\"40\" font-family=\"system-ui,sans-serif\" font-size=\"12\" font-weight=\"700\" fill=\"#0f6b5f\" text-anchor=\"middle\">1–2–3–4</text><text x=\"190\" y=\"58\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">største trinn</text><line x1=\"176\" y1=\"120\" x2=\"176.0\" y2=\"83.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M176.0 80.0 L182.0 89.6 L170.0 89.6 Z\" fill=\"#d9534f\"/></svg>", "pullup": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"60\" y1=\"22\" x2=\"180\" y2=\"22\" stroke=\"#8a97a8\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M102.0 22.0 L108.0 48.0 L110.0 64.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M138.0 22.0 L132.0 48.0 L130.0 64.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M110.0 64.0 L120.0 62.0 L130.0 64.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M120.0 62.0 L120.0 108.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M114.0 108.0 L112.0 128.0 L113.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M126.0 108.0 L128.0 128.0 L127.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"120\" cy=\"50\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M102.0 22.0 L92.0 48.0 L110.0 42.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M138.0 22.0 L148.0 48.0 L130.0 42.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M110.0 42.0 L120.0 40.0 L130.0 42.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M120.0 40.0 L120.0 86.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M114.0 86.0 L112.0 106.0 L113.0 124.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M126.0 86.0 L128.0 106.0 L127.0 124.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"120\" cy=\"24\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><line x1=\"186\" y1=\"104\" x2=\"186.0\" y2=\"79.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M186.0 76.0 L192.0 85.6 L180.0 85.6 Z\" fill=\"#d9534f\"/></svg>", "wpullup": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"60\" y1=\"22\" x2=\"180\" y2=\"22\" stroke=\"#8a97a8\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M102.0 22.0 L108.0 48.0 L110.0 64.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M138.0 22.0 L132.0 48.0 L130.0 64.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M110.0 64.0 L120.0 62.0 L130.0 64.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M120.0 62.0 L120.0 108.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M114.0 108.0 L112.0 128.0 L113.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M126.0 108.0 L128.0 128.0 L127.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"120\" cy=\"50\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M102.0 22.0 L92.0 48.0 L110.0 42.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M138.0 22.0 L148.0 48.0 L130.0 42.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M110.0 42.0 L120.0 40.0 L130.0 42.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M120.0 40.0 L120.0 86.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M114.0 86.0 L112.0 106.0 L113.0 124.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M126.0 86.0 L128.0 106.0 L127.0 124.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"120\" cy=\"24\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><line x1=\"186\" y1=\"104\" x2=\"186.0\" y2=\"79.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M186.0 76.0 L192.0 85.6 L180.0 85.6 Z\" fill=\"#d9534f\"/><rect x=\"108\" y=\"98\" width=\"24\" height=\"10\" rx=\"3\" fill=\"#d5dce5\" stroke=\"#8a97a8\" stroke-width=\"2\"/><line x1=\"112\" y1=\"88\" x2=\"116\" y2=\"98\" stroke=\"#8a97a8\" stroke-width=\"2\"/><line x1=\"128\" y1=\"88\" x2=\"124\" y2=\"98\" stroke=\"#8a97a8\" stroke-width=\"2\"/><text x=\"200\" y=\"140\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">vekt i belte</text></svg>", "scap": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"20\" y1=\"22\" x2=\"220\" y2=\"22\" stroke=\"#8a97a8\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M46.0 22.0 L57.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M94.0 22.0 L83.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M57.0 60.0 L70.0 60.0 L83.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M70.0 60.0 L70.0 104.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M64.0 104.0 L62.0 124.0 L63.0 142.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M76.0 104.0 L78.0 124.0 L77.0 142.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"70\" cy=\"52\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><text x=\"70\" y=\"156\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">heng</text><path d=\"M146.0 22.0 L157.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M194.0 22.0 L183.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M157.0 60.0 L170.0 51.0 L183.0 60.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M170.0 51.0 L170.0 95.0\" stroke=\"#1f3a5f\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M164.0 95.0 L162.0 115.0 L163.0 133.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M176.0 95.0 L178.0 115.0 L177.0 133.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"170\" cy=\"38\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><text x=\"170\" y=\"156\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">skuldrene ned</text><line x1=\"120\" y1=\"70\" x2=\"143.0\" y2=\"70.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M146.0 70.0 L136.4 76.0 L136.4 64.0 Z\" fill=\"#d9534f\"/><line x1=\"206\" y1=\"96\" x2=\"206.0\" y2=\"81.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M206.0 78.0 L212.0 87.6 L200.0 87.6 Z\" fill=\"#d9534f\"/><line x1=\"150\" y1=\"50\" x2=\"154.7\" y2=\"59.3\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M156.0 62.0 L146.3 56.1 L157.1 50.7 Z\" fill=\"#d9534f\"/><line x1=\"190\" y1=\"50\" x2=\"185.3\" y2=\"59.3\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M184.0 62.0 L182.9 50.7 L193.7 56.1 Z\" fill=\"#d9534f\"/></svg>", "chain": "<svg viewBox=\"0 0 240 160\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"70\" y1=\"20\" x2=\"170\" y2=\"20\" stroke=\"#8a97a8\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M118.0 60.0 L126.0 104.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M126.0 104.0 L136.0 126.0 L132.0 146.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><circle cx=\"116\" cy=\"48\" r=\"9\" fill=\"#1f3a5f\" opacity=\"0.22\"/><path d=\"M118.0 62.0 L118.0 42.0 L118.0 22.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"0.22\" /><path d=\"M120.0 46.0 L118.0 92.0\" stroke=\"#1f3a5f\" stroke-width=\"11\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><path d=\"M118.0 92.0 L116.0 116.0 L118.0 138.0\" stroke=\"#1f3a5f\" stroke-width=\"7.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><circle cx=\"120\" cy=\"34\" r=\"9\" fill=\"#1f3a5f\" opacity=\"1\"/><path d=\"M120.0 48.0 L132.0 40.0 L120.0 22.0\" stroke=\"#1f3a5f\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\" opacity=\"1\" /><text x=\"186\" y=\"80\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">svikt</text><text x=\"186\" y=\"96\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">skyv</text><text x=\"186\" y=\"112\" font-family=\"system-ui,sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#8a8f8c\" text-anchor=\"middle\">trekk</text><line x1=\"60\" y1=\"110\" x2=\"60.0\" y2=\"83.0\" stroke=\"#d9534f\" stroke-width=\"3\" stroke-linecap=\"round\"/><path d=\"M60.0 80.0 L66.0 89.6 L54.0 89.6 Z\" fill=\"#d9534f\"/></svg>"};
+function setsOf(txt,light){ if(!light) return txt; return txt.replace(/^(\d+) ×/,(m,n)=>`${Math.min(2,+n)} ×`); }
+function exRow(code,name,txt,dose,pause,fig,tag){
+  return `<div class="ex"><div class="fig" role="img" aria-label="${name}">${FIG[fig]||""}</div><div>
+   <div class="exh"><span><span class="code">${code}</span>${name}</span><span class="sets">${dose}</span></div>
+   ${tag?`<div class="meta"><span class="tag warn">${tag}</span></div>`:""}<p>${txt}${pause?` · Pause ${pause}`:""}</p></div></div>`;
+}
+function strAHtml(i){
+  const col=i.S-1;
+  if(i.comp) return `<div class="blk"><h4>Konkurranseuke<span class="dur">30 min</span></h4><ul><li>Oppvarming, A1/A2 2 sett, 20 min mobilitet.</li></ul></div>
+    <div class="exlist">${STYRKE_A.slice(0,2).map(e=>exRow(e[0],e[1],e[2],setsOf(e[3][0],true),e[4],e[5],"")).join("")}</div>`;
+  const note=(i.y===2026&&i.w<=46)?"Uke 45–46: uten eller med lett vekt – lær øvelsene.":(i.y===2026&&i.w===47)?"Uke 47: vekt på.":([11,13,15].includes(i.w)&&i.y===2027)?"Tyngre kettlebell denne uka (maks +4 kg, tak 16–20 kg).":"";
+  return `<div class="blk"><h4>Hoveddel</h4><ul><li>Lav rep, hver rep rask og presis. Supersett A1/A2 osv. Aldri til svikt – stopp settet idet farten faller.${i.light?" Lett uke: 2 sett.":""}</li>${note?`<li><b>${note}</b></li>`:""}</ul></div>
+   <div class="exlist">${STYRKE_A.map(e=>exRow(e[0],e[1],e[2],setsOf(e[3][col],i.light),e[4],e[5],"")).join("")}</div>
+   <div class="blk"><ul><li>Avslutt med 10 min mobilitet.</li><li><b>Progresjon:</b> teknikk → vekt → vanskeligere variant. Bare i uker uten annen ny ting.</li></ul></div>`;
+}
+function strBHtml(i){
+  const rows=[];
+  const camp=CAMPUS.has(i.w)&&i.y===2027&&!i.light;
+  if(camp) rows.push([STYRKE_B.C,"3 × 2 stiger",i.w===6?"Første gang – føtter på":""]);
+  const early=i.phase==="f1"||(i.y===2027&&i.w===2);
+  rows.push([STYRKE_B.A,early?"4 × 3":"3 × 3",early?"Strikk om nødvendig":""]);
+  const onlyAD=i.phase==="f3"&&i.odd;
+  if(!onlyAD) rows.push(early?[STYRKE_B.B0,"3 × 4–5",""]:[STYRKE_B.B,"3 × 3",(i.y===2027&&i.w===3)?"Ny denne uka":""]);
+  rows.push([STYRKE_B.D,"2 × 5",""]);
+  return `<div class="blk"><h4>Styrke B · eksplosiv drastyrke<span class="dur">${camp?"60":"50"} min</span></h4><ul>
+    <li>Oppvarming 20 min: 5 min puls · mobilitet 8 min · scapula pull-ups 2 × 6 · strikk utadrotasjon 2 × 12 · 3 lette heng · 2 × 3 kjedeflytt på stang (svikt – skyv – trekk, sakte).</li>
+    ${onlyAD?"<li>Konkurranseformat-lørdag: bare A og D.</li>":""}<li>Progresjon: først fart/høyde, så vekt, så campus. Aldri flere reps. Stopp: én rep uten «smell».</li></ul></div>
+    <div class="exlist">${rows.map(([e,dose,tag])=>exRow(e[0],e[1],e[2],i.light?setsOf(dose,true):dose,e[3],e[4],tag)).join("")}</div>`;
+}
+
+/* Mobilitet */
+const MOB=[
+ ["Dyp knebøy-hold","Føtter skulderbredde, hæler nede (ev. tynn plate), albuene presser knærne ut, ryggen lang. 3 × 30–60 s.","Høyt steg uten armtrekk: foten i hoftehøyde på lett buldre, reis deg uten å trekke. 5 per side."],
+ ["90/90 hofterotasjon","Bytt side uten hender. 10 bytter, 20 s hold i hver ytterstilling.","Dropknee-stige: bratt vegg (Kilter 40°), hvert langtrekk med dropknee, 2 s hold. 6–8 flytt."],
+ ["Due","Fremre legg på tvers, bakre bein strakt, hofta rett fram. 60–90 s per side. Aldri smerte i kneet.","Hælkrok-sirkler: volumvegg, hælkrok i hoftehøyde, roter hofta inn over hælen før du drar. 5 per side."],
+ ["Couch stretch","Bakre kne inntil veggen, fot opp langs veggen. Stram setet, skyv hofta fram, ikke svai. 60–90 s per side.","Hofta inn i overheng: lett buldre på Kilter, hofta presset inn og setet stramt. 6–8 flytt."],
+ ["Frosk","Knær bredt, legger parallelt, hofta bakover. 3 × 30–45 s.","Froskestilling på vertikal vegg, hofta inn mot veggen, 3 × 20 s."],
+ ["Åpen bok","Sideliggende, knærne 90°, åpne øverste arm bakover og følg med blikket. 8–10 per side, 3 s hold.","Rotasjonsflytt: lette flytt på volumer, roter overkroppen 90° og strekk etter taket med motsatt hånd. 6–8 flytt."],
+ ["Katt–ku + bird dog","Katt–ku 10 runder. Bird dog: motsatt arm og bein strakt, ryggen stille, 3 s hold, 8 per side.","Kryssflytt: lette buldre der du alltid flytter motsatt hånd og fot. 6–8 flytt."]];
+function weekIndex(i){ return SEASON.findIndex(x=>x.y===i.y&&x.w===i.w); }
+function mobFor(i){ const k=Math.max(0,weekIndex(i))*3; return [0,1,2].map(n=>MOB[(k+n)%MOB.length]); }
+
+/* ============ ØKTENE ============ */
+const B=(h,items,dur)=>({h,items,dur});
+const LB="Lange buldre: så mange flytt at det tilsvarer 2–3 vanlige buldre satt sammen (45–90 s). Fullfør hvert.";
+function session(date,noTheme){
+  const i=info(date), w=i.w;
+  const s={i,key:"hvile",title:"Hvile",time:"–",blocks:[],notes:[],fields:[]};
+  if(i.phase==="før"||i.phase==="etter"){ s.title=i.label; s.key="utenfor"; return s; }
+  const md=date.getMonth()===11?date.getDate():0;
+  if(i.phase==="jul"){
+    s.key="jul"; s.title="Jul – fri";
+    s.blocks=[B("I dag",["Fri, lek, lett klatring. Mobilitet hjemme."])];
+    if(md>=24&&md<=27) s.notes.push(["stop","24.–27. des: ingen harde økter."]);
+    return s;
+  }
+  if(i.light) s.notes.push(["warn","Lett uke: samme økter, halvt antall forsøk/runder/sett (avrund ned), samme intensitet."]);
+  if(i.comp) s.notes.push(["warn",`Konkurranseuke – ${i.comp.navn} ${i.comp.dato}: halvt volum, samme intensitet, ingen campus, ingen PE, ingen nye øvelser.`]);
+  const warm=(mob)=>B("Oppvarming",["5 min puls"+(mob?", 8 min mobilitet (dyp knebøy, couch, 90/90, maks 30 s per hold)":", 5 min mobilitet")+".","15 min lett klatring med teknikktemaet – pyramide lett → middels."],mob?"28 min":"25 min");
+  switch(i.dow){
+  case 1: {
+    s.key="man"; s.title="Hard buldring"; s.time="ca. 1 t 45";
+    if(i.y===2027&&w===13) s.notes.push(["warn","2. påskedag: økta flyttes til tirsdag ved behov – da utgår Styrke A."]);
+    let mx, hov;
+    if(i.M===1){ mx=(i.y===2027&&(w===2||w===3))?15:18; hov="5–6 buldre 1–2 grader under maks, RPE 7–8, 3 min pause."; }
+    else if(i.M===2){ mx=15; hov="4–6 buldre på og over maks, RPE 9–10, 3–4 min pause."; }
+    else { mx=12; hov="4–5 buldre på maks, RPE 9, 4–5 min pause."; }
+    if(i.phase==="nm") mx=8; else if(i.comp||i.light) mx=halfDown(mx);
+    if(i.phase==="nm") hov="Hard buldring, RPE 8–9. Siste harde økt.";
+    s.count=mx;
+    s.blocks=[warm(true),B("Hoveddel",[hov,`<span class="key">Maks ${mx} forsøk.</span>`,"Minst halvparten av buldrene krever timing: dynamiske flytt, koordinasjon, hæl/tåkroker, rotasjon.",
+      "<a href='#teknikk' data-anchor='rutine'>Rutinen</a> før hvert forsøk.","Sluttpunkt: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall (flytt blir statiske, fot smeller, hofte glir)."],"65–70 min"),
+      B("Nedtrapping",["Lett klatring."],"10 min")];
+    s.fields=[["antall",`Forsøk (maks ${mx})`]];
+    break; }
+  case 2: {
+    s.key="tir"; s.title=i.comp?"Kort styrke + mobilitet":"Styrke A · muskelkjeder, kjerne, mobilitet"; s.time=i.comp?"30 min":"ca. 80 min"; s.strA=true;
+    s.blocks=[B("Oppvarming",["5 min sykkel eller hopptau · katt–ku 10 · 90/90 10 bytter · couch stretch 30 s /side · dyp knebøy-hold 2 × 30 s · hengsel med lett kule 2 × 8 · strikk pull-aparts 2 × 15."],i.comp?"":"15 min")];
+    s.notes.push(["acc","Ingen fingerbelastning i dag."]);
+    s.fields=[["swing","Swing (kg)"]];
+    break; }
+  case 3: {
+    s.key="ons";
+    if(i.comp){ s.title="Lett klatring"; s.time="30 min"; s.blocks=[B("Økt",["Ingen PE – 30 min lett klatring."],"30 min")]; break; }
+    if(i.phase==="f3"){ const r=i.light?2:4; s.title="Rutedag på led · 2 × 4"; s.time="ca. 1 t 30";
+      s.blocks=[B("Oppvarming",["Lett buldring, 2 lette ruter på led."],"20 min"),B("2 × 4",["2 ruter på rad, bare sikringsbyttet som pause, 1–2 grader under onsight, RPE 7–8.",`<span class="key">${r} runder, 8 min pause.</span>`,"Fall eller heng → neste runde ett hakk lettere. Alt lett → ett hakk hardere neste økt."],"55 min"),B("Nedtrapping",["Lett klatring."],"10 min")];
+      s.fields=[["antall","Runder"]]; break; }
+    const f2=i.y===2027&&w>=2, n=i.light?4:8;
+    s.title="Linked boulders"; s.time="ca. 1 t 20";
+    s.blocks=[warm(false),B("Linked boulders",[LB,f2?"10–14 hardere flytt, 2–3 grader under maks, RPE 7–8, 3 min pause mellom hvert.":"12–20 flytt, 3–4 grader under maks, RPE 6–7, 3–4 min pause mellom hvert.",
+      `<span class="key">${n} lange buldre</span>${n===8?", 8 min ekstra pause etter de fire første":""}.`,"Nye buldre hver uke. Fall → neste lange buldre: bytt den vanskeligste delen med én grad lettere.","Tak: volumvegg, slopere og pinch – ikke bare lister."],"40 min"),
+      B("Nedtrapping",["Lett klatring."],"15 min")];
+    s.fields=[["antall","Lange buldre"]];
+    break; }
+  case 4: {
+    s.key="tor"; s.title="3×10 + mobilitet"; s.time="ca. 1 t 10";
+    const r=(i.light||i.comp||i.phase==="nm")?2:3;
+    s.tre=B("3×10",["Ingen egen oppvarming – første runde er oppvarmingen.",`<span class="key">${r} runder × 10 min</span> sammenhengende lett klatring, 4+ grader under onsight, RPE 3–4, 5 min pause. Store tak, rette armer.`,
+      "Runde 1 overdrevet · runde 2 normalt · runde 3 så lett og stille som mulig."],"45 min");
+    s.mob=true;
+    if(i.test){ s.notes.push(["acc","Testuke: dyp knebøy med hæler nede (ja/nei) og høyeste fot på veggen uten armtrekk. Før i loggen."]); s.testFields=true; }
+    break; }
+  case 5: s.blocks=[B("Hviledag",["Gjerne 10 min mobilitet hjemme."])]; break;
+  case 6: {
+    s.key="lor";
+    if(i.comp){ s.title=`${i.comp.navn}${i.comp.sted?" "+i.comp.sted:""}`; s.time="";
+      s.blocks=[B("Konkurranse",["Ingen Styrke B, ingen campus.","Oppvarming som før hard buldring.","<a href='#teknikk' data-anchor='rutine'>Rutinen</a> før hvert forsøk."])];
+      s.fields=[["resultat","Resultat / plassering"]]; break; }
+    s.strB=true; s.time=i.odd?"ca. 2 t 45":"ca. 3 t";
+    s.pause=B("Pause",["Sitt eller gå rolig, 10 min lett mobilitet (90/90, åpen bok, due). Ikke stretching av underarmer og fingre.","Tunge armer etter pausen → ett sett mindre neste gang."],"30 min");
+    if(i.odd){
+      s.title="Styrke B + buldring";
+      let items, dur="50 min";
+      if(i.phase==="f1"){ const mx=i.light?6:12; items=[`5–6 koordinasjonsbuldre (dynamiske flytt, paddle, deadpoint) 1–2 grader under maks, RPE 7–8, <span class="key">maks ${mx} forsøk</span>, 3–4 min pause.`]; s.max=mx; }
+      else if(i.phase==="f2"){ const mx=i.light?5:10; items=[`4–5 harde buldre, RPE 8–9, <span class="key">maks ${mx} forsøk</span>, 5 min pause.`]; s.max=mx; }
+      else { items=["<a href='#teknikk' data-anchor='format'>Konkurranseformat</a>, veksle kvalik og finale. RPE 9."]; dur="40–60 min"; }
+      items.push("Et flytt tregere eller mer statisk enn forrige forsøk: ferdig med det buldret.");
+      s.del2=[B("Buldring · oppvarming",["8–10 lette buldre, pyramide."],"20 min"),B("Buldring",items,dur),B("Nedtrapping",["Lett klatring."],"10 min")];
+      s.fields=[["vektet","Pull-up B (kg × reps)"],["antall","Forsøk / topper"]];
+    } else {
+      s.title="Styrke B + tau";
+      let items, title, dur;
+      if(i.y===2026||w===2){ title="Ledvolum"; dur="50 min"; items=[`${i.light?"2":"3–4"} ruter 1–2 grader under onsight, RPE 6.`,"Hvilestillinger: 3 per rute, 10 pust i hver."]; }
+      else if(w<=6){ title="Onsight"; dur="50 min"; items=["3 nye ruter nær onsight-nivå, 6 min lesing, 10 min pause, <a href='#teknikk' data-anchor='rutine'>rutinen</a>."]; }
+      else if(w<=14){ const r=i.light?1:(CAMPUS.has(w)?2:3); title="4 × 4"; dur="65 min"; items=["4 ruter på rad, bare sikringsbyttet som pause, 3–4 grader under onsight, RPE 7–8.",`<span class="key">${r} runde${r>1?"r":""}, 10 min pause</span> (makkers runde).`,"Stopp: to fall på rad under eget onsight-nivå."]; }
+      else if(w===18){ title="Redpoint"; dur="50 min"; items=["3 forsøk på et prosjekt 1–2 grader over onsight, 15 min pause."]; }
+      else { title="Onsight"; dur="50 min"; items=[`${i.light?"1 onsight-forsøk":"3 onsight-forsøk"} på ukjente ruter, 6 min lesing, 10 min pause, så 1 lettere rute.`]; }
+      s.del2=[B("Tau · oppvarming",["2 lette ruter på led, hofta inn og rette armer."],"20 min"),B(`Tau · ${title} (alt på led)`,items,dur),
+        B("Falltrening",["Kontrollerte fall over draget på overheng. Start med føttene ved draget (ca. 1 m fall), 4–6 fall, øk 0,5 m per økt til 2–3 m."],"10 min")];
+      s.fields=[["vektet","Pull-up B (kg × reps)"],["antall","Ruter"]];
+    }
+    break; }
+  case 7: s.blocks=[B("Hviledag",["Gjerne 10 min mobilitet hjemme."])]; break;
+  }
+  if(!noTheme) addTheme(s,date);
+  return s;
+}
+
+/* Teknikktema – ett per uke (man og ons), eget utvalg i 3×10 */
+const TEKNIKK=[
+ {id:"hofte",n:"Hofte først",mal:"Hofta starter flyttet.",drill:["Volumvegg: hvert flytt starter med hoftebevegelsen.","Film 1–2 forsøk: hva starter flyttet – hofta eller hånda?","Samme buldre igjen med hofta først."],feil:["Hånda går før hofta har flyttet seg."],prog:"Brattere vegg, lengre flytt.",tre:"Runde 1 hofta starter hvert flytt overdrevet, runde 2 normalt, runde 3 så lett og stille som mulig."},
+ {id:"deadpoint",n:"Deadpoint",mal:"Ta taket i dødpunktet.",drill:["Lette dynamiske flytt til gode tak – sett, svikt, skyt, grip.","Samme flytt med økende avstand.","Fem flytt på rad uten at føttene skrens."],feil:["Griper på vei opp eller etter at kroppen faller."],prog:"Lengre flytt, dårligere tak."},
+ {id:"rytme",n:"Rytmeklatring",mal:"Jevn flyt uten stopp.",drill:["Lett buldre i jevn takt, så dobbelt tempo, så halvt.","Ett flytt per pust på et lett buldre."],feil:["Stopper for å lese midt i."],prog:"Vanskeligere buldre i samme takt.",tre:"Runde 1 fast takt, ett flytt per pust · runde 2 dobbelt tempo på lette partier · runde 3 rolig."},
+ {id:"koord",n:"Koordinasjonsbuldre",mal:"Flere bevegelser som én.",drill:["Paddle på volumer: 3 flytt uten å stoppe. Begynn lavt.","Lag egne koordinasjonsflytt på volumer – 3 forsøk hver."],feil:["Stopper mellom flyttene."],prog:"Høyere start, flere flytt i serie."},
+ {id:"lop",n:"Løp og hopp",mal:"Timing fra løp til grep.",drill:["2–3 steg på matta, fot på volum, fang taket. Lavt, 5 forsøk.","Øk avstanden før høyden."],feil:["Starter for høyt eller for langt."],prog:"Mindre tak, lengre løp."},
+ {id:"catch",n:"Catch og sving",mal:"Stoppe svingen med kjernen.",drill:["Dynamisk flytt til stort tak, stopp svingen, føttene tilbake på veggen.","Samme flytt med mindre tak når svingen stopper kontrollert."],feil:["Føttene kommer ikke tilbake.","Henger igjen med bøyde armer."],prog:"Mindre tak, brattere vegg."},
+ {id:"kjede",n:"Kjedeflytt på stang",mal:"Svikt, skyv og trekk som én bevegelse.",drill:["Fra heng: svikt i hofta → skyv med skuldrene → trekk. 2 × 3.","Først sakte, så som én bevegelse."],feil:["Trekker før hofta har gitt fart."],prog:"Høyere og raskere."},
+ {id:"hael",n:"Hæl og tå med timing",mal:"Kroken settes og slippes i flyttet.",drill:["Buldre der hælkroken må slippes eller settes midt i et flytt.","Samme buldre med tåkrok i stedet."],feil:["Kroken sitter igjen og bremser flyttet."],prog:"Brattere vegg, dårligere tak.",tre:"Hæl- eller tåkrok der det går – overdrevet i runde 1."}];
+const TRE=TEKNIKK.filter(t=>t.tre);
+function temaUke(i){ const k=Math.max(0,weekIndex(i)); return {gen:TEKNIKK[k%TEKNIKK.length],tre:TRE[k%TRE.length]}; }
+function addTheme(s,date){
+  if(!["man","ons","tor"].includes(s.key)||s.i.comp||s.i.phase==="nm") return;
+  if(s.key==="ons"&&s.i.phase==="f3") return;
+  const tu=temaUke(s.i), t=s.key==="tor"?tu.tre:tu.gen;
+  const txt=`Teknikktema: <a class="key" href="#teknikk" data-anchor="tema-${t.id}">${t.n}</a> – ${s.key==="tor"?t.tre:t.drill[0]}`;
+  s.theme=t.n;
+  const blk=s.key==="tor"?s.tre:s.blocks.find(b=>b.h==="Oppvarming"); if(blk) blk.items.unshift(txt);
+}
+
+/* ============ LOGG ============ */
+let LOG={};
+const LS_KEY=KEY+"-logg-v1";
+function lsGet(k){ try{ return localStorage.getItem(k);}catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v);}catch(e){} }
+function loadLocal(){ try{ LOG=JSON.parse(lsGet(LS_KEY)||"{}")||{}; }catch(e){ LOG={}; } }
+function initDb(){ loadLocal(); document.getElementById("syncState").textContent="Logg på denne telefonen"; }
+async function saveEntry(date,entry){ LOG[date]=entry; lsSet(LS_KEY,JSON.stringify(LOG)); return lsGet(LS_KEY)?"Lagret på denne telefonen.":"Kunne ikke lagre – nettleseren blokkerer lagring."; }
+async function deleteEntry(date){ delete LOG[date]; lsSet(LS_KEY,JSON.stringify(LOG)); }
+const FN={gronn:"grønn",gul:"gul",oransje:"oransje",rod:"rød",svart:"svart"};
+const has=v=>v!=null&&v!=="";
+const FIELDS=["antall","swing","vektet","resultat"];
+function reportDetail(e){ const t=[]; for(const f of FIELDS) if(has(e[f])) t.push(`${e[f+"Navn"]||f} ${e[f]}`);
+  if(e.knebHael!=null&&e.knebHael!=="") t.push(`knebøy hæler nede: ${e.knebHael?"ja":"nei"}`); if(has(e.fot)) t.push(`høyeste fot ${e.fot} cm`);
+  if(e.rygg) t.push("rygg vond etter styrke"); if(e.kommentar) t.push(e.kommentar); return t.join(" · "); }
+function entryLine(k){ const e=LOG[k], d=parseYmd(k); const det=reportDetail(e); return `${DAYS[isoWeek(d).dow]} ${fmt(d)}: ${FN[e.farge]||"–"} · ${e.okt||""}${det?" · "+det:""}`; }
+function summary(scope){
+  let keys=Object.keys(LOG).sort();
+  const head=`Treningslogg ${initialer()}\nPersonlig treningsinformasjon – slettes etter vurdering.`;
+  if(scope==="uke"){ const {y,w}=isoWeek(cur); const m=mondayOf(y,w); const a=ymd(m), z=ymd(addDays(m,6));
+    keys=keys.filter(k=>k>=a&&k<=z); return `${head}\nUke ${w}\n`+(keys.length?keys.map(entryLine).join("\n"):"Ingen økter logget."); }
+  let out=`${head}\nVinteren 2026/27`, lastW=null;
+  keys.forEach(k=>{ const w=isoWeek(parseYmd(k)).w; if(w!==lastW){ out+=`\n\nUke ${w}`; lastW=w; } out+="\n"+entryLine(k); });
+  return keys.length?out:out+"\nIngen økter logget.";
+}
+async function shareText(t,msgEl){
+  try{ if(navigator.share){ await navigator.share({title:"Treningslogg",text:t}); return; } }catch(e){ if(e&&e.name==="AbortError") return; }
+  try{ await navigator.clipboard.writeText(t); msgEl.textContent="Kopiert – lim inn i en melding til trener."; return; }catch(e){}
+  const ta=document.getElementById("shareFallback"); ta.value=t; ta.hidden=false; ta.select(); msgEl.textContent="Kopier teksten under.";
+}
+function downloadBackup(){
+  const blob=new Blob([JSON.stringify({utover:NAVN,versjon:1,logg:LOG},null,1)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=KEY+"-logg-"+ymd(cur)+".json";
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
+}
+function restoreBackup(file,msgEl){
+  const r=new FileReader();
+  r.onload=()=>{ try{ const o=JSON.parse(r.result); const l=o&&o.logg; if(!l||typeof l!=="object") throw 0;
+      let n=0; for(const k in l){ if(/^\d{4}-\d\d-\d\d$/.test(k)&&!LOG[k]){ LOG[k]=l[k]; n++; } }
+      lsSet(LS_KEY,JSON.stringify(LOG)); render(); const m=document.getElementById("shareMsg"); if(m) m.textContent=`Hentet inn ${n} økter.`; }
+    catch(e){ msgEl.textContent="Fant ingen logg i filen."; } };
+  r.readAsText(file);
+}
+function alerts(date){
+  const out=[]; const ds=ymd(date);
+  const prev=Object.keys(LOG).filter(k=>k<ds).sort(); const lastK=prev[prev.length-1];
+  if(prev.some(k=>(date-parseYmd(k))/864e5<=14&&LOG[k].rygg)) out.push(["stop","Rygg vond dagen etter styrke: halv vekt på swing og enbeins markløft i to uker. Stråler nedenfor kneet, nummenhet eller kraftsvikt → stopp, lege samme uke."]);
+  const last2=prev.slice(-2).map(k=>LOG[k].farge);
+  if(last2.length===2&&last2.every(f=>f==="oransje"||f==="rod")) out.push(["stop","To oransje/røde dager på rad → neste harde økt blir 3×10."]);
+  else if(lastK&&LOG[lastK].farge==="oransje") out.push(["warn","Oransje sist: i dag bare mobilitet, ingen eksplosiv styrke."]);
+  if(lastK&&LOG[lastK].farge==="svart") out.push(["stop","Sist logget svart: ikke tren før du har snakket med trener."]);
+  if(lastK&&LOG[lastK].farge==="rod") out.push(["stop","Sist logget rød: trenger flere hviledager."]);
+  return out;
+}
+const METRIC={title:"Høyeste fot uten armtrekk (cm)",series:[{k:"fot",name:"høyeste fot",color:"#0f6b5f"}]};
+
+/* ============ VISNINGER ============ */
+const TABS=[["idag","I dag"],["uka","Uka"],["man","Mandag"],["tir","Tirsdag"],["ons","Onsdag"],["tor","Torsdag"],["lor","Lørdag"],["mob","Mobilitet"],["konk","Konkurranse"],["teknikk","Teknikk"],["plan","Plan"],["rpe","RPE"],["regler","Regler"],["logg","Logg"]];
+let cur=new Date(); cur=new Date(cur.getFullYear(),cur.getMonth(),cur.getDate());
+let selDate=new Date(cur), weekRef=new Date(cur);
+function tabsHtml(t){ return TABS.map(([k,n])=>`<a href="#${k}" class="${k===t?"on":""}">${n}</a>`).join(""); }
+function notesHtml(n){ return n.map(([c,t])=>`<div class="note ${c==="warn"?"":c}">${t}</div>`).join(""); }
+function rpeLink(t){ return t.replace(/RPE \d+(–\d+)?(?![^<]*<\/a>)/g,m=>`<a href="#rpe">${m}</a>`); }
+function blkHtml(b){ return `<div class="blk"><h4>${b.h}${b.dur?`<span class="dur">${b.dur}</span>`:""}</h4><ul>${b.items.map(x=>`<li>${rpeLink(x)}</li>`).join("")}</ul></div>`; }
+function tagsHtml(i){
+  let t=`<span class="tag">Uke ${i.w}</span><span class="tag acc">${i.label}</span>`;
+  if(i.light) t+=`<span class="tag warn">Lett uke</span>`;
+  if(i.comp) t+=`<span class="tag stop">${i.comp.navn} ${i.comp.dato}</span>`;
+  if(i.dow===6&&!["jul","før","etter"].includes(i.phase)&&!i.comp) t+=`<span class="tag">${i.odd?"Oddetallsuke · buldring":"Partallsuke · tau"}</span>`;
+  if(NYTT[i.w]&&!["før","etter","jul"].includes(i.phase)&&!i.light&&!i.comp) t+=`<span class="tag">Nytt: ${NYTT[i.w]}</span>`;
+  return `<div class="meta">${t}</div>`;
+}
+function mobHtml(i){
+  const m=mobFor(i);
+  return `<div class="blk"><h4>Mobilitet + klatredriller<span class="dur">25 min</span></h4><p class="small" style="margin:0 0 4px">Ukas tre øvelser med tilhørende drill. Se <a href="#mob">Mobilitet</a> for alle.</p><ul>${m.map(x=>`<li><b>${x[0]}:</b> ${x[1]}<br><span class="muted">Drill: ${x[2]}</span></li>`).join("")}</ul></div>`;
+}
+function sessionCard(s,withAlerts){
+  const i=s.i;
+  let h=`<div class="card"><h2>${s.title}</h2>${tagsHtml(i)}${s.time&&s.time!=="–"?`<div class="small muted">Tid: ${s.time}</div>`:""}
+   ${withAlerts?notesHtml(alerts(i.date)):""}${notesHtml(s.notes.filter(n=>n[0]!=="acc"))}`;
+  h+=s.blocks.map(blkHtml).join("");
+  if(s.strA) h+=strAHtml(i);
+  if(s.tre) h+=blkHtml(s.tre);
+  if(s.mob) h+=mobHtml(i);
+  if(s.strB){ h+=strBHtml(i)+blkHtml(s.pause)+s.del2.map(blkHtml).join(""); }
+  h+=s.notes.filter(n=>n[0]==="acc").map(n=>`<p class="small muted">${n[1]}</p>`).join("")+`</div>`;
+  return h;
+}
+function vIdag(){
+  const s=session(selDate), i=s.i, isToday=ymd(selDate)===ymd(cur);
+  let h=`<div class="banner">HVA SKAL JEG ØVE PÅ I DAG?</div>
+  <div class="daynav"><button class="btn sm" data-nav="-1" aria-label="Forrige dag">◀</button>
+   <div class="d">${isToday?"I dag":DAY[i.dow]} · ${fmt(selDate)}<small>${isToday?DAY[i.dow]:'<a href="#" data-today="1">Tilbake til i dag</a>'}</small></div>
+   <button class="btn sm" data-nav="1" aria-label="Neste dag">▶</button></div>`;
+  h+=sessionCard(s,true);
+  if(s.key==="hvile"){ let d=addDays(selDate,1), n=session(d,true), k=0; while(n.key==="hvile"&&k<6){ d=addDays(d,1); n=session(d,true); k++; }
+    if(n.key!=="hvile") h+=`<div class="card small"><span class="muted">Neste økt:</span> <b>${DAY[n.i.dow]} ${fmt(d)}</b> – ${n.title}</div>`; }
+  if(!["hvile","utenfor"].includes(s.key)) h+=formHtml(selDate,s);
+  return h;
+}
+let draft={};
+function formHtml(date,s){
+  const ds=ymd(date), e=LOG[ds]||{}; draft={...e};
+  const colors=[["gronn","Grønn"],["gul","Gul"],["oransje","Oransje"],["rod","Rød"],["svart","Svart"]];
+  return `<div class="card" id="logform"><h3 style="margin-top:0">Logg økta</h3>
+   <label class="f">Fargen på dagen</label>
+   <div class="colors">${colors.map(([k,n])=>`<button type="button" data-farge="${k}" class="${e.farge===k?"on":""}"><span class="dot f-${k}"></span>${n}</button>`).join("")}</div>
+   ${s.fields.length?`<div class="row2">${s.fields.map(([k,l])=>`<div><label class="f">${l}</label><input type="text" data-field="${k}" data-label="${l.replace(/ \(.*/,"")}" value="${esc(e[k]??"")}"></div>`).join("")}</div>`:""}
+   ${s.testFields?`<label class="chk"><input type="checkbox" id="tKneb" ${e.knebHael?"checked":""}> Dyp knebøy med hæler nede</label>
+     <label class="f">Høyeste fot uten armtrekk (cm fra gulv)</label><input type="number" inputmode="numeric" id="tFot" value="${e.fot??""}">`:""}
+   <label class="chk"><input type="checkbox" id="fRygg" ${e.rygg?"checked":""}> Rygg vond dagen etter forrige styrkeøkt</label>
+   <label class="f">Kommentar</label><textarea id="fKom" placeholder="Hva gikk bra, hva kjentes?">${esc(e.kommentar||"")}</textarea>
+   <div style="margin-top:12px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+     <button class="btn pri" id="fSave">${LOG[ds]?"Oppdater":"Lagre"}</button>${LOG[ds]?'<button class="btn" id="fDel">Slett</button>':""}
+     <span class="saved" id="fMsg">${LOG[ds]?"Logget "+fmtTime(e.lagret):""}</span></div></div>`;
+}
+function esc(t){ return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function fmtTime(t){ if(!t) return ""; const d=new Date(t); return isNaN(d)?"":fmt(d)+" kl. "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0"); }
+function vUka(){
+  const {y,w}=isoWeek(weekRef); const mon=mondayOf(y,w); const i=info(mon);
+  let h=`<div class="daynav" style="margin-top:18px"><button class="btn sm" data-wk="-7">◀</button>
+   <div class="d">Uke ${w}<small>${fmt(mon)} – ${fmt(addDays(mon,6))}</small></div><button class="btn sm" data-wk="7">▶</button></div>
+   <div class="card">${tagsHtml({...i,dow:0})}<div style="margin-top:8px">`;
+  for(let k=0;k<7;k++){ const d=addDays(mon,k), s=session(d,true), e=LOG[ymd(d)], today=ymd(d)===ymd(cur);
+    h+=`<a class="week-row ${today?"today":""}" href="#idag" data-go="${ymd(d)}"><div class="wd">${DAYS[k+1]}<small>${d.getDate()}.</small></div>
+      <div class="wt"><span class="${s.key==="hvile"?"rest":""}">${s.title}</span>${s.time&&s.time!=="–"?` <small>· ${s.time}</small>`:""}</div>
+      ${e&&e.farge?`<span class="dot f-${e.farge}"></span>`:""}</a>`; }
+  h+=`</div></div>`;
+  if(weekRef.getTime()!==cur.getTime()) h+=`<p><button class="btn sm" data-wkreset="1">Denne uka</button></p>`;
+  return h;
+}
+const D=(y,w,dow)=>addDays(mondayOf(y,w),dow-1);
+function curLabel(){ const i=info(cur); return `<p class="small muted">Nå: uke ${i.w} · ${i.label}</p>`; }
+function refCard(title,date){ const s=session(date,true); const i=s.i;
+  return `<div class="card"><h3 style="margin-top:0">${title}</h3>${s.blocks.map(blkHtml).join("")}${s.strA?strAHtml(i):""}${s.tre?blkHtml(s.tre):""}${s.mob?mobHtml(i):""}${s.strB?strBHtml(i)+blkHtml(s.pause)+s.del2.map(blkHtml).join(""):""}</div>`; }
+function nowOr(dow,fb){ const i=info(cur); return ["før","etter","jul"].includes(i.phase)?fb:addDays(mondayOf(i.y,i.w),dow-1); }
+const VIEWS={
+ man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring</h2>${curLabel()}${refCard("Fase 1 (uke 45–51)",D(2026,46,1))}${refCard("Fase 2 fra uke 4",D(2027,4,1))}${refCard("Fase 3",D(2027,10,1))}`,
+ tir:()=>`<h2 style="margin-top:18px">Tirsdag · Styrke A</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,47,2)))}
+   <div class="card small">Sett per fase: fase 1 / fase 2 / fase 3 – se tabellen i tekstplanen. Fase 2 fra uke 3, fase 3 fra uke 9. Lette uker: 2 sett.</div>`,
+ ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · fase 1",D(2026,46,3))}${refCard("Linked boulders · fase 2 (uke 2–7)",D(2027,3,3))}${refCard("Rutedag på led · uke 9–20",D(2027,10,3))}`,
+ tor:()=>`<h2 style="margin-top:18px">Torsdag · 3×10 + mobilitet</h2>${curLabel()}${refCard("Denne uka",nowOr(4,D(2026,46,4)))}`,
+ lor:()=>`<h2 style="margin-top:18px">Lørdag · Styrke B → pause → buldring/tau</h2>${curLabel()}
+   <div class="card small"><ul><li>Oddetallsuker: buldring · partallsuker: tau, alt på led.</li><li><b>Campus:</b> uke 6, 10, 14, 18 og 20 – bare tau-lørdager. Aldri samme dag som hard buldring. Ikke i lette uker, konkurranseuker, uka etter konkurranse, eller ved symptomer i finger, albue eller skulder.</li></ul></div>
+   ${refCard("Denne uka",nowOr(6,D(2026,46,6)))}`,
+};
+function vMob(){
+  return `<h2 style="margin-top:18px">Mobilitet bekken og hofte</h2>
+  <p class="small muted">I oppvarmingene 2–3 øvelser, maks 30 s per hold · torsdag og hjemme: full dose · torsdag 25 min: 3 øvelser + tilhørende driller, roterer per uke.</p>
+  ${MOB.map(m=>`<div class="card"><h3 style="margin-top:0">${m[0]}</h3><p style="margin:0">${m[1]}</p><p class="small" style="margin:8px 0 0"><b>Klatredrill:</b> ${m[2]}</p></div>`).join("")}
+  <div class="card small"><b>Test uke 45, 51, 7, 13 og 19:</b> dyp knebøy med hæler nede (ja/nei) og høyeste fot du kan sette på veggen uten armtrekk. Føres i loggen på torsdag.</div>`;
+}
+function vKonk(){
+  return `<h2 style="margin-top:18px">Konkurranse</h2>
+  <div class="card"><h3 style="margin-top:0">Konkurranser</h3><ul><li><b>NC buldring</b> Kristiansund lør 6. feb (uke 5)</li><li><b>NC2 buldring</b> lør 20. feb (uke 7)</li><li><b>NM junior</b> Trondheim lør 27. feb (uke 8)</li><li><b>NC led</b> Molde lør 5. juni (uke 22, etter planperioden)</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Konkurranseuke</h3><ul>
+   <li><b>Man:</b> hard buldring, halvt volum (NM-uka maks 8 forsøk), RPE 8–9. Siste harde økt.</li><li><b>Tir:</b> oppvarming + A1/A2 2 sett + 20 min mobilitet (30 min).</li>
+   <li><b>Ons:</b> ingen PE – 30 min lett klatring.</li><li><b>Tor:</b> 3×10 med 2 runder.</li><li><b>Fre:</b> hvile.</li><li><b>Lør:</b> konkurranse. Ingen Styrke B, ingen campus.</li>
+   <li>Mandag etter konkurranse: fase 2-volum.</li></ul></div>
+  <div class="card" id="format" style="scroll-margin-top:110px"><h3 style="margin-top:0">Konkurranseformat (NM junior)</h3><ul>
+   <li><b>Kvalifisering (flash):</b> 6 buldre, 60 min samlet, maks 5 forsøk per buldre, valgfri rekkefølge.</li>
+   <li><b>Finale (rotasjon):</b> 4 buldre, 5 min klatretid (lesing inkludert), 5 min pause.</li>
+   <li><b>I trening:</b> maks 3 forsøk per buldre i finaleformat (4 buldre = 40 min). Registrer topp, sone og forsøk.</li></ul></div>`;
+}
+function vTeknikk(){
+  return `<h2 style="margin-top:18px">Teknikk</h2>
+  <div class="card" id="rutine" style="scroll-margin-top:110px"><h3 style="margin-top:0">Rutine før hvert forsøk</h3><ul><li>Pust ut langsomt, tre ganger.</li><li>Si de tre første flyttene, og hvor hofta skal i det vanskeligste.</li><li>Skuldrene ned, rist hendene.</li><li>Første fot.</li></ul></div>
+  <div class="card small">Unngå samme type tak hele økta. Full crimp bare uthvilt.</div>
+  <h3>Teknikkbank · koordinasjon og timing</h3><p class="small muted">Ett tema per uke, samme tema mandag og onsdag i oppvarmingen. I 3×10 bare hofte først, rytmeklatring og hæl og tå. Temaet står under <a href="#idag">I dag</a>.</p>
+  ${TEKNIKK.map(t=>`<div class="card" id="tema-${t.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${t.n}</h3><p style="margin:0 0 6px"><b>Mål:</b> ${t.mal}</p>
+   <div class="blk"><h4>Øvelse</h4><ul>${t.drill.map(x=>`<li>${x}</li>`).join("")}${t.tre?`<li>3×10: ${t.tre}</li>`:""}</ul></div>
+   <div class="blk"><h4>Typiske feil</h4><ul>${t.feil.map(x=>`<li>${x}</li>`).join("")}</ul></div><p class="small" style="margin:10px 0 0"><b>Vanskeligere:</b> ${t.prog}</p></div>`).join("")}`;
+}
+function vPlan(){
+  const {w:cw,y:cy}=isoWeek(cur);
+  const rows=SEASON.map(({y,w})=>{ const m=mondayOf(y,w), i=info(m);
+    return `<tr class="${y===cy&&w===cw?"now":""}"><td><a href="#uka" data-week="${ymd(m)}">${w}</a></td><td>${fmt(m)}</td><td>${i.label}</td><td>${i.phase==="jul"?"":(i.comp?i.comp.navn:(NYTT[w]||""))}</td></tr>`; }).join("");
+  return `<h2 style="margin-top:18px">Plan</h2>
+  <div class="card small"><ul>
+   <li><b>Uka:</b> man hard buldring · tir Styrke A · ons linked (uke 45–7) / rutedag på led (uke 9–20) · tor 3×10 + mobilitet · lør Styrke B → pause → buldring (oddetall) / tau (partall). Fre og søn hvile.</li>
+   <li><b>Fase 1 (45–51):</b> alle øvelser læres lett og presist. Uke 48 lett.</li><li><b>Jul (52, 53, 1):</b> fri, lek, lett klatring. Uke 1 lett uke.</li>
+   <li><b>Fase 2 (2–7):</b> én ny ting per uke. Konkurranser uke 5 og 7.</li><li><b>NM junior (8)</b>.</li>
+   <li><b>Fase 3 (9–20):</b> styrke på vedlikehold. Lette uker 12 og 16. Tyngre kettlebell bare i uker uten annen ny ting (11, 13, 15).</li>
+   <li><b>Maks én ny ting per uke</b> (vekt, campus, vinkel, format).</li></ul></div>
+  <div class="card"><div class="tscroll"><table><thead><tr><th>Uke</th><th>Fra</th><th>Periode</th><th>Nytt</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+function vRpe(){
+  return `<h2 style="margin-top:18px">RPE og intensitet</h2><p class="small muted">RPE = hvor hardt det kjennes, 1–10. Nå: uke ${info(cur).w} · ${info(cur).label}.</p>
+  <div class="card"><div class="tscroll"><table><thead><tr><th>RPE</th><th>Buldring, styrke</th><th>Linked, tau</th><th>Brukes i</th></tr></thead><tbody>
+   <tr><td>1–2</td><td>Ingen flytt krever noe.</td><td>Kan snakke hele setninger.</td><td>Oppvarming, nedtrapping</td></tr>
+   <tr><td>3–4</td><td>Lette buldre, flytende.</td><td>Rolig pust, lett varme i underarmene.</td><td>3×10, teknikkdriller, mobilitet</td></tr>
+   <tr><td>5–6</td><td>Middels buldre, første–andre forsøk.</td><td>Merkbar pump som går tilbake i pausen.</td><td>Oppvarmingspyramide, ledvolum, styrke fase 1</td></tr>
+   <tr><td>7</td><td>Må ta i på nøkkelflyttet. Styrke: 3 reps igjen.</td><td>Tydelig pump, føttene krever jobb.</td><td>Hard buldring fase 1, linked fase 1, 4 × 4</td></tr>
+   <tr><td>8</td><td>Full kraft, treffer og holder. Styrke: 2 reps igjen.</td><td>Hard pump, flyttene sitter.</td><td>Linked fase 2, 2 × 4, vektet pull-up, buldring lør fase 2</td></tr>
+   <tr><td>9</td><td>Alt du har, treffer så vidt.</td><td>Kvaliteten holder akkurat.</td><td>Fase 3, onsight, redpoint</td></tr>
+   <tr><td>10</td><td>Grenseforsøk – fall er forventet over maks. Styrke: brukes ikke.</td><td>Falt av pump.</td><td>Buldring over maks (fra uke 4)</td></tr></tbody></table></div></div>
+  <div class="card"><h3 style="margin-top:0">Intensitet per økt</h3>
+   <div class="blk"><h4>Hard buldring (man)</h4><ul><li>Fase 1: 1–2 grader under maks, RPE 7–8, 3 min, maks 18.</li><li>Fase 2: uke 2–3 som fase 1, maks 15. Fra uke 4: på og over maks, RPE 9–10, 3–4 min, maks 15.</li><li>Fase 3: på maks, RPE 9, 4–5 min, maks 12.</li></ul></div>
+   <div class="blk"><h4>Lørdag</h4><ul><li>Buldring: fase 1 maks 12, RPE 7–8 · fase 2 maks 10, RPE 8–9 · fase 3 konkurranseformat, RPE 9.</li><li>Tau: ledvolum RPE 6 · onsight RPE 9 · 4 × 4 RPE 7–8 · redpoint RPE 9.</li><li>Styrke B: fase 1 kroppsvekt, full fart · fase 2 vektet RPE 8 (tak) · fase 3 A og B 3 × 3, RPE 8.</li></ul></div></div>`;
+}
+function vRegler(){
+  return `<h2 style="margin-top:18px">Regler</h2>
+  <div class="card"><h3 style="margin-top:0">Fra samtalen</h3><ul><li><b>Formtopp:</b> ingen – jevn forbedring på tau og buldring.</li><li><b>Utfordringer i konkurranse:</b> styrke i skuldre og kjerne. Litt det mentale. Bevegelighet i bekken og hofter.</li><li><b>Teknikk:</b> koordinasjon og timing.</li><li><b>Styrke:</b> eksplosivitet i dramuskulatur, nevralt. Muskelkjeder.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Rygg</h3><ul><li>Ingen tunge løft med bøyd rygg. Swing: start 8–12 kg, øk maks 4 kg hver 3. uke, tak 16–20 kg denne vinteren. Rotasjon kommer fra hofta – bekken og brystkasse roterer samlet.</li>
+   <li><b>Smerte til neste dag etter styrke</b> → halv vekt på swing og enbeins markløft i to uker.</li><li><b>Stråler nedenfor kneet, nummenhet eller kraftsvikt</b> → stopp, lege samme uke.</li><li><b>Problemer med vannlating/avføring eller nummenhet i setet</b> → legevakt samme dag.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Fingre, albue og skulder</h3><ul><li>Smerte i et fingerledd: stopp lister og crimp samme økt, si fra samme dag. Over en uke, eller hovent ledd: lege.</li>
+   <li>Smerte innside albue eller i finger → ingen campus i 3 uker, åpne grep, volumvegg.</li><li>Smerte foran i skulderen ved pull-ups eller ringer → kutt campus, vektet og ringdips, dobbel utadrotasjon i to uker. Ikke bedre → fysioterapeut.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Det som ligger fast</h3><ul><li><b>Hviledager:</b> fredag og søndag. Tapt økt tas ikke igjen.</li><li><b>Sluttpunkt:</b> forsøkstaket, eller to forsøk på rad med tydelig teknikkfall.</li>
+   <li><b>Styrke:</b> aldri til svikt. Stopp settet idet farten faller.</li><li><b>Supersett:</b> aldri samme muskelgruppe.</li><li><b>Maks én ny ting per uke.</b></li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Justering</h3><ul><li><b>Oransje etter forrige økt:</b> neste økt bare mobilitet, ingen eksplosiv styrke. To oransje på rad → neste harde økt blir 3×10.</li>
+   <li><b>Etter ≥ 5 dager fri:</b> første uke på fase 1-intensitet.</li><li><b>Sykdom:</b> ingen trening ved feber eller allmennsymptomer. Start igjen etter 24 t uten feber med lavenergi-uke.</li>
+   <li><b>Lavenergi-uke</b> (prøver, reise, etter sykdom): behold tirsdag (lett) og torsdag.</li><li><b>2. påskedag (man 29. mars):</b> mandagsøkta flyttes til tirsdag ved behov, Styrke A utgår.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Fargen på dagen</h3><p><span class="dot f-gronn"></span> <b>Grønn</b> uthvilt, god kvalitet, neste økt sterkere<br><span class="dot f-gul"></span> <b>Gul</b> vedlikehold<br><span class="dot f-oransje"></span> <b>Oransje</b> trente for sliten, lav kvalitet<br><span class="dot f-rod"></span> <b>Rød</b> trenger flere hviledager<br><span class="dot f-svart"></span> <b>Svart</b> skade</p></div>`;
+}
+function vLogg(){
+  const keys=Object.keys(LOG).sort().reverse(), {y:cy,w:cw}=isoWeek(cur);
+  let grid=`<div class="grid g6"><div></div>${["Man","Tir","Ons","Tor","Lør"].map(d=>`<div class="h">${d}</div>`).join("")}`;
+  for(const {y,w} of SEASON){ const m=mondayOf(y,w); if(m>addDays(cur,7)) break;
+    grid+=`<div class="wk ${y===cy&&w===cw?"cur":""}">Uke ${w}</div>`;
+    for(const k of [0,1,2,3,5]){ const e=LOG[ymd(addDays(m,k))]; grid+=`<div class="cell ${e&&e.farge?"f-"+e.farge:""}"></div>`; } }
+  grid+="</div>";
+  return `<h2 style="margin-top:18px">Logg</h2>
+  <p class="small muted">Loggen lagres bare på denne telefonen, i denne nettleseren. Logg en økt fra <a href="#idag">I dag</a> – bla til riktig dag med pilene.</p>
+  <div class="card"><h3 style="margin-top:0">Send til trener</h3>
+   <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn pri" data-share="uke">Del denne uka</button><button class="btn" data-share="alt">Del hele sesongen</button><button class="btn sm" data-sharetext="uke">Bare tekst</button></div>
+   <p class="small muted" style="margin:6px 0 0">Sendes som bilde med grafer og tekst. Bare initialene dine står i rapporten.</p>
+   <p class="small muted" style="margin:8px 0 0" id="shareMsg"></p><textarea id="shareFallback" hidden readonly style="margin-top:8px;min-height:140px"></textarea>
+   <h3>Sikkerhetskopi</h3><p class="small muted" style="margin:0 0 8px">Ta en kopi av og til, og før du bytter telefon eller sletter nettleserdata.</p>
+   <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" data-backup="1">Last ned kopi</button><label class="btn" style="display:inline-flex;align-items:center">Hent inn kopi<input type="file" accept=".json,application/json" id="restoreFile" hidden></label></div></div>
+  ${progressCard()}${settingsCard()}
+  <div class="card"><h3 style="margin-top:0">Sesongen</h3>${grid}</div>
+  <div class="card"><h3 style="margin-top:0">Økter</h3>${keys.length?keys.map(k=>{ const e=LOG[k], d=parseYmd(k);
+    return `<div class="entry"><div class="eh"><span>${e.farge?`<span class="dot f-${e.farge}"></span> `:""}${DAY[isoWeek(d).dow]} ${fmt(d)}</span><small>uke ${isoWeek(d).w}</small></div>
+      <p>${esc(e.okt||"")}${reportDetail(e)?" · "+esc(reportDetail(e)):""}</p><p><a href="#idag" data-go="${k}" class="small">Åpne</a></p></div>`; }).join(""):'<p class="muted">Ingen økter logget ennå.</p>'}</div>`;
+}
+
+/* ============ RAPPORT OG GRAFER (felles) ============ */
+const FARGER={gronn:"#2f9e44",gul:"#e9b92f",oransje:"#ec7d10",rod:"#d62f2f",svart:"#1b1b1b"};
+const FORDER=["gronn","gul","oransje","rod","svart"];
+const INIT_KEY=KEY+"-initialer";
+function initialer(){ const v=(lsGet(INIT_KEY)||"").trim(); return v||(NAVN[0]+"."); }
+function weeksUpTo(d){ return SEASON.filter(({y,w})=>mondayOf(y,w)<=d); }
+function weekColors(y,w){ const m=mondayOf(y,w), c={}; for(let k=0;k<7;k++){ const e=LOG[ymd(addDays(m,k))]; if(e&&e.farge) c[e.farge]=(c[e.farge]||0)+1; } return c; }
+function metricPoints(){ // [{d, values{key:num}}]
+  return Object.keys(LOG).sort().map(k=>{ const e=LOG[k], v={}; let any=false;
+    METRIC.series.forEach(s=>{ if(e[s.k]!=null&&e[s.k]!==""&&!isNaN(+e[s.k])){ v[s.k]=+e[s.k]; any=true; } });
+    return any?{d:parseYmd(k),v}:null; }).filter(Boolean);
+}
+/* SVG: farger per uke */
+function svgColorBars(weeks,opts={}){
+  const W=opts.w||360,H=opts.h||150,pl=24,pb=22,pt=8,bw=(W-pl-6)/Math.max(weeks.length,1);
+  const max=Math.max(4,...weeks.map(({y,w})=>Object.values(weekColors(y,w)).reduce((a,b)=>a+b,0)));
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Fargen på dagen per uke" style="width:100%;height:auto;display:block">`;
+  for(let t=0;t<=max;t+=2){ const y=H-pb-(H-pb-pt)*t/max; s+=`<line x1="${pl}" x2="${W}" y1="${y}" y2="${y}" stroke="currentColor" stroke-opacity=".12"/><text x="${pl-6}" y="${y+4}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".6">${t}</text>`; }
+  weeks.forEach(({y,w},ix)=>{ const c=weekColors(y,w); let acc=0; const x=pl+ix*bw+bw*0.15, bwi=bw*0.7;
+    FORDER.forEach(f=>{ const n=c[f]||0; if(!n) return; const h=(H-pb-pt)*n/max, yy=H-pb-(H-pb-pt)*(acc+n)/max; s+=`<rect x="${x}" y="${yy}" width="${bwi}" height="${h}" fill="${FARGER[f]}" rx="2"/>`; acc+=n; });
+    if(weeks.length<=12||ix%2===0) s+=`<text x="${x+bwi/2}" y="${H-6}" font-size="11" text-anchor="middle" fill="currentColor" fill-opacity=".6">${w}</text>`; });
+  return s+`</svg>`;
+}
+/* SVG: målinger over tid */
+function svgMetric(points,opts={}){
+  const W=opts.w||360,H=opts.h||150,pl=26,pb=22,pt=10,pr=8;
+  if(points.length<1) return `<p class="small muted">Ingen målinger ennå.</p>`;
+  const t0=+points[0].d, t1=Math.max(+points[points.length-1].d, t0+864e5*7);
+  const vals=points.flatMap(p=>Object.values(p.v));
+  let lo=METRIC.fixed?METRIC.fixed[0]:Math.floor(Math.min(...vals)-1), hi=METRIC.fixed?METRIC.fixed[1]:Math.ceil(Math.max(...vals)+1);
+  const X=d=>pl+(W-pl-pr)*((+d-t0)/(t1-t0)), Y=v=>H-pb-(H-pb-pt)*((v-lo)/(hi-lo));
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${METRIC.title}" style="width:100%;height:auto;display:block">`;
+  const step=(hi-lo)>12?Math.ceil((hi-lo)/5):((hi-lo)>6?2:1);
+  for(let v=lo;v<=hi;v+=step){ s+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(v)}" y2="${Y(v)}" stroke="currentColor" stroke-opacity=".12"/><text x="${pl-6}" y="${Y(v)+4}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".6">${v}</text>`; }
+  if(METRIC.limit!=null) s+=`<line x1="${pl}" x2="${W-pr}" y1="${Y(METRIC.limit)}" y2="${Y(METRIC.limit)}" stroke="#d62f2f" stroke-dasharray="5 4" stroke-width="1.5"/><text x="${W-pr}" y="${Y(METRIC.limit)-4}" font-size="11" text-anchor="end" fill="#d62f2f">grense ${METRIC.limit}</text>`;
+  METRIC.series.forEach(se=>{ const pts=points.filter(p=>p.v[se.k]!=null);
+    if(pts.length>1) s+=`<path d="${pts.map((p,i)=>(i?"L":"M")+X(p.d).toFixed(1)+" "+Y(p.v[se.k]).toFixed(1)).join(" ")}" fill="none" stroke="${se.color}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    pts.forEach(p=>{ s+=`<circle cx="${X(p.d).toFixed(1)}" cy="${Y(p.v[se.k]).toFixed(1)}" r="3.5" fill="${se.color}"/>`; }); });
+  s+=`<text x="${pl}" y="${H-6}" font-size="11" fill="currentColor" fill-opacity=".6">${fmt(points[0].d)}</text><text x="${W-pr}" y="${H-6}" font-size="11" text-anchor="end" fill="currentColor" fill-opacity=".6">${fmt(new Date(t1))}</text>`;
+  return s+`</svg>`;
+}
+function legendHtml(){ return `<div class="meta">${METRIC.series.map(se=>`<span class="tag"><span class="dot" style="background:${se.color}"></span> ${se.name}</span>`).join("")}</div>`; }
+function progressCard(){
+  const weeks=weeksUpTo(cur);
+  return `<div class="card"><h3 style="margin-top:0">Utvikling</h3>
+   <h4 class="small muted" style="margin:6px 0 2px">Fargen på dagen per uke</h4>${svgColorBars(weeks)}
+   <div class="meta">${FORDER.map(f=>`<span class="tag"><span class="dot f-${f}"></span> ${FN[f]}</span>`).join("")}</div>
+   <h4 class="small muted" style="margin:14px 0 2px">${METRIC.title}</h4>${svgMetric(metricPoints())}${legendHtml()}</div>`;
+}
+function settingsCard(){
+  return `<div class="card"><h3 style="margin-top:0">Rapport til trener</h3>
+   <label class="f">Initialer i rapporten</label><input type="text" id="initInput" maxlength="6" value="${esc(initialer())}">
+   <p class="small muted" style="margin:6px 0 0">Rapporten viser bare initialene dine. Treneren sletter den etter vurdering.</p></div>`;
+}
+
+/* Bilde-rapport (canvas → PNG) */
+function reportCanvas(scope){
+  const Wd=1080, pad=56, cv=document.createElement("canvas"), ctx=cv.getContext("2d");
+  const {y:cy,w:cw}=isoWeek(cur), mon=mondayOf(cy,cw);
+  const rows=[];
+  if(scope==="uke") for(let k=0;k<7;k++){ const d=addDays(mon,k), e=LOG[ymd(d)]; const s=session(d,true); if(e||s.key!=="hvile") rows.push({d,e,s}); }
+  const weeks=weeksUpTo(cur).slice(scope==="uke"?-8:0);
+  const H=pad*2+150+(scope==="uke"?rows.length*92+40:0)+300+300+120;
+  cv.width=Wd; cv.height=H; const S=(f,c)=>{ ctx.font=f; ctx.fillStyle=c||"#1d2321"; };
+  ctx.fillStyle="#ffffff"; ctx.fillRect(0,0,Wd,H);
+  ctx.fillStyle="#0f6b5f"; ctx.fillRect(0,0,Wd,12);
+  let y=pad+30;
+  S("700 44px system-ui,sans-serif"); ctx.fillText(`Treningslogg · ${initialer()}`,pad,y);
+  y+=46; S("400 28px system-ui,sans-serif","#5f6a66");
+  ctx.fillText(scope==="uke"?`Uke ${cw} · ${fmt(mon)} – ${fmt(addDays(mon,6))}`:`Vinteren 2026/27 · til ${fmt(cur)}`,pad,y);
+  y+=50;
+  if(scope==="uke"){
+    rows.forEach(({d,e,s})=>{
+      ctx.fillStyle="#f4f3ef"; ctx.fillRect(pad,y-8,Wd-pad*2,80);
+      ctx.beginPath(); ctx.arc(pad+36,y+32,20,0,7); ctx.fillStyle=e&&e.farge?FARGER[e.farge]:"#dedbd2"; ctx.fill();
+      S("700 28px system-ui,sans-serif"); ctx.fillText(`${DAYS[isoWeek(d).dow]} ${d.getDate()}.`,pad+72,y+24);
+      S("400 26px system-ui,sans-serif"); ctx.fillText(((e&&e.okt)||s.title).slice(0,34),pad+200,y+24);
+      S("400 23px system-ui,sans-serif","#5f6a66"); ctx.fillText(e?reportDetail(e).slice(0,64):"ikke logget",pad+200,y+56);
+      y+=92; });
+    y+=20;
+  }
+  // farger per uke
+  S("700 28px system-ui,sans-serif"); ctx.fillText("Fargen på dagen per uke",pad,y); y+=20;
+  y=drawBars(ctx,weeks,pad,y,Wd-pad*2,220)+40;
+  // måling
+  S("700 28px system-ui,sans-serif"); ctx.fillText(METRIC.title,pad,y); y+=20;
+  const pts=metricPoints().filter(p=>scope!=="uke"||p.d>=addDays(mon,-49));
+  y=drawLine(ctx,pts,pad,y,Wd-pad*2,220)+50;
+  S("400 22px system-ui,sans-serif","#9a5b00");
+  ctx.fillText("Personlig treningsinformasjon. Treneren sletter rapporten etter vurdering.",pad,Math.min(y,H-pad));
+  return cv;
+}
+function drawBars(ctx,weeks,x0,y0,W,H){
+  const max=Math.max(4,...weeks.map(({y,w})=>Object.values(weekColors(y,w)).reduce((a,b)=>a+b,0))), bw=W/Math.max(weeks.length,1);
+  ctx.strokeStyle="#e6e3da"; ctx.lineWidth=1; for(let t=0;t<=max;t+=2){ const yy=y0+H-H*t/max; ctx.beginPath(); ctx.moveTo(x0,yy); ctx.lineTo(x0+W,yy); ctx.stroke(); }
+  weeks.forEach(({y,w},ix)=>{ const c=weekColors(y,w); let acc=0; const x=x0+ix*bw+bw*0.15;
+    FORDER.forEach(f=>{ const n=c[f]||0; if(!n) return; ctx.fillStyle=FARGER[f]; ctx.fillRect(x,y0+H-H*(acc+n)/max,bw*0.7,H*n/max-2); acc+=n; });
+    if(weeks.length<=14||ix%2===0){ ctx.font="400 20px system-ui,sans-serif"; ctx.fillStyle="#5f6a66"; ctx.textAlign="center"; ctx.fillText(String(w),x+bw*0.35,y0+H+26); ctx.textAlign="left"; } });
+  return y0+H+30;
+}
+function drawLine(ctx,pts,x0,y0,W,H){
+  ctx.font="400 22px system-ui,sans-serif"; ctx.fillStyle="#5f6a66";
+  if(!pts.length){ ctx.fillText("Ingen målinger i perioden.",x0,y0+40); return y0+60; }
+  const t0=+pts[0].d, t1=Math.max(+pts[pts.length-1].d,t0+864e5*7), vals=pts.flatMap(p=>Object.values(p.v));
+  const lo=METRIC.fixed?METRIC.fixed[0]:Math.floor(Math.min(...vals)-1), hi=METRIC.fixed?METRIC.fixed[1]:Math.ceil(Math.max(...vals)+1);
+  const X=d=>x0+40+(W-40)*((+d-t0)/(t1-t0)), Y=v=>y0+H-H*((v-lo)/(hi-lo));
+  ctx.strokeStyle="#e6e3da"; const step=(hi-lo)>12?Math.ceil((hi-lo)/5):((hi-lo)>6?2:1);
+  for(let v=lo;v<=hi;v+=step){ ctx.beginPath(); ctx.moveTo(x0+40,Y(v)); ctx.lineTo(x0+W,Y(v)); ctx.stroke(); ctx.fillText(String(v),x0,Y(v)+8); }
+  if(METRIC.limit!=null){ ctx.setLineDash([10,8]); ctx.strokeStyle="#d62f2f"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x0+40,Y(METRIC.limit)); ctx.lineTo(x0+W,Y(METRIC.limit)); ctx.stroke(); ctx.setLineDash([]); ctx.lineWidth=1; }
+  METRIC.series.forEach((se,si)=>{ const p=pts.filter(q=>q.v[se.k]!=null); ctx.strokeStyle=se.color; ctx.fillStyle=se.color; ctx.lineWidth=4;
+    ctx.beginPath(); p.forEach((q,i)=>{ i?ctx.lineTo(X(q.d),Y(q.v[se.k])):ctx.moveTo(X(q.d),Y(q.v[se.k])); }); ctx.stroke();
+    p.forEach(q=>{ ctx.beginPath(); ctx.arc(X(q.d),Y(q.v[se.k]),6,0,7); ctx.fill(); });
+    ctx.font="400 22px system-ui,sans-serif"; ctx.fillText("● "+se.name,x0+40+si*260,y0+H+34); });
+  ctx.lineWidth=1;
+  return y0+H+40;
+}
+async function shareReport(scope,msgEl){
+  const text=summary(scope);
+  const cv=reportCanvas(scope);
+  const blob=await new Promise(r=>cv.toBlob(r,"image/png"));
+  const name=`logg-${initialer().replace(/[^A-Za-zÆØÅæøå]/g,"")}-${scope==="uke"?"uke"+isoWeek(cur).w:"sesong"}.png`;
+  try{
+    const file=new File([blob],name,{type:"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],text,title:"Treningslogg"}); return; }
+  }catch(e){ if(e&&e.name==="AbortError") return; }
+  try{ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
+    msgEl.textContent="Bildet er lastet ned. Teksten er kopiert – legg begge ved i meldingen til trener."; }catch(e){}
+  try{ await navigator.clipboard.writeText(text); }catch(e){ const ta=document.getElementById("shareFallback"); ta.value=text; ta.hidden=false; }
+}
+document.addEventListener("change",ev=>{ if(ev.target.id==="initInput"){ lsSet(INIT_KEY,ev.target.value.trim()); } });
+
+/* ============ RUTING ============ */
+function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
+function render(){
+  const t=route();
+  document.getElementById("tabs").innerHTML=tabsHtml(t);
+  const v=({idag:vIdag,uka:vUka,mob:vMob,konk:vKonk,plan:vPlan,regler:vRegler,rpe:vRpe,teknikk:vTeknikk,logg:vLogg}[t]||VIEWS[t])();
+  const focus=document.activeElement;
+  if(t==="idag"&&focus&&focus.closest&&focus.closest("#logform")&&focus.tagName!=="BUTTON") return;
+  document.getElementById("view").innerHTML=v;
+  const on=document.querySelector("nav.tabs a.on"); if(on&&on.scrollIntoView) on.scrollIntoView({block:"nearest",inline:"nearest"});
+}
+window.addEventListener("hashchange",()=>{ render(); window.scrollTo(0,0); });
+document.addEventListener("click",async ev=>{
+  const el=ev.target.closest("button,a"); if(!el) return;
+  if(el.dataset.nav){ selDate=addDays(selDate,+el.dataset.nav); render(); return; }
+  if(el.dataset.today){ ev.preventDefault(); selDate=new Date(cur); render(); return; }
+  if(el.dataset.wk){ weekRef=addDays(weekRef,+el.dataset.wk); render(); return; }
+  if(el.dataset.wkreset){ weekRef=new Date(cur); render(); return; }
+  if(el.dataset.week){ ev.preventDefault(); weekRef=parseYmd(el.dataset.week); if(location.hash!=="#uka") location.hash="#uka"; else render(); return; }
+  if(el.dataset.go){ ev.preventDefault(); selDate=parseYmd(el.dataset.go); if(location.hash!=="#idag") location.hash="#idag"; else { render(); window.scrollTo(0,0);} return; }
+  if(el.dataset.farge){ draft.farge=el.dataset.farge; document.querySelectorAll(".colors button").forEach(b=>b.classList.toggle("on",b===el)); return; }
+  if(el.id==="fSave"){
+    const msg=document.getElementById("fMsg");
+    if(!draft.farge){ msg.textContent="Velg fargen på dagen."; return; }
+    const s=session(selDate,true);
+    const entry={dato:ymd(selDate),uke:s.i.w,okt:s.title,farge:draft.farge,rygg:document.getElementById("fRygg").checked,
+      kommentar:(document.getElementById("fKom").value||"").trim(),lagret:new Date().toISOString()};
+    const kb=document.getElementById("tKneb"), fo=document.getElementById("tFot");
+    if(kb) entry.knebHael=kb.checked; if(fo&&fo.value!=="") entry.fot=+fo.value;
+    document.querySelectorAll("#logform [data-field]").forEach(x=>{ if(x.value.trim()!==""){ entry[x.dataset.field]=x.value.trim(); entry[x.dataset.field+"Navn"]=x.dataset.label; } });
+    el.disabled=true; msg.textContent="Lagrer …";
+    const r=await saveEntry(ymd(selDate),entry);
+    document.activeElement&&document.activeElement.blur&&document.activeElement.blur();
+    render(); const m2=document.getElementById("fMsg"); if(m2) m2.textContent=r; return;
+  }
+  if(el.dataset.anchor){ ev.preventDefault(); const go=()=>{ const t=document.getElementById(el.dataset.anchor); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); };
+    const tab=el.getAttribute("href")||"#idag"; if(location.hash!==tab){ location.hash=tab; setTimeout(go,150); } else go(); return; }
+  if(el.dataset.share){ const m=document.getElementById("shareMsg"); m.textContent="Lager rapport …"; shareReport(el.dataset.share,m).then(()=>{ if(m.textContent==="Lager rapport …") m.textContent=""; }); return; }
+  if(el.dataset.sharetext){ shareText(summary(el.dataset.sharetext),document.getElementById("shareMsg")); return; }
+  if(el.dataset.backup){ downloadBackup(); return; }
+  if(el.id==="fDel"){ await deleteEntry(ymd(selDate)); render(); return; }
+});
+document.addEventListener("change",ev=>{ if(ev.target.id==="restoreFile"&&ev.target.files[0]) restoreBackup(ev.target.files[0],document.getElementById("shareMsg")); });
+initDb();
+render();
+
+/* ============ OPPDATERING ============ */
+const APP_VERSION="2026-11-05-123550";
+function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
+async function checkUpdate(){
+  if(APP_VERSION.startsWith("__")) return;
+  try{ const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"}); if(!r.ok) return;
+    const j=await r.json(); const v=j&&j[KEY]; if(!v||!v.versjon||v.versjon===APP_VERSION) return;
+    document.getElementById("updTxt").textContent="Ny versjon av planen."+(v.melding?" "+v.melding:"");
+    document.getElementById("upd").hidden=false; }catch(e){}
+}
+document.getElementById("ver").textContent=verLabel(APP_VERSION);
+document.getElementById("updBtn").addEventListener("click",()=>location.reload());
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") checkUpdate(); });
+setInterval(checkUpdate,30*60*1000);
+checkUpdate();
+
+</script>
+
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}</script>
+</body></html>

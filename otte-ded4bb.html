@@ -703,52 +703,6 @@ function vLogg(){
 
 const METRIC={title:"Kne (0–10)",fixed:[0,10],limit:2,series:[{k:"kUnder",name:"under økta",color:"#0f6b5f"},{k:"kMorgen",name:"neste morgen",color:"#ec7d10"}]};
 function reportDetail(e){ const t=[]; for(const f of ["antall","rdl","poeng","topper"]) if(has(e[f])) t.push(`${e[f+"Navn"]||f} ${e[f]}`); if(has(e.kUnder)||has(e.kMorgen)) t.push(`kne ${has(e.kUnder)?e.kUnder:"–"}/${has(e.kMorgen)?e.kMorgen:"–"}`); if(e.hevelse) t.push("hevelse"); if(e.laas) t.push("låsning/svikt"); if(e.kommentar) t.push(e.kommentar); return t.join(" · "); }
-/* ============ RUTING ============ */
-function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
-function render(){
-  const t=route();
-  document.getElementById("tabs").innerHTML=tabsHtml(t);
-  const v=({idag:vIdag,uka:vUka,konk:vKonk,plan:vPlan,regler:vRegler,rpe:vRpe,teknikk:vTeknikk,logg:vLogg}[t]||VIEWS[t])();
-  const focus=document.activeElement;
-  if(t==="idag"&&focus&&focus.closest&&focus.closest("#logform")&&focus.tagName!=="BUTTON") return;
-  document.getElementById("view").innerHTML=v;
-  const on=document.querySelector("nav.tabs a.on"); if(on&&on.scrollIntoView) on.scrollIntoView({block:"nearest",inline:"nearest"});
-}
-window.addEventListener("hashchange",()=>{ render(); window.scrollTo(0,0); });
-document.addEventListener("click",async ev=>{
-  const el=ev.target.closest("button,a"); if(!el) return;
-  if(el.dataset.nav){ selDate=addDays(selDate,+el.dataset.nav); render(); return; }
-  if(el.dataset.today){ ev.preventDefault(); selDate=new Date(cur); render(); return; }
-  if(el.dataset.wk){ weekRef=addDays(weekRef,+el.dataset.wk); render(); return; }
-  if(el.dataset.wkreset){ weekRef=new Date(cur); render(); return; }
-  if(el.dataset.week){ ev.preventDefault(); weekRef=parseYmd(el.dataset.week); if(location.hash!=="#uka") location.hash="#uka"; else render(); return; }
-  if(el.dataset.go){ ev.preventDefault(); selDate=parseYmd(el.dataset.go); if(location.hash!=="#idag") location.hash="#idag"; else { render(); window.scrollTo(0,0);} return; }
-  if(el.dataset.farge){ draft.farge=el.dataset.farge; document.querySelectorAll(".colors button").forEach(b=>b.classList.toggle("on",b===el)); return; }
-  if(el.id==="fSave"){
-    const msg=document.getElementById("fMsg");
-    if(!draft.farge){ msg.textContent="Velg fargen på dagen."; return; }
-    const s=session(selDate,true);
-    const num=id=>{ const x=document.getElementById(id); return x&&x.value!==""?Math.max(0,Math.min(10,+x.value)):null; };
-    const entry={dato:ymd(selDate),uke:s.i.w,okt:s.title,farge:draft.farge,kUnder:num("kUnder"),kMorgen:num("kMorgen"),
-      hevelse:document.getElementById("kHev").checked,laas:document.getElementById("kLaas").checked,
-      kommentar:(document.getElementById("fKom").value||"").trim(),lagret:new Date().toISOString()};
-    document.querySelectorAll("#logform [data-field]").forEach(x=>{ if(x.value.trim()!==""){ entry[x.dataset.field]=x.value.trim(); entry[x.dataset.field+"Navn"]=x.dataset.label; } });
-    el.disabled=true; msg.textContent="Lagrer …";
-    const r=await saveEntry(ymd(selDate),entry);
-    document.activeElement&&document.activeElement.blur&&document.activeElement.blur();
-    render(); const m2=document.getElementById("fMsg"); if(m2) m2.textContent=r; return;
-  }
-  if(el.dataset.anchor){ ev.preventDefault(); const go=()=>{ const t=document.getElementById(el.dataset.anchor); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); };
-    const tab=el.getAttribute("href")||"#idag"; if(location.hash!==tab){ location.hash=tab; setTimeout(go,150); } else go(); return; }
-  if(el.dataset.share){ const m=document.getElementById("shareMsg"); m.textContent="Lager rapport …"; shareReport(el.dataset.share,m).then(()=>{ if(m.textContent==="Lager rapport …") m.textContent=""; }); return; }
-  if(el.dataset.sharetext){ shareText(summary(el.dataset.sharetext),document.getElementById("shareMsg")); return; }
-  if(el.dataset.backup){ downloadBackup(); return; }
-  if(el.id==="fDel"){ await deleteEntry(ymd(selDate)); render(); return; }
-});
-document.addEventListener("change",ev=>{ if(ev.target.id==="restoreFile"&&ev.target.files[0]) restoreBackup(ev.target.files[0],document.getElementById("shareMsg")); });
-initDb();
-render();
-
 /* ============ RAPPORT OG GRAFER (felles) ============ */
 const FARGER={gronn:"#2f9e44",gul:"#e9b92f",oransje:"#ec7d10",rod:"#d62f2f",svart:"#1b1b1b"};
 const FORDER=["gronn","gul","oransje","rod","svart"];
@@ -880,8 +834,54 @@ async function shareReport(scope,msgEl){
 }
 document.addEventListener("change",ev=>{ if(ev.target.id==="initInput"){ lsSet(INIT_KEY,ev.target.value.trim()); } });
 
+/* ============ RUTING ============ */
+function route(){ const t=(location.hash||"#idag").slice(1); return TABS.some(x=>x[0]===t)?t:"idag"; }
+function render(){
+  const t=route();
+  document.getElementById("tabs").innerHTML=tabsHtml(t);
+  const v=({idag:vIdag,uka:vUka,konk:vKonk,plan:vPlan,regler:vRegler,rpe:vRpe,teknikk:vTeknikk,logg:vLogg}[t]||VIEWS[t])();
+  const focus=document.activeElement;
+  if(t==="idag"&&focus&&focus.closest&&focus.closest("#logform")&&focus.tagName!=="BUTTON") return;
+  document.getElementById("view").innerHTML=v;
+  const on=document.querySelector("nav.tabs a.on"); if(on&&on.scrollIntoView) on.scrollIntoView({block:"nearest",inline:"nearest"});
+}
+window.addEventListener("hashchange",()=>{ render(); window.scrollTo(0,0); });
+document.addEventListener("click",async ev=>{
+  const el=ev.target.closest("button,a"); if(!el) return;
+  if(el.dataset.nav){ selDate=addDays(selDate,+el.dataset.nav); render(); return; }
+  if(el.dataset.today){ ev.preventDefault(); selDate=new Date(cur); render(); return; }
+  if(el.dataset.wk){ weekRef=addDays(weekRef,+el.dataset.wk); render(); return; }
+  if(el.dataset.wkreset){ weekRef=new Date(cur); render(); return; }
+  if(el.dataset.week){ ev.preventDefault(); weekRef=parseYmd(el.dataset.week); if(location.hash!=="#uka") location.hash="#uka"; else render(); return; }
+  if(el.dataset.go){ ev.preventDefault(); selDate=parseYmd(el.dataset.go); if(location.hash!=="#idag") location.hash="#idag"; else { render(); window.scrollTo(0,0);} return; }
+  if(el.dataset.farge){ draft.farge=el.dataset.farge; document.querySelectorAll(".colors button").forEach(b=>b.classList.toggle("on",b===el)); return; }
+  if(el.id==="fSave"){
+    const msg=document.getElementById("fMsg");
+    if(!draft.farge){ msg.textContent="Velg fargen på dagen."; return; }
+    const s=session(selDate,true);
+    const num=id=>{ const x=document.getElementById(id); return x&&x.value!==""?Math.max(0,Math.min(10,+x.value)):null; };
+    const entry={dato:ymd(selDate),uke:s.i.w,okt:s.title,farge:draft.farge,kUnder:num("kUnder"),kMorgen:num("kMorgen"),
+      hevelse:document.getElementById("kHev").checked,laas:document.getElementById("kLaas").checked,
+      kommentar:(document.getElementById("fKom").value||"").trim(),lagret:new Date().toISOString()};
+    document.querySelectorAll("#logform [data-field]").forEach(x=>{ if(x.value.trim()!==""){ entry[x.dataset.field]=x.value.trim(); entry[x.dataset.field+"Navn"]=x.dataset.label; } });
+    el.disabled=true; msg.textContent="Lagrer …";
+    const r=await saveEntry(ymd(selDate),entry);
+    document.activeElement&&document.activeElement.blur&&document.activeElement.blur();
+    render(); const m2=document.getElementById("fMsg"); if(m2) m2.textContent=r; return;
+  }
+  if(el.dataset.anchor){ ev.preventDefault(); const go=()=>{ const t=document.getElementById(el.dataset.anchor); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); };
+    const tab=el.getAttribute("href")||"#idag"; if(location.hash!==tab){ location.hash=tab; setTimeout(go,150); } else go(); return; }
+  if(el.dataset.share){ const m=document.getElementById("shareMsg"); m.textContent="Lager rapport …"; shareReport(el.dataset.share,m).then(()=>{ if(m.textContent==="Lager rapport …") m.textContent=""; }); return; }
+  if(el.dataset.sharetext){ shareText(summary(el.dataset.sharetext),document.getElementById("shareMsg")); return; }
+  if(el.dataset.backup){ downloadBackup(); return; }
+  if(el.id==="fDel"){ await deleteEntry(ymd(selDate)); render(); return; }
+});
+document.addEventListener("change",ev=>{ if(ev.target.id==="restoreFile"&&ev.target.files[0]) restoreBackup(ev.target.files[0],document.getElementById("shareMsg")); });
+initDb();
+render();
+
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-120602";
+const APP_VERSION="2026-11-05-123550";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
