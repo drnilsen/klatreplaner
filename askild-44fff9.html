@@ -633,6 +633,7 @@ function vRegler(){
 
 function vRpe(){
   const i=info(cur), col={1:1,2:2,3:3}[lvl(i)]||1;
+  const STY_={"1–2": "Oppvarmingssett, langt fra slitsomt.", "3–4": "Lette oppvarmingssett.", "5–6": "4 eller flere reps igjen.", "6–7": "3–4 reps igjen.", "7": "3 reps igjen.", "7–8": "2–3 reps igjen.", "8": "2 reps igjen.", "8–9": "Brukes ikke – styrke stopper på RPE 8.", "9": "1 rep igjen – brukes ikke.", "9–10": "Brukes ikke.", "10": "Svikt – brukes ikke."};
   const R=[["1–2","Ingen flytt krever noe.","Kan snakke hele setninger. Ingen pump.","Oppvarming, nedtrapping"],
    ["3–4","Lette buldre, flytende.","Rolig pust, lett varme i underarmene.","3×10, teknikkdriller"],
    ["5–6","Middels buldre, går på første–andre forsøk.","Merkbar pump som går tilbake i pausen.","Oppvarmingspyramide, ledvolum"],
@@ -650,7 +651,7 @@ function vRpe(){
   return `<h2 style="margin-top:18px">RPE og intensitet</h2>
   <p class="small muted">RPE = hvor hardt det kjennes, 1–10. Nå: uke ${i.w} · ${i.label}.</p>
   <div class="card"><h3 style="margin-top:0">RPE-skala</h3>${R.map(r=>`<div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">${r[0]}</div><div>
-     <div class="small"><b>Buldring, styrke:</b> ${r[1]}</div><div class="small"><b>Linked, tau:</b> ${r[2]}</div><p class="small">Brukes i: ${r[3]}</p></div></div>`).join("")}</div>
+     <div class="small"><b>Buldring:</b> ${r[1]}</div><div class="small"><b>Styrke:</b> ${STY_[r[0]]}</div><div class="small"><b>Linked, tau:</b> ${r[2]}</div><p class="small">Brukes i: ${r[3]}</p></div></div>`).join("")}</div>
   <div class="card"><h3 style="margin-top:0">Intensitet per økt og fase</h3>${I.map(r=>`<div class="blk"><h4>${r[0]}</h4><ul>${[1,2,3].map(k=>`<li${k===col?' style="font-weight:600"':""}><span class="muted">${ph[k-1]}:</span> ${r[k]}</li>`).join("")}</ul></div>`).join("")}
    <p class="small muted" style="margin-bottom:0">Uthevet: fasen du er i nå.</p></div>`;
 }
@@ -924,7 +925,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-164239";
+const APP_VERSION="2026-11-05-200032";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
