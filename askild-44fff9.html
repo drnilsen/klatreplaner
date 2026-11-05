@@ -269,7 +269,7 @@ function session(date,noTheme){
     s.count={label:"Runder 3×10",max:r};
     s.blocks=[
       B("3×10",[`Ingen egen oppvarming – første runde er oppvarmingen.`,`<span class="key">${r} runder × 10 min</span> sammenhengende lett klatring, 4+ grader under onsight, RPE 3–4, 5 min pause.`,
-        "På autobelay.","Runde 1 overdrevet teknikk · runde 2 normalt · runde 3 så lett og stille som mulig."],"40 min"),
+        "Runde 1 overdrevet teknikk · runde 2 normalt · runde 3 så lett og stille som mulig."],"40 min"),
       B("Styrke A",[st.none?st.none:`<a href="#styrke">Styrke A</a> – <span class="key">${st.txt}</span>.`,
         "Stopp i et sett ved RPE-målet eller når teknikken endres."],"35 min")];
     s.notes.push(["acc","Onsdagen ble oransje → ett sett ned i styrke i dag."]);
@@ -332,7 +332,7 @@ function themeCat(s){
   if(s.key==="tor") return "tre";
   return "gen";
 }
-// 3×10 på autobelay: bare temaer som passer sammenhengende lett klatring
+// 3×10: bare temaer som passer sammenhengende lett klatring
 const TEMA_TRE=[["Stille føtter","Ingen lyd fra føttene og ingen justering etter plassering – alle tre rundene."],
  ["Hofta inn","Runde 1 hofta inn på hvert flytt, runde 2 normalt, runde 3 bare der det sparer kraft."],
  ["Rette armer","Albuene strake mellom hvert flytt – flytt med bein og hofte."],
@@ -550,7 +550,7 @@ function vOns(){ return `<h2 style="margin-top:18px">Onsdag</h2>${curPhaseLabel(
   ${phaseCard("NM-uka (uke 8)",D(2027,8,3))}${phaseCard("Rutedag på led · uke 9–20",D(2027,9,3))}`; }
 function vTor(){ return `<h2 style="margin-top:18px">Torsdag · 3×10 + Styrke A</h2>${curPhaseLabel()}
   ${phaseCard("Vanlig torsdag",D(2026,46,4))}${phaseCard("NM-uka (uke 8)",D(2027,8,4))}
-  <div class="card small">3×10 er regenerering på autobelay. Aldri hardt. Konkurranseuker og lette uker: 2 runder.</div>`; }
+  <div class="card small">3×10 er regenerering. Aldri hardt. Konkurranseuker og lette uker: 2 runder.</div>`; }
 function vLor(){ return `<h2 style="margin-top:18px">Lørdag</h2>${curPhaseLabel()}
   <p class="small">Oddetallsuker: buldring i jam-format · partallsuker: tau, alt på led.</p>
   ${phaseCard("Oddetallsuker · jam-format",D(2026,45,6))}${phaseCard("Partall uke 46–50 og 2 · ledvolum",D(2026,50,6))}
@@ -913,7 +913,7 @@ async function shareReport(scope,msgEl){
 document.addEventListener("change",ev=>{ if(ev.target.id==="initInput"){ lsSet(INIT_KEY,ev.target.value.trim()); } });
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-120517";
+const APP_VERSION="2026-11-05-120602";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

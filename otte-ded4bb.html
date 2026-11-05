@@ -316,12 +316,12 @@ function session(date,noTheme){
   case 4: {
     s.key="tor";
     if(cf){ s.title="3×10 + aktivering"; s.time="ca. 40 min";
-      s.blocks=[B("3×10",["2 runder × 10 min lett klatring på autobelay, RPE 3–4."],"25 min"),B("Aktivering",["3–4 middels buldre på første forsøk, RPE 5–6."],"10 min"),B("Ingen spenst eller styrke",["Siste 5 dager før konkurranse."])];
+      s.blocks=[B("3×10",["2 runder × 10 min lett klatring, RPE 3–4."],"25 min"),B("Aktivering",["3–4 middels buldre på første forsøk, RPE 5–6."],"10 min"),B("Ingen spenst eller styrke",["Siste 5 dager før konkurranse."])];
       break; }
     if(i.phase==="led"){ s.title="3×10 + skulder"; s.time="ca. 1 t 10"; }
     else { s.title="Spenst + 3×10 + skulder"; s.time="ca. 1 t 40"; s.spenst=true; }
     s.blocks=s.spenst?[B("Oppvarming",["Puls og mobilitet, ingen klatring – før spensten."],"10 min")]:[];
-    s.tre=B("3×10",["Ingen egen oppvarming – første runde er oppvarmingen.",`${i.light?2:3} runder × 10 min sammenhengende lett klatring på autobelay, 4+ grader under onsight, RPE 3–4, 5 min pause.`,
+    s.tre=B("3×10",["Ingen egen oppvarming – første runde er oppvarmingen.",`${i.light?2:3} runder × 10 min sammenhengende lett klatring, 4+ grader under onsight, RPE 3–4, 5 min pause.`,
       "Runde 1 overdrevet teknikk · runde 2 normalt · runde 3 så lett og stille som mulig."],"40 min");
     s.skulder=true; s.fields=[["antall","Spenst (kontakter)"]];
     break; }
@@ -672,7 +672,7 @@ function vTeknikk(){
    <li><b>Finale:</b> 2 min observasjon, 4 min klatring. Hver tredje gang.</li>
    <li><b>Registrer:</b> topp, sone, forsøk og poeng (topp 25, sone 10, −0,1 per mislykket forsøk).</li></ul></div>
   <div class="card small">Unngå samme type tak hele økta: ikke bare lister, bare board eller bare slopere.</div>
-  <h3>Teknikkbank · hoftekontroll</h3><p class="small muted">Ett tema per økt i oppvarmingen (buldring) og i 3×10 (ruter på autobelay). Temaet roterer og står under <a href="#idag">I dag</a>.</p>
+  <h3>Teknikkbank · hoftekontroll</h3><p class="small muted">Ett tema per økt i oppvarmingen (buldring) og i 3×10 (ruter). Temaet roterer og står under <a href="#idag">I dag</a>.</p>
   ${TEKNIKK.map(t=>`<div class="card" id="tema-${t.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${t.n}</h3>
    <p style="margin:0 0 6px"><b>Mål:</b> ${t.mal}</p>
    <div class="blk"><h4>Øvelse</h4><ul>${t.drill.map(x=>`<li>${x}</li>`).join("")}</ul></div>
@@ -881,7 +881,7 @@ async function shareReport(scope,msgEl){
 document.addEventListener("change",ev=>{ if(ev.target.id==="initInput"){ lsSet(INIT_KEY,ev.target.value.trim()); } });
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-112415";
+const APP_VERSION="2026-11-05-120602";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
