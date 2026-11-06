@@ -474,7 +474,7 @@ function nowOr(dow,fb){ const i=info(cur); return ["før","etter","jul"].include
 const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring – mengde</h2>${curLabel()}${refCard("Fase 1 og uke 2",D(2026,46,1))}${refCard("Fra uke 3",D(2027,3,1))}${refCard("Konkurranseuke",D(2027,5,1))}`,
  tir:()=>`<h2 style="margin-top:18px">Tirsdag · Styrke A + skulderprogram</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,46,2)))}`,
- ons:()=>`<h2 style="margin-top:18px">Onsdag · Linked boulders</h2>${curLabel()}${refCard("Fase 1 og uke 2",D(2026,46,3))}${refCard("Fra uke 3",D(2027,3,3))}<div class="card small"><b>Linked, sett × 4:</b> 3 · lette uker 2 · uke 15: 2 · uke 8 og 16: 1 · konkurranseuker: ingen · uke 20: rutedag på led.</div>`,
+ ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · fase 1 (uke 45–51, 1–2)",D(2026,46,3))}${refCard("Linked boulders · fase 2 (uke 3–18)",D(2027,3,3))}${refCard("Rutedag på led · uke 20",D(2027,20,3))}`,
  tor:()=>`<h2 style="margin-top:18px">Torsdag · 3×10 + Styrke B</h2>${curLabel()}${refCard("Denne uka",nowOr(4,D(2026,46,4)))}`,
  lor:()=>`<h2 style="margin-top:18px">Lørdag · Board og prosjekter</h2>${curLabel()}${refCard("Fase 1",D(2026,46,6))}${refCard("Fra uke 3",D(2027,3,6))}${refCard("Topping",D(2027,8,6))}`,
 };
@@ -872,7 +872,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-225915";
+const APP_VERSION="2026-11-06-074028";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

@@ -417,7 +417,7 @@ function curLabel(){ const i=info(cur); return `<p class="small muted">Nå: uke 
 function refCard(title,date){ const s=session(date,true); return `<div class="card"><h3 style="margin-top:0">${title}</h3>${s.blocks.map(blkHtml).join("")}${s.extra||""}</div>`; }
 const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Buldring + teknikk</h2>${curLabel()}${refCard("Fase 1 og uke 2",D(2026,46,1))}${refCard("Fra uke 3",D(2027,3,1))}${refCard("Konkurranseuke",D(2027,5,1))}`,
- ons:()=>`<h2 style="margin-top:18px">Onsdag · Linked boulders</h2>${curLabel()}${refCard("Fase 1 til uke 3",D(2026,46,3))}${refCard("Fra uke 4",D(2027,4,3))}`,
+ ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · fase 1 (til uke 3)",D(2026,46,3))}${refCard("Linked boulders · fase 2 (fra uke 4)",D(2027,4,3))}`,
  fre:()=>`<h2 style="margin-top:18px">Fredag · Board + teknikk – valgfri</h2>${curLabel()}${refCard("Board",D(2026,46,5))}`,
  lor:()=>`<h2 style="margin-top:18px">Lørdag · Nye buldre + styrke</h2>${curLabel()}${refCard("Vanlig lørdag",D(2026,46,6))}`,
 };
@@ -799,7 +799,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-05-225915";
+const APP_VERSION="2026-11-06-074028";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
