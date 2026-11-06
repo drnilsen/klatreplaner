@@ -243,7 +243,7 @@ function beinHtml(i){
   return `<div class="blk"><h4>Styrke A · bein og kjerne<span class="dur">ca. 40 min</span></h4><ul>
    <li>Oppvarming 12 min (felles): 5 min sykkel/hopptau · 90/90-hofterotasjon 8 per side · dyp knebøy-hold 3 × 20 s · strikk pull-aparts 2 × 15 · 2 lette sett RDL.</li>
    <li>${strF2(i)?"RPE 8 (2 reps igjen), pause 90 s–3 min":"RPE 7 (3 reps igjen), pause 60 s–3 min"}. Samme sett, reps og pauser som Otte, egne vekter.</li>
-   <li>Mens Otte gjør goblet squat (B): skulderoppvarming 6 min – strikk pull-aparts 2 × 15 · utadrotasjon med strikk 2 × 12 · scapula push-ups 2 × 10 · 1 lett sett ringroing.</li></ul></div>
+   <li>Mens Otte gjør goblet squat (B): 5 min strikk før skulderprogrammet.</li></ul></div>
    <div class="exlist">${BEIN.map(e=>{const x=e.slice(); x[4]=beinReps(i,e); return exRow(x,beinSett(i,e));}).join("")}</div>`;
 }
 function kjerneHtml(i){
@@ -753,8 +753,8 @@ function warmTpl(root){
         const first=!blks.slice(0,idx).some(b=>!/^oppvarming/i.test(((b.querySelector("h4")||{}).textContent||"").trim()));
         const strength=/^(Styrke|Spenst|Topping|Test)/i.test(next)||/^Oppvarming · (Styrke|Test)/i.test(name);
         let items, dur;
-        if(strength&&first){ items=["5 min puls.","5 min strikk.","5 min mobilitet.","1–2 lette sett av første øvelse."]; dur="15 min"; }
-        else if(strength){ items=["5 min strikk.","1–2 lette sett av første øvelse."]; dur="10 min"; }
+        if(strength&&first){ items=["5 min puls.","5 min strikk.","5 min mobilitet."]; dur="15 min"; }
+        else if(strength){ items=["5 min strikk."]; dur="5 min"; }
         else if(!first){ items=["10 min lett klatring, buldre eller autobelay."]; dur="10 min"; }
         else { items=["5 min puls.","5 min strikk.","10 min lett klatring, buldre eller autobelay.","5 min mobilitet."]; dur="25 min"; }
         const ul=bl.querySelector("ul")||(()=>{const u=document.createElement("ul"); bl.appendChild(u); return u;})();
@@ -907,7 +907,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-083348";
+const APP_VERSION="2026-11-06-083811";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
