@@ -172,8 +172,8 @@ function isoWeek(d){
 function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; return addDays(jan4,(w-1)*7-(dow-1)); }
 const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
 const COMP={9:{navn:"NM senior",sted:"Kristiansand",dager:"lør 6.–søn 7. mars"},17:{navn:"Europe Series",sted:"Göteborg",dager:"lør 1.–søn 2. mai"},19:{navn:"Europe Series",sted:"Wien",dager:"lør 15.–søn 16. mai"}};
-const NYTT={45:"Fase 1 starter",46:"Nordic hamstring",47:"Kassehopp",48:"Lett uke",49:"RDL 4 × 5–6",50:"Lengdehopp",
-  1:"Lett oppstart",2:"Re-entry på fase 1-nivå",3:"Klatring på fase 2-nivå",4:"Styrke på fase 2-nivå",6:"Ettbeins landing",7:"Topping",8:"Topping",
+const NYTT={45:"Fase 1 starter",46:"Nordic hamstring",47:"Kassehopp",48:"Lett uke",50:"Lengdehopp",
+  1:"Lett oppstart",2:"Re-entry på fase 1-nivå",3:"Klatring på fase 2-nivå",4:"Styrke: færre sett, tyngre",6:"Ettbeins landing",7:"Topping",8:"Topping",
   10:"Lett uke",11:"Kvart rotasjon",15:"Topping",16:"Topping",18:"Fase 2-nivå, eller lavenergi-uke ved eksamen",20:"Led starter"};
 
 function info(date){
@@ -205,8 +205,8 @@ const STYRKE_A=[
  ["D2","Nordic hamstring, assistert","Knærne på matte, ankler holdt fast. Senk overkroppen fram så sakte du klarer, ta imot med hendene, skyv tilbake.","nordic"],
  ["D3","Tåhev + tibialisheving (ett bein)","Tåhev på kant, full bane, 2 s nede. Så hæl på gulv, løft tærne.","calf_tib"]];
 function styrkeA(i){ // returns rows [ex, sets, reps, pause]
-  const rdlReps=(i.y===2026&&i.w<=48)?"6–8":"5–6";
-  const rows=[[0,4,rdlReps,i.S===2?"3 min":"2–3 min"],[1,2,"10 /side",""],[2,3,"8","90 s"],[3,3,"8–10 /bein",""],[4,3,"8–12","90 s"],
+  const f2=i.S===2;
+  const rows=[[0,f2?3:4,f2?"5–6":"6–8",f2?"3 min":"2–3 min"],[1,2,"10 /side",""],[2,f2?2:3,f2?"6":"8","90 s"],[3,f2?2:3,f2?"6–8 /bein":"8–10 /bein",""],[4,3,"8–12","90 s"],
     [5,3,"20–30 s /side",""],[6,2,"4–6",""],[7,2,"12–15 /side","60 s"]];
   const out=rows.filter(r=>!(r[0]===6&&i.y===2026&&i.w<46));
   if(i.light) out.forEach(r=>r[1]=half(r[1]));
@@ -475,7 +475,7 @@ function strAHtml(i){
   const led=i.phase==="led";
   return `<div class="blk"><h4>Hoveddel<span class="dur">ca. 45 min</span></h4><p class="small" style="margin:0 0 4px">${rpeLink(rpe)} · 2–3 s senkefase · supersett A1/A2 osv.${led?" · uke 20: 2 sett":""} · aldri til svikt.</p></div>
    <div class="exlist">${rows.map(([ix,sets,reps,pause])=>{ const e=STYRKE_A[ix]; return exRow(e[0],e[1],e[2],led?Math.min(2,sets):sets,reps,pause,e[3],ix===6&&i.y===2026&&i.w===46?"Ny denne uka":""); }).join("")}</div>
-   <div class="blk"><ul><li><b>Stopp i et sett:</b> ved RPE-målet, eller når teknikken endres.</li><li><b>RDL-progresjon:</b> alle 4 sett på øvre rep-tall ved mål-RPE → +2,5–5 kg neste økt.</li>
+   <div class="blk"><ul><li><b>Stopp i et sett:</b> ved RPE-målet, eller når teknikken endres.</li><li><b>RDL-progresjon:</b> alle sett på øvre rep-tall ved mål-RPE → +2,5–5 kg neste økt.</li>
    <li><b>Øvrige bein:</b> først dybde, så reps, så vekt. Aldri to av dem samme uke.</li></ul></div>`;
 }
 function spenstHtml(i){
@@ -556,11 +556,11 @@ function curLabel(){ const i=info(cur); return `<p class="small muted">Nå: uke 
 function refCard(title,date){ const s=session(date,true); return `<div class="card"><h3 style="margin-top:0">${title}</h3>${notesHtml(s.notes.filter(n=>n[0]==="stop"))}${s.blocks.map(blkHtml).join("")}${s.strA?strAHtml(s.i):""}${s.spenst?spenstHtml(s.i):""}${s.tre?blkHtml(s.tre):""}${s.skulder?skulderHtml(s.i):""}</div>`; }
 function nowOr(dow,fallback){ const i=info(cur); return ["før","etter","jul"].includes(i.phase)?fallback:addDays(mondayOf(i.y,i.w),dow-1); }
 const VIEWS={
- man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,1))}${refCard("Fase 2 og etter NM",D(2027,4,1))}${refCard("Topping",D(2027,7,1))}${refCard("Konkurranseuke",D(2027,9,1))}`,
- tir:()=>`<h2 style="margin-top:18px">Tirsdag · Styrke A</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,49,2)))}${refCard("Topping",D(2027,7,2))}`,
+ man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,1))}${refCard("Fase 2 (uke 3–6, 10–14, 18, 20)",D(2027,4,1))}${refCard("Topping (uke 7–8, 15–16)",D(2027,7,1))}${refCard("Konkurranseuke (uke 9, 17, 19)",D(2027,9,1))}`,
+ tir:()=>`<h2 style="margin-top:18px">Tirsdag · Styrke A</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,49,2)))}${refCard("Topping (uke 7–8, 15–16)",D(2027,7,2))}`,
  ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · fase 1 (uke 45–51, 1–2)",D(2026,47,3))}${refCard("Linked boulders · fase 2 (uke 3–18)",D(2027,4,3))}${refCard("Rutedag på led · uke 20",D(2027,20,3))}`,
  tor:()=>`<h2 style="margin-top:18px">Torsdag · Spenst + 3×10 + skulder</h2>${curLabel()}${refCard("Denne uka",nowOr(4,D(2026,47,4)))}`,
- lor:()=>`<h2 style="margin-top:18px">Lørdag · Hard buldring – konkurranseformat</h2>${curLabel()}${refCard("Fase 1",D(2026,46,6))}${refCard("Fase 2 og etter NM",D(2027,4,6))}${refCard("Topping",D(2027,8,6))}`,
+ lor:()=>`<h2 style="margin-top:18px">Lørdag · Hard buldring – konkurranseformat</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,6))}${refCard("Fase 2 (uke 3–6, 10–14, 18)",D(2027,4,6))}${refCard("Topping (uke 7–8, 15–16)",D(2027,8,6))}`,
 };
 function vKonk(){
   return `<h2 style="margin-top:18px">Konkurranse</h2>
@@ -990,7 +990,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-075819";
+const APP_VERSION="2026-11-06-080541";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

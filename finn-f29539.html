@@ -196,9 +196,9 @@ function weekIndex(i){ return SEASON.findIndex(x=>x.y===i.y&&x.w===i.w); }
 
 /* ============ STYRKE ============ */
 const BEIN=[
- ["A1","Rumensk markløft (stang, løftestropper)","Stang langs lårene, lett bøy i knærne, hofta bakover til strekk bak på låret, rett rygg. 2–3 s ned.",4,"8–12","","rdl"],
+ ["A1","Rumensk markløft (stang, løftestropper)","Stang langs lårene, lett bøy i knærne, hofta bakover til strekk bak på låret, rett rygg. 2–3 s ned.",4,"6–8","","rdl"],
  ["A2","Pallof press (kabel)","Siden mot kabelen, press rett fram, hold 2 s uten rotasjon.",2,"10 /side","2–3 min","pallof"],
- ["C1","Bulgarsk utfall (vektvest eller manualer med stropper)","Bakre fot på benk, full dybde, kontrollert. Kneet over foten.",3,"8–12 /bein","","bulgarian"],
+ ["C1","Bulgarsk utfall (vektvest eller manualer med stropper)","Bakre fot på benk, full dybde, kontrollert. Kneet over foten.",3,"8–10 /bein","","bulgarian"],
  ["C2","Beinhev i stativ (albuestøtte)","Underarmene på putene, ryggen mot puten. Bein til vannrett, rolig ned uten sving.",3,"8–12","90 s","leg_raise"]];
 const SKULDER=[
  ["A1","Ringdips","Ringer vendt ut i topp, senk til overarmen er vannrett, press opp. Strikk under knærne hvis < 8 reps.",3,"8–12","","ring_dip"],
@@ -227,23 +227,24 @@ function rpeStr(i){ return i.phase==="f1"||(i.y===2027&&i.w<=3)?"RPE 7–8, paus
 function skulderSett(i,code){
   if(i.phase==="jul"||i.comp) return 2;
   if(i.y===2027&&(i.w===8||i.w===16)) return 2;
-  let n=3; if(i.y===2027&&i.w>=11&&i.w!==15&&/^[AB]/.test(code)) n=4;
-  return i.light?Math.ceil(n/2):n;
+  return i.light?2:3;
 }
-function beinSett(i,e){ if(i.comp||i.phase==="jul") return 0; let n=e[3]; if(i.top) n=Math.min(n,2); return i.light?Math.ceil(n/2):n; }
+function strF2(i){ return !(i.phase==="f1"||(i.y===2027&&i.w<=3)); }
+function beinSett(i,e){ if(i.comp||i.phase==="jul") return 0; let n=e[3]; if(strF2(i)&&(e[0]==="A1"||e[0]==="C1")) n-=1; if(i.top) n=Math.min(n,2); return i.light?Math.ceil(n/2):n; }
+function beinReps(i,e){ if(!strF2(i)) return e[4]; return e[0]==="A1"?"5–6":e[0]==="C1"?"6–8 /bein":e[4]; }
 function skulderHtml(i){
   const comp=i.comp||i.phase==="jul";
   return `<div class="blk"><h4>Skulderprogram på ringer<span class="dur">${comp?"25 min":"ca. 45 min"}</span></h4><ul>
-   <li>${comp?"2 sett, RPE 7.":`${rpeStr(i)}. Supersett A1/A2 osv. Ingen fingerbelastning.`}</li>
+   <li>${comp?"2 sett, RPE 7.":"RPE 7–8, pause 60–90 s. Likt hele sesongen. Supersett A1/A2 osv. Ingen fingerbelastning."}</li>
    <li>Toppen av rep-området på alle sett → tyngre (vinkel, vekt i belte, vanskeligere variant), ikke flere reps.</li></ul></div>
    <div class="exlist">${SKULDER.map(e=>exRow(e,skulderSett(i,e[0]))).join("")}</div>`;
 }
 function beinHtml(i){
   return `<div class="blk"><h4>Styrke A · bein og kjerne<span class="dur">ca. 40 min</span></h4><ul>
    <li>Oppvarming 12 min (felles): 5 min sykkel/hopptau · 90/90-hofterotasjon 8 per side · dyp knebøy-hold 3 × 20 s · strikk pull-aparts 2 × 15 · 2 lette sett RDL.</li>
-   <li>${rpeStr(i)}. Samme sett og pauser som Otte, egne vekter og reps.</li>
+   <li>${strF2(i)?"RPE 8 (2 reps igjen), pause 90 s–3 min":"RPE 7 (3 reps igjen), pause 60 s–3 min"}. Samme sett, reps og pauser som Otte, egne vekter.</li>
    <li>Mens Otte gjør goblet squat (B): skulderoppvarming 6 min – strikk pull-aparts 2 × 15 · utadrotasjon med strikk 2 × 12 · scapula push-ups 2 × 10 · 1 lett sett ringroing.</li></ul></div>
-   <div class="exlist">${BEIN.map(e=>exRow(e,beinSett(i,e))).join("")}</div>`;
+   <div class="exlist">${BEIN.map(e=>{const x=e.slice(); x[4]=beinReps(i,e); return exRow(x,beinSett(i,e));}).join("")}</div>`;
 }
 function kjerneHtml(i){
   const n=i.top?2:i.light?2:3;
@@ -473,11 +474,11 @@ function curLabel(){ const i=info(cur); return `<p class="small muted">Nå: uke 
 function refCard(title,date){ const s=session(date,true); return `<div class="card"><h3 style="margin-top:0">${title}</h3>${s.blocks.map(blkHtml).join("")}${s.extra||""}</div>`; }
 function nowOr(dow,fb){ const i=info(cur); return ["før","etter","jul"].includes(i.phase)?fb:addDays(mondayOf(i.y,i.w),dow-1); }
 const VIEWS={
- man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring – mengde</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,1))}${refCard("Fase 2 (uke 3–18)",D(2027,3,1))}${refCard("Konkurranseuke",D(2027,5,1))}`,
+ man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring – mengde</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,1))}${refCard("Fase 2 (uke 3–18)",D(2027,3,1))}${refCard("Konkurranseuke (uke 5, 7, 9, 17, 19)",D(2027,5,1))}`,
  tir:()=>`<h2 style="margin-top:18px">Tirsdag · Styrke A + skulderprogram</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,46,2)))}`,
  ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · fase 1 (uke 45–51, 1–2)",D(2026,46,3))}${refCard("Linked boulders · fase 2 (uke 3–18)",D(2027,3,3))}${refCard("Rutedag på led · uke 20",D(2027,20,3))}`,
  tor:()=>`<h2 style="margin-top:18px">Torsdag · 3×10 + Styrke B</h2>${curLabel()}${refCard("Denne uka",nowOr(4,D(2026,46,4)))}`,
- lor:()=>`<h2 style="margin-top:18px">Lørdag · Board og prosjekter</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,6))}${refCard("Fase 2 (uke 3–18)",D(2027,3,6))}${refCard("Topping",D(2027,8,6))}`,
+ lor:()=>`<h2 style="margin-top:18px">Lørdag · Board og prosjekter</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,6))}${refCard("Fase 2 (uke 3–18)",D(2027,3,6))}${refCard("Topping (uke 7–8, 15–16)",D(2027,8,6))}`,
 };
 function vStyrke(){
   const i=info(cur), ref=["før","etter","jul"].includes(i.phase)?info(D(2026,46,1)):i;
@@ -873,7 +874,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-075819";
+const APP_VERSION="2026-11-06-080541";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
