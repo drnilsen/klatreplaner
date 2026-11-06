@@ -265,7 +265,7 @@ function session(date,noTheme){
     s.key="fre"; s.title="Board + teknikk – valgfri"; s.time="ca. 1 t 30";
     s.notes.push(["acc","Sliten → dropp økta, uten å ta den igjen."]);
     s.blocks=[B("Oppvarming",[OPPV,"Avslutt med noen lette boardproblemer."],"25 min"),
-      B("Board",[i.mb===1?"Problemer du har lyst til å prøve, 40°, RPE 7.":"Problemer du har lyst til å prøve, 40°, RPE 7–8.",`<span class="key">${i.mb===1?4:3} problemer, maks 3 forsøk på hvert.</span>`,`Går problemene på 1–2 forsøk: ta ett problem til (maks ${i.mb===1?5:4}).`,"God pause mellom forsøkene.","Ingen full crimp."],"30 min"),
+      B("Board",[i.mb===1?"Problemer du har lyst til å prøve, 40°, RPE 7.":"Problemer du har lyst til å prøve, 40°, RPE 7–8.",`<span class="key">${i.mb===1?4:3} problemer, maks 3 forsøk på hvert.</span>`,`Går problemene på 1–2 forsøk: ta ett problem til (maks ${i.mb===1?5:4}).`,"Ingen full crimp."],"30 min"),
       B("Lette buldre med teknikktema",[...(noTheme?[]:[tLink(t)]),"Lette buldre på vanlig vegg, RPE 3–4. Hvert buldre med ukas teknikktema.","Ingen harde forsøk i denne delen."],"30 min"),
       B("Nedtrapping",["Store tak."],"5 min")];
     s.fields=[["antBuldre","Problemer"]];
@@ -628,7 +628,7 @@ const RPE_DEF=[
  [/OPPVARMING/i,"__OPPV__"],
  [/^NEDTRAPPING/i,"RPE 1–2."],
  [/PILATES/i,"RPE 4–5."],
- [/MOBILITET|^PAUSE/i,"RPE 2–3."],
+ [/MOBILITET/i,"RPE 2–3."],
  [/FALLTRENING/i,"RPE 3–4."],
  [/AKTIVERING/i,"RPE 5–6."],
  [/^KONKURRANSE$/i,"Full innsats."],
@@ -799,7 +799,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-081038";
+const APP_VERSION="2026-11-06-082321";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
