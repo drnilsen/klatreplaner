@@ -173,7 +173,7 @@ function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; 
 
 const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
 const COMP={5:{navn:"NC buldring",sted:"Kristiansund",dato:"lør 6. feb",vol:60},7:{navn:"NC2 buldring",sted:"",dato:"lør 20. feb",vol:60},8:{navn:"NM junior",sted:"Trondheim",dato:"lør 27. feb",vol:40}};
-const NYTT={45:"Oppstart · kalketelling",48:"Lett uke",49:"Slynge 3 sett",51:"Kalketelling: halvert?",1:"Lett uke",2:"Linked fase 2",3:"Buldring på/over maks",4:"Hardere board, Kilter 40–45°",
+const NYTT={45:"Oppstart · kalketelling",48:"Lett uke",49:"Slynge 3 sett",51:"Kalketelling: halvert?",1:"Lett uke",3:"Fase 2: buldring på/over maks, linked og board",
   6:"Ingen nye ting",9:"Lett uke etter NM",10:"Hard led onsdag",11:"Første 4 × 4 (2 runder)",12:"Påske, lett uke",16:"Lett uke",18:"Lett uke"};
 function info(date){
   const {y,w,dow}=isoWeek(date);
@@ -183,7 +183,7 @@ function info(date){
   if(y===2026&&w<=51){ i.phase="f1"; i.label="Fase 1 · Kapasitet"; i.light=w===48; }
   else if(y===2026){ i.phase="jul"; i.label="Jul"; }
   else if(w===1){ i.phase="f1"; i.label="Jul · lett uke"; i.light=true; }
-  else if(w<=6){ i.phase="f2"; i.label="Fase 2 · Intensitet"; i.M=w>=3?2:1; }
+  else if(w<=6){ i.phase=w===2?"f1":"f2"; i.label=w===2?"Fase 1 · Kapasitet":"Fase 2 · Intensitet"; i.M=w>=3?2:1; }
   else if(w===7){ i.phase="f2"; i.label="Topping"; i.M=2; }
   else if(w===8){ i.phase="nm"; i.label="NM junior"; i.M=2; }
   else { i.phase="led"; i.label=w===9?"Led-fase · lett uke":"Led-fase"; i.M=3; i.light=(w===9||w===12||w===16||w===18); }
@@ -304,7 +304,7 @@ function session(date,noTheme){
           :B("Redpoint",["Én prosjektrute 1–2 grader over onsight.","Første forsøk med hvile i tauet ved behov – finn beta og klippestillinger. Deretter maks 3 forsøk, 15 min pause.","Lås sekvensene i hvilene."],"67–75 min"),
         B("Sluttpunkt",["To fall på rad under eget onsight-nivå, eller antall forsøk nådd."]),B("Nedtrapping",["Lett klatring."],"10 min")];
       s.fields=[["antall","Ruter / forsøk"]]; break; }
-    const f2=i.y===2027&&w>=2, sets=(i.light||(f2&&w===6))?2:3;
+    const f2=i.y===2027&&w>=3, sets=(i.light||(f2&&w===6))?2:3;
     s.title="Linked boulders"; s.time=lbTot(sets,40);
     s.blocks=[B("Oppvarming",["Kortversjon av mandag."],"25 min"),B("Linked boulders",[...lbItems(sets,f2?2:1),"Volumvegg, slopere og pinch – ikke bare lister."],lbDur(sets)),
       B("Nedtrapping",["Lett klatring."],"15 min")];
@@ -338,7 +338,7 @@ function session(date,noTheme){
       s.fields=[["antall","Runder"]]; break; }
     let mx, txt;
     if(i.phase==="led"){ mx=8; txt=i.light?"3–4 problemer 1–2 grader under maks, 40°, RPE 7–8, 5 min pause.":"4–5 problemer nær maks, Kilter 40–45° / Tension 40°, RPE 8–9, 5 min pause."; }
-    else if(i.y===2027&&w>=4){ mx=(w===6?8:12); txt=w===6?"4–5 problemer nær maks, 40°, RPE 8–9, 5 min pause.":"4–5 problemer nær maks, Kilter 40–45° / Tension 40°, RPE 8–9, 5 min pause."; }
+    else if(i.y===2027&&w>=3){ mx=(w===6?8:12); txt=w===6?"4–5 problemer nær maks, 40°, RPE 8–9, 5 min pause.":"4–5 problemer nær maks, Kilter 40–45° / Tension 40°, RPE 8–9, 5 min pause."; }
     else { mx=18; txt=i.light?"3–4 problemer 2–3 grader under maks, Kilter 40°, RPE 6, 4 min pause.":"6–7 problemer 2 grader under maks, Kilter 40°, RPE 7, 4 min pause."; }
     if(i.light) mx=half(mx);
     s.title="Hard buldring på board"; s.time=i.light?"ca. 1 t 30":"ca. 2 t";
@@ -490,9 +490,9 @@ const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,1))}${refCard("Fase 2 (uke 3–7)",D(2027,3,1))}${refCard("Led-fase (uke 9–20)",D(2027,10,1))}`,
  tir:()=>`<h2 style="margin-top:18px">Tirsdag · Sva og teknikk + Styrke A</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,49,2)))}
    <div class="card small"><b>Slynge, sett:</b> 2 sett uke 45–48 · 3 sett fra uke 49 og uke 2–4 · 2 sett uke 6 · ingen styrke uke 5, 7, 8 · uke 9: 1 sett · led-fase: 2 sett (lette uker 1).</div>`,
- ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · fase 1 (uke 45–51, 1)",D(2026,46,3))}${refCard("Linked boulders · fase 2 (uke 2–7)",D(2027,3,3))}${refCard("Hard led · onsight (partallsuker)",D(2027,10,3))}${refCard("Hard led · redpoint (oddetallsuker)",D(2027,11,3))}`,
+ ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · fase 1 (uke 45–51, 1–2)",D(2026,46,3))}${refCard("Linked boulders · fase 2 (uke 3–7)",D(2027,3,3))}${refCard("Hard led · onsight (partallsuker)",D(2027,10,3))}${refCard("Hard led · redpoint (oddetallsuker)",D(2027,11,3))}`,
  tor:()=>`<h2 style="margin-top:18px">Torsdag · Lett led – ukas regenerering</h2>${curLabel()}${refCard("Denne uka",nowOr(4,D(2026,46,4)))}`,
- lor:()=>`<h2 style="margin-top:18px">Lørdag</h2>${curLabel()}<div class="card small">Uke 45–8: board. Led-fase: tau i oddetallsuker, board i partallsuker. Maks 2 t 15.</div>${refCard("Board · fase 1 (uke 45–51, 1–3)",D(2026,46,6))}${refCard("Board · fase 2 (uke 4–7)",D(2027,4,6))}${refCard("Tau · 4 × 4 (uke 9, 11, 13)",D(2027,11,6))}${refCard("Tau · 2 × 4 (uke 15, 17, 19)",D(2027,15,6))}`,
+ lor:()=>`<h2 style="margin-top:18px">Lørdag</h2>${curLabel()}<div class="card small">Uke 45–8: board. Led-fase: tau i oddetallsuker, board i partallsuker. Maks 2 t 15.</div>${refCard("Board · fase 1 (uke 45–51, 1–2)",D(2026,46,6))}${refCard("Board · fase 2 (uke 3–7)",D(2027,4,6))}${refCard("Tau · 4 × 4 (uke 9, 11, 13)",D(2027,11,6))}${refCard("Tau · 2 × 4 (uke 15, 17, 19)",D(2027,15,6))}`,
 };
 function vHodet(){
   const T=[[1,"Lesing med beslutning","Buldring: lesing i observasjonstida, 20–30 s ny lesing før første forsøk. Tau: 6 min. Pek ut hvert flytt. Velg beta for det vanskeligste flyttet. Alternativ B brukes først etter et fall. Hard led: hvilestedene og ett kalkested før hver nøkkelsekvens velges i lesingen."],
@@ -887,7 +887,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-080541";
+const APP_VERSION="2026-11-06-081038";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

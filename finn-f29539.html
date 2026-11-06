@@ -174,7 +174,7 @@ function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; 
 const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
 const COMP={5:{navn:"NC buldring",sted:"Kristiansund",dato:"lør 6. feb"},7:{navn:"NC2 buldring",sted:"",dato:"lør 20. feb"},9:{navn:"NM senior",sted:"Kristiansand",dato:"lør 6.–søn 7. mars"},
   17:{navn:"Europe Series",sted:"Göteborg",dato:"lør 1.–søn 2. mai"},19:{navn:"Europe Series",sted:"Wien",dato:"lør 15.–søn 16. mai"}};
-const NYTT={46:"",48:"Lett uke",2:"Fase 2 · november-nivå",3:"Hardere buldring, linked og board",4:"Styrke RPE 8",6:"Belastningsuke",8:"Topping",10:"Lett uke",11:"Skulder 4 sett på A og B",15:"Topping",16:"Topping",18:"Fase 2-nivå",20:"Tau starter"};
+const NYTT={46:"",48:"Lett uke",2:"Fase 1-nivå etter jul",3:"Fase 2: hardere klatring, færre sett styrke",6:"Belastningsuke",8:"Topping",10:"Lett uke",11:"Skulder 4 sett på A og B",15:"Topping",16:"Topping",18:"Fase 2-nivå",20:"Tau starter"};
 function info(date){
   const {y,w,dow}=isoWeek(date);
   const i={date,y,w,dow,light:false,phase:"utenfor",label:"Utenfor planen",M:1,comp:null,top:false};
@@ -183,7 +183,7 @@ function info(date){
   if(y===2026&&w<=51){ i.phase="f1"; i.label="Fase 1 · Mengde"; i.light=w===48; }
   else if(y===2026){ i.phase="jul"; i.label="Jul"; }
   else if(w===1){ i.phase="f1"; i.label="Jul · lett uke"; i.light=true; }
-  else if(w<=6){ i.phase="f2"; i.label="Fase 2 · Hardere"; i.M=w>=3?2:1; }
+  else if(w<=6){ i.phase="f2"; i.label=w===2?"Fase 1 · Mengde":"Fase 2 · Hardere"; i.M=w>=3?2:1; }
   else if(w<=8){ i.phase="f2"; i.label=w===7?"NC2 og topping":"Topping"; i.M=2; i.top=true; }
   else if(w===9){ i.phase="f2"; i.label="NM-uka"; i.M=2; }
   else if(w===20){ i.phase="tau"; i.label="Tau starter"; i.M=2; }
@@ -223,13 +223,13 @@ function exRow(e,sets,rpe){
   return `<div class="ex"><div class="fig" role="img" aria-label="${e[1]}">${FIG[e[6]]||""}</div><div>
    <div class="exh"><span><span class="code">${e[0]}</span>${e[1]}${vid(e[1])}</span><span class="sets">${s} × ${e[4]}</span></div><p>${e[2]}${e[5]?` · Pause ${e[5]}`:""}</p></div></div>`;
 }
-function rpeStr(i){ return i.phase==="f1"||(i.y===2027&&i.w<=3)?"RPE 7–8, pause 60–90 s":"RPE 8, pause 90 s"; }
+function rpeStr(i){ return i.phase==="f1"||(i.y===2027&&i.w<=2)?"RPE 7–8, pause 60–90 s":"RPE 8, pause 90 s"; }
 function skulderSett(i,code){
   if(i.phase==="jul"||i.comp) return 2;
   if(i.y===2027&&(i.w===8||i.w===16)) return 2;
   return i.light?2:3;
 }
-function strF2(i){ return !(i.phase==="f1"||(i.y===2027&&i.w<=3)); }
+function strF2(i){ return !(i.phase==="f1"||(i.y===2027&&i.w<=2)); }
 function beinSett(i,e){ if(i.comp||i.phase==="jul") return 0; let n=e[3]; if(strF2(i)&&(e[0]==="A1"||e[0]==="C1")) n-=1; if(i.top) n=Math.min(n,2); return i.light?Math.ceil(n/2):n; }
 function beinReps(i,e){ if(!strF2(i)) return e[4]; return e[0]==="A1"?"5–6":e[0]==="C1"?"6–8 /bein":e[4]; }
 function skulderHtml(i){
@@ -874,7 +874,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-080541";
+const APP_VERSION="2026-11-06-081038";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

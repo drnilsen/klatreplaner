@@ -173,7 +173,7 @@ function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; 
 const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
 const COMP={9:{navn:"NM senior",sted:"Kristiansand",dager:"lør 6.–søn 7. mars"},17:{navn:"Europe Series",sted:"Göteborg",dager:"lør 1.–søn 2. mai"},19:{navn:"Europe Series",sted:"Wien",dager:"lør 15.–søn 16. mai"}};
 const NYTT={45:"Fase 1 starter",46:"Nordic hamstring",47:"Kassehopp",48:"Lett uke",50:"Lengdehopp",
-  1:"Lett oppstart",2:"Re-entry på fase 1-nivå",3:"Klatring på fase 2-nivå",4:"Styrke: færre sett, tyngre",6:"Ettbeins landing",7:"Topping",8:"Topping",
+  1:"Lett oppstart",2:"Re-entry på fase 1-nivå",3:"Fase 2: hardere klatring, færre sett styrke",6:"Ettbeins landing",7:"Topping",8:"Topping",
   10:"Lett uke",11:"Kvart rotasjon",15:"Topping",16:"Topping",18:"Fase 2-nivå, eller lavenergi-uke ved eksamen",20:"Led starter"};
 
 function info(date){
@@ -184,7 +184,7 @@ function info(date){
   if(y===2026&&w<=51){ i.phase="f1"; i.label="Fase 1 · Kapasitet"; i.light=w===48; }
   else if(y===2026){ i.phase="jul"; i.label="Jul"; }
   else if(w===1){ i.phase="f1"; i.label="Jul · lett oppstart"; i.start=true; i.light=true; }
-  else if(w<=6){ i.phase="f2"; i.label="Fase 2 · Intensitet"; i.L=w>=3?2:1; i.S=w>=4?2:1; }
+  else if(w<=6){ i.phase="f2"; i.label=w===2?"Fase 1 · Kapasitet":"Fase 2 · Intensitet"; i.L=w>=3?2:1; i.S=w>=3?2:1; }
   else if(w===7||w===8||w===15||w===16){ i.phase="top"; i.top=(w===7||w===15)?1:2; i.label="Topping"; i.L=2; i.S=2; }
   else if(COMP[w]){ i.phase="comp"; i.comp=COMP[w]; i.label=`${COMP[w].navn} · ${COMP[w].sted}`; i.L=2; i.S=2; }
   else if(w===20){ i.phase="led"; i.label="Led starter"; i.L=2; i.S=2; }
@@ -990,7 +990,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-080541";
+const APP_VERSION="2026-11-06-081038";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

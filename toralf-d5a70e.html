@@ -173,7 +173,7 @@ function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; 
 
 const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
 const COMP={5:{navn:"NC buldring",sted:"Kristiansund",dato:"lør 6. feb",mx:12},7:{navn:"NC2 buldring",sted:"",dato:"lør 20. feb",mx:12},8:{navn:"NM junior",sted:"Trondheim",dato:"lør 27. feb",mx:8}};
-const NYTT={48:"Lett uke",1:"Lett uke",2:"Fase 1-nivå",3:"Vanskeligere buldre mandag",4:"Linked boulders: 2 sett, ca. 12 flytt på flash-graden",6:"Styrke 3 sett",9:"Lett uke",12:"Påske, lett uke",16:"Lett uke"};
+const NYTT={48:"Lett uke",1:"Lett uke",2:"Fase 1-nivå",3:"Fase 2: vanskeligere buldre, linked 2 sett på flash-graden",6:"Styrke 3 sett",9:"Lett uke",12:"Påske, lett uke",16:"Lett uke"};
 function info(date){
   const {y,w,dow}=isoWeek(date);
   const i={date,y,w,dow,light:false,phase:"utenfor",label:"Utenfor planen",comp:null,mb:1,lk:1,st:2};
@@ -183,8 +183,8 @@ function info(date){
   if(y===2026&&w<=51){ i.label="Fase 1 · Grunnlag"; i.light=w===48; }
   else if(y===2026){ i.phase="jul"; i.label="Jul"; }
   else if(w===1){ i.label="Jul · lett uke"; i.light=true; }
-  else { i.mb=w>=3?2:1; i.lk=w>=4?2:1; i.st=w>=6?3:2;
-    if(w<=6) i.label="Fase 2 · Intensitet"; else if(w===7) i.label="Topping"; else if(w===8) i.label="NM-uka"; else { i.label="Fase 3"; i.light=[9,12,16].includes(w); } }
+  else { i.mb=w>=3?2:1; i.lk=w>=3?2:1; i.st=w>=6?3:2;
+    if(w===2) i.label="Fase 1 · Grunnlag"; else if(w<=6) i.label="Fase 2 · Intensitet"; else if(w===7) i.label="Topping"; else if(w===8) i.label="NM-uka"; else { i.label="Fase 3"; i.light=[9,12,16].includes(w); } }
   if(y===2027&&COMP[w]) i.comp=COMP[w];
   return i;
 }
@@ -417,7 +417,7 @@ function curLabel(){ const i=info(cur); return `<p class="small muted">Nå: uke 
 function refCard(title,date){ const s=session(date,true); return `<div class="card"><h3 style="margin-top:0">${title}</h3>${s.blocks.map(blkHtml).join("")}${s.extra||""}</div>`; }
 const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Buldring + teknikk</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,1))}${refCard("Fase 2 og 3 (uke 3–20)",D(2027,3,1))}${refCard("Konkurranseuke (uke 5, 7, 8)",D(2027,5,1))}`,
- ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · fase 1 (uke 45–51, 1–3)",D(2026,46,3))}${refCard("Linked boulders · fase 2 og 3 (uke 4–20)",D(2027,4,3))}`,
+ ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · fase 1 (uke 45–51, 1–2)",D(2026,46,3))}${refCard("Linked boulders · fase 2 og 3 (uke 3–20)",D(2027,4,3))}`,
  fre:()=>`<h2 style="margin-top:18px">Fredag · Board + teknikk – valgfri</h2>${curLabel()}${refCard("Board",D(2026,46,5))}`,
  lor:()=>`<h2 style="margin-top:18px">Lørdag · Nye buldre + styrke</h2>${curLabel()}${refCard("Vanlig lørdag",D(2026,46,6))}`,
 };
@@ -799,7 +799,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-080541";
+const APP_VERSION="2026-11-06-081038";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
