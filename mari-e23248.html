@@ -283,7 +283,7 @@ function session(date,noTheme){
     else if(i.M===2){ mx=15; hov="4–6 buldre på og over maks, RPE 9–10, 3–4 min pause."; }
     else { mx=12; hov="4–5 buldre på maks, RPE 9, 4–5 min pause."; }
     if(i.phase==="nm") mx=8; else if(i.comp||i.light) mx=halfDown(mx);
-    if(i.phase==="nm") hov="Hard buldring, RPE 8–9. Siste harde økt.";
+    if(i.phase==="nm") hov="4 buldre, maks 2 forsøk per buldre, RPE 8–9, 4 min pause. Siste harde økt.";
     s.count=mx;
     s.blocks=[warm(true),B("Hoveddel",[hov,`<span class="key">Maks ${mx} forsøk.</span>`,"Skrudde buldre, board og spraywall – fordel som du vil.","Gjerne noen buldre med timing og koordinasjon.","Stopp: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"65–70 min"),
       B("Nedtrapping",["Lett klatring."],"10 min")];
@@ -325,7 +325,7 @@ function session(date,noTheme){
     if(i.odd){
       s.title="Styrke B + buldring";
       let items, dur="50 min";
-      if(i.phase==="f1"){ const mx=i.light?7:14; items=[`6–7 koordinasjonsbuldre (dynamiske flytt, paddle, deadpoint) 2 grader under maks, RPE 7, <span class="key">maks ${mx} forsøk</span>, 3–4 min pause.`]; s.max=mx; }
+      if(i.phase==="f1"){ const mx=i.light?7:14; items=[`6–7 koordinasjonsbuldre 2 grader under maks, RPE 7, maks 3 forsøk per buldre, 3–4 min pause.`]; s.max=mx; }
       else if(i.phase==="f2"){ const mx=i.light?5:10; items=[`4–5 harde buldre, RPE 8–9, <span class="key">maks ${mx} forsøk</span>, 5 min pause.`]; s.max=mx; }
       else { items=["<a href='#teknikk' data-anchor='format'>Konkurranseformat</a>, veksle kvalik og finale. RPE 9."]; dur="40–60 min"; }
       items.push("Et flytt tregere eller mer statisk enn forrige forsøk: ferdig med det buldret.");
@@ -801,6 +801,36 @@ function simplify(root){
   }catch(e){}
 }
 
+
+/* ============ ANTALL BULDRE + MAKS FORSØK PER BULDRE ============ */
+function perBoulder(root){
+  try{
+    root.querySelectorAll(".card > .blk").forEach(bl=>{
+      const h=bl.querySelector("h4"); const name=h?(h.childNodes[0].textContent||"").trim():"";
+      if(/^(oppvarming|linked|3×10|nedtrapping|sva|lett|teknikk|ukas drill|mobilitet|styrke|fingerstyrke|test|spenst|pilates|aktivering|konkurranse$)/i.test(name)) return;
+      const ul=bl.querySelector(":scope > ul"); if(!ul) return;
+      const lis=[...ul.children];
+      lis.forEach(li=>{
+        const t=li.textContent.trim();
+        if(/^Maks \d+ forsøk( totalt)?\.?$/i.test(t)){ li.remove(); return; }
+        let html=li.innerHTML;
+        html=html.replace(/,? ?<span class="key">maks \d+ (forsøk )?totalt<\/span>/gi,"").replace(/,? ?<span class="key">maks \d+ forsøk( totalt)?<\/span>/gi,"").replace(/, maks \d+ forsøk( totalt)?(?! per| på| hver)/gi,"").replace(/, maks \d+ totalt\./gi,".").replace(/ maks \d+ forsøk \(\d+ buldre × maks \d+\)/,"");
+        if(html!==li.innerHTML) li.innerHTML=html.replace(/,\s*\./g,".").replace(/\s+\./g,".");
+      });
+      const all=ul.textContent;
+      const cntLi=[...ul.children].find(li=>/\d+(–\d+)? (nye |harde |koordinasjons)?(buldre|problemer)/.test(li.textContent));
+      if(!cntLi) return;
+      const rpe=(all.match(/RPE (\d+)/)||[])[1]; if(rpe&&+rpe<6) return;
+      if(!/per buldre|per problem|på hvert|på hver|maks \d+ forsøk hver/.test(all)){
+        const hard=/nær maks|på maks|over maks|RPE (8|9)/.test(cntLi.textContent);
+        cntLi.innerHTML=cntLi.innerHTML.replace(/(\d+(–\d+)? (nye |harde |koordinasjons)?(buldre|problemer)[^,.]*)/,`$1, maks ${hard?4:3} forsøk per ${/problemer/.test(cntLi.textContent)?"problem":"buldre"}`);
+      }
+      if(!/Går (de fleste|buldrene|problemene|de) på/.test(all)&&!/konkurranse/i.test(all)&&!/Ingen ekstra buldre|maks 2 forsøk/.test(all))
+        ul.insertAdjacentHTML("beforeend",`<li>Går de fleste på første forsøk: ta 1–2 ${/problemer/.test(cntLi.textContent)?"problemer":"buldre"} til, så lenge tida rekker.</li>`);
+    });
+  }catch(e){}
+}
+
 /* ============ FELLES OPPVARMINGSMAL ============ */
 function warmTpl(root){
   try{
@@ -836,7 +866,7 @@ function normDay(root){
   try{
     if(!root) return;
     simplify(root);
-    if(!["","#idag"].includes(location.hash)){ warmTpl(root); return; }
+    if(!["","#idag"].includes(location.hash)){ perBoulder(root); warmTpl(root); return; }
     const card=[...root.querySelectorAll(".card")].find(c=>c.querySelector(":scope > h2")); if(!card) return;
     const title=card.querySelector(":scope > h2").textContent.trim();
     // 1. Merknader rett under Tid/tagger
@@ -890,6 +920,7 @@ function normDay(root){
       const lis=[...ul.children]; if(!lis.length||/RPE/.test(lis[0].textContent)) return;
       const r=lis.find(x=>/RPE/.test(x.textContent)); if(r) ul.insertBefore(r,lis[0]);
     });
+    perBoulder(root);
     simplify(root);
     warmTpl(root);
   }catch(e){}
@@ -974,7 +1005,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-090155";
+const APP_VERSION="2026-11-06-090657";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

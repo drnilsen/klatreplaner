@@ -339,14 +339,15 @@ function session(date,noTheme){
     if(i.phase==="led"){ s.title="Enkel ledøkt"; s.time="ca. 1 t 30";
       s.blocks=[B("Oppvarming",["Lett buldring, 2 lette ruter på led."],"20 min"),B("Ruter",["8–10 ruter 3–4 grader under onsight, RPE 5–6."],"60 min"),B("Nedtrapping",["Lett klatring."],"10 min")];
       s.fields=[["antall","Ruter"]]; break; }
-    let T=i.L===1?30:22; if(i.phase==="top") T=i.top===1?14:10; if(i.light) T=half(T);
-    const a=Math.round(T*0.4), b=Math.floor((T-a)/2), c3=T-a-b, R=i.L===1?"RPE 7, 2 grader under maks.":"RPE 8–9, nær maks.";
+    let n=i.L===1?[4,3,3]:[3,2,2]; if(i.phase==="top") n=i.top===1?[2,2,1]:[2,1,1]; else if(i.light) n=i.L===1?[2,2,1]:[2,1,1];
+    const R=i.L===1?"2 grader under maks, RPE 7, 3 min pause":"nær maks, RPE 8–9, 4 min pause";
     s.title="Hard buldring – skrudde buldre, board, spraywall"; s.time=i.phase==="top"?"ca. 1 t 30":"ca. 2 t 15";
     const d=i.phase==="top"?["25 min","20 min","20 min"]:["40 min","30 min","30 min"];
+    const X="Går de fleste på første forsøk: ta 1–2 til, så lenge tida rekker.";
     s.blocks=[B("Oppvarming",[""],"25 min"),
-      B("Del 1 · skrudde buldre",[R,`<span class="key">Maks ${a} forsøk.</span>`],d[0]),
-      B("Del 2 · board",[R,`<span class="key">Maks ${b} forsøk.</span>`],d[1]),
-      B("Del 3 · spraywall",[R,`<span class="key">Maks ${c3} forsøk.</span>`],d[2])];
+      B("Del 1 · skrudde buldre",[`<span class="key">${n[0]} buldre, maks 3 forsøk per buldre</span>, ${R}.`,X],d[0]),
+      B("Del 2 · board",[`<span class="key">${n[1]} problemer, maks 3 forsøk per problem</span>, ${R}.`,X],d[1]),
+      B("Del 3 · spraywall",[`<span class="key">${n[2]} buldre, maks 3 forsøk per buldre</span>, ${R}.`,X],d[2])];
     s.blocks.push(B("Nedtrapping",["Lett klatring."],"15 min"));
     s.fields=[["antall","Forsøk"],["topper","Topper"]];
     break; }
@@ -882,6 +883,36 @@ function simplify(root){
   }catch(e){}
 }
 
+
+/* ============ ANTALL BULDRE + MAKS FORSØK PER BULDRE ============ */
+function perBoulder(root){
+  try{
+    root.querySelectorAll(".card > .blk").forEach(bl=>{
+      const h=bl.querySelector("h4"); const name=h?(h.childNodes[0].textContent||"").trim():"";
+      if(/^(oppvarming|linked|3×10|nedtrapping|sva|lett|teknikk|ukas drill|mobilitet|styrke|fingerstyrke|test|spenst|pilates|aktivering|konkurranse$)/i.test(name)) return;
+      const ul=bl.querySelector(":scope > ul"); if(!ul) return;
+      const lis=[...ul.children];
+      lis.forEach(li=>{
+        const t=li.textContent.trim();
+        if(/^Maks \d+ forsøk( totalt)?\.?$/i.test(t)){ li.remove(); return; }
+        let html=li.innerHTML;
+        html=html.replace(/,? ?<span class="key">maks \d+ (forsøk )?totalt<\/span>/gi,"").replace(/,? ?<span class="key">maks \d+ forsøk( totalt)?<\/span>/gi,"").replace(/, maks \d+ forsøk( totalt)?(?! per| på| hver)/gi,"").replace(/, maks \d+ totalt\./gi,".").replace(/ maks \d+ forsøk \(\d+ buldre × maks \d+\)/,"");
+        if(html!==li.innerHTML) li.innerHTML=html.replace(/,\s*\./g,".").replace(/\s+\./g,".");
+      });
+      const all=ul.textContent;
+      const cntLi=[...ul.children].find(li=>/\d+(–\d+)? (nye |harde |koordinasjons)?(buldre|problemer)/.test(li.textContent));
+      if(!cntLi) return;
+      const rpe=(all.match(/RPE (\d+)/)||[])[1]; if(rpe&&+rpe<6) return;
+      if(!/per buldre|per problem|på hvert|på hver|maks \d+ forsøk hver/.test(all)){
+        const hard=/nær maks|på maks|over maks|RPE (8|9)/.test(cntLi.textContent);
+        cntLi.innerHTML=cntLi.innerHTML.replace(/(\d+(–\d+)? (nye |harde |koordinasjons)?(buldre|problemer)[^,.]*)/,`$1, maks ${hard?4:3} forsøk per ${/problemer/.test(cntLi.textContent)?"problem":"buldre"}`);
+      }
+      if(!/Går (de fleste|buldrene|problemene|de) på/.test(all)&&!/konkurranse/i.test(all)&&!/Ingen ekstra buldre|maks 2 forsøk/.test(all))
+        ul.insertAdjacentHTML("beforeend",`<li>Går de fleste på første forsøk: ta 1–2 ${/problemer/.test(cntLi.textContent)?"problemer":"buldre"} til, så lenge tida rekker.</li>`);
+    });
+  }catch(e){}
+}
+
 /* ============ FELLES OPPVARMINGSMAL ============ */
 function warmTpl(root){
   try{
@@ -917,7 +948,7 @@ function normDay(root){
   try{
     if(!root) return;
     simplify(root);
-    if(!["","#idag"].includes(location.hash)){ warmTpl(root); return; }
+    if(!["","#idag"].includes(location.hash)){ perBoulder(root); warmTpl(root); return; }
     const card=[...root.querySelectorAll(".card")].find(c=>c.querySelector(":scope > h2")); if(!card) return;
     const title=card.querySelector(":scope > h2").textContent.trim();
     // 1. Merknader rett under Tid/tagger
@@ -971,6 +1002,7 @@ function normDay(root){
       const lis=[...ul.children]; if(!lis.length||/RPE/.test(lis[0].textContent)) return;
       const r=lis.find(x=>/RPE/.test(x.textContent)); if(r) ul.insertBefore(r,lis[0]);
     });
+    perBoulder(root);
     simplify(root);
     warmTpl(root);
   }catch(e){}
@@ -1055,7 +1087,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-090155";
+const APP_VERSION="2026-11-06-090657";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

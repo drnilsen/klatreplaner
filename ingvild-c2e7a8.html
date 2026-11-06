@@ -263,7 +263,7 @@ function session(date,noTheme){
   case 1: {
     s.key="man"; s.title="Hard buldring"; s.time=i.light?"ca. 1 t 15":i.phase==="led"?"ca. 1 t 35":"ca. 1 t 50";
     if(c){ const mx=c.vol===40?8:10; s.title="Konkurranseformat – siste harde økt"; s.time="ca. 1 t 30";
-      s.blocks=[B("Oppvarming",["30 min."],"30 min"),B("Hoveddel",[`4 buldre i <a href='#hodet' data-anchor='v5'>konkurranseformat</a>, RPE 9, <span class="key">maks ${mx} forsøk</span>${c.vol===40?" (4 buldre × maks 2)":""}.`,`${V(2,"Pusterutine")} og ${V(3,"reset")} på hvert forsøk.`])];
+      s.blocks=[B("Oppvarming",["30 min."],"30 min"),B("Hoveddel",[`4 buldre i <a href='#hodet' data-anchor='v5'>konkurranseformat</a>, RPE 9, <span class="key">maks ${c.vol===40?2:3} forsøk per buldre</span>.`,`${V(2,"Pusterutine")} og ${V(3,"reset")} på hvert forsøk.`])];
       s.fields=[["antall",`Forsøk (maks ${mx})`],["topper","Topper"]]; break; }
     if(i.y===2027&&w===13) s.notes.push(["warn","2. påskedag: økta flyttes til tirsdag ved behov – da utgår Styrke A."]);
     const u6=i.y===2027&&w===6, u9=i.y===2027&&w===9;
@@ -780,6 +780,36 @@ function simplify(root){
   }catch(e){}
 }
 
+
+/* ============ ANTALL BULDRE + MAKS FORSØK PER BULDRE ============ */
+function perBoulder(root){
+  try{
+    root.querySelectorAll(".card > .blk").forEach(bl=>{
+      const h=bl.querySelector("h4"); const name=h?(h.childNodes[0].textContent||"").trim():"";
+      if(/^(oppvarming|linked|3×10|nedtrapping|sva|lett|teknikk|ukas drill|mobilitet|styrke|fingerstyrke|test|spenst|pilates|aktivering|konkurranse$)/i.test(name)) return;
+      const ul=bl.querySelector(":scope > ul"); if(!ul) return;
+      const lis=[...ul.children];
+      lis.forEach(li=>{
+        const t=li.textContent.trim();
+        if(/^Maks \d+ forsøk( totalt)?\.?$/i.test(t)){ li.remove(); return; }
+        let html=li.innerHTML;
+        html=html.replace(/,? ?<span class="key">maks \d+ (forsøk )?totalt<\/span>/gi,"").replace(/,? ?<span class="key">maks \d+ forsøk( totalt)?<\/span>/gi,"").replace(/, maks \d+ forsøk( totalt)?(?! per| på| hver)/gi,"").replace(/, maks \d+ totalt\./gi,".").replace(/ maks \d+ forsøk \(\d+ buldre × maks \d+\)/,"");
+        if(html!==li.innerHTML) li.innerHTML=html.replace(/,\s*\./g,".").replace(/\s+\./g,".");
+      });
+      const all=ul.textContent;
+      const cntLi=[...ul.children].find(li=>/\d+(–\d+)? (nye |harde |koordinasjons)?(buldre|problemer)/.test(li.textContent));
+      if(!cntLi) return;
+      const rpe=(all.match(/RPE (\d+)/)||[])[1]; if(rpe&&+rpe<6) return;
+      if(!/per buldre|per problem|på hvert|på hver|maks \d+ forsøk hver/.test(all)){
+        const hard=/nær maks|på maks|over maks|RPE (8|9)/.test(cntLi.textContent);
+        cntLi.innerHTML=cntLi.innerHTML.replace(/(\d+(–\d+)? (nye |harde |koordinasjons)?(buldre|problemer)[^,.]*)/,`$1, maks ${hard?4:3} forsøk per ${/problemer/.test(cntLi.textContent)?"problem":"buldre"}`);
+      }
+      if(!/Går (de fleste|buldrene|problemene|de) på/.test(all)&&!/konkurranse/i.test(all)&&!/Ingen ekstra buldre|maks 2 forsøk/.test(all))
+        ul.insertAdjacentHTML("beforeend",`<li>Går de fleste på første forsøk: ta 1–2 ${/problemer/.test(cntLi.textContent)?"problemer":"buldre"} til, så lenge tida rekker.</li>`);
+    });
+  }catch(e){}
+}
+
 /* ============ FELLES OPPVARMINGSMAL ============ */
 function warmTpl(root){
   try{
@@ -815,7 +845,7 @@ function normDay(root){
   try{
     if(!root) return;
     simplify(root);
-    if(!["","#idag"].includes(location.hash)){ warmTpl(root); return; }
+    if(!["","#idag"].includes(location.hash)){ perBoulder(root); warmTpl(root); return; }
     const card=[...root.querySelectorAll(".card")].find(c=>c.querySelector(":scope > h2")); if(!card) return;
     const title=card.querySelector(":scope > h2").textContent.trim();
     // 1. Merknader rett under Tid/tagger
@@ -869,6 +899,7 @@ function normDay(root){
       const lis=[...ul.children]; if(!lis.length||/RPE/.test(lis[0].textContent)) return;
       const r=lis.find(x=>/RPE/.test(x.textContent)); if(r) ul.insertBefore(r,lis[0]);
     });
+    perBoulder(root);
     simplify(root);
     warmTpl(root);
   }catch(e){}
@@ -952,7 +983,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-090155";
+const APP_VERSION="2026-11-06-090657";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
