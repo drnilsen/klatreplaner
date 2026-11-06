@@ -240,7 +240,7 @@ function skulderHtml(i){
    <div class="exlist">${SKULDER.map(e=>exRow(e,skulderSett(i,e[0]))).join("")}</div>`;
 }
 function beinHtml(i){
-  return `<div class="blk"><h4>Styrke A · bein og kjerne<span class="dur">ca. 40 min</span></h4><ul>
+  return `<div class="blk"><h4>Styrke A · bein<span class="dur">ca. 40 min</span></h4><ul>
    <li>Oppvarming 12 min (felles): 5 min sykkel/hopptau · 90/90-hofterotasjon 8 per side · dyp knebøy-hold 3 × 20 s · strikk pull-aparts 2 × 15 · 2 lette sett RDL.</li>
    <li>${strF2(i)?"RPE 8 (2 reps igjen), pause 90 s–3 min":"RPE 7 (3 reps igjen), pause 60 s–3 min"}. Samme sett, reps og pauser som Otte, egne vekter.</li>
    <li>Mens Otte gjør goblet squat (B): 5 min strikk før skulderprogrammet.</li></ul></div>
@@ -299,7 +299,7 @@ function session(date,noTheme){
   case 2: {
     s.key="tir";
     if(c){ s.title="Skulderprogram + mobilitet"; s.time="45 min"; s.blocks=[B("Økt",["Skulderprogram 2 sett, RPE 7, + 20 min mobilitet. Ingen bein."],"45 min")]; s.extra=skulderHtml(i); s.fields=[["dips","Ringdips: reps beste sett"]]; break; }
-    s.title="Styrke A · bein og kjerne + skulderprogram"; s.time=i.y===2027&&w>=11&&!i.top?"ca. 90 min":"ca. 85 min";
+    s.title="Styrke A · bein + skulderprogram"; s.time=i.y===2027&&w>=11&&!i.top?"ca. 90 min":"ca. 85 min";
     s.blocks=[]; s.extra=beinHtml(i)+skulderHtml(i);
     s.fields=[["rdl","RDL: kg × reps"],["dips","Ringdips: reps beste sett"]];
     break; }
@@ -475,7 +475,7 @@ function refCard(title,date){ const s=session(date,true); return `<div class="ca
 function nowOr(dow,fb){ const i=info(cur); return ["før","etter","jul"].includes(i.phase)?fb:addDays(mondayOf(i.y,i.w),dow-1); }
 const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring – mengde</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,1))}${refCard("Fase 2 (uke 3–18)",D(2027,3,1))}${refCard("Konkurranseuke (uke 5, 7, 9, 17, 19)",D(2027,5,1))}`,
- tir:()=>`<h2 style="margin-top:18px">Tirsdag · Styrke A + skulderprogram</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,46,2)))}`,
+ tir:()=>`<h2 style="margin-top:18px">Tirsdag · Styrke A (bein) + skulderprogram</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,46,2)))}`,
  ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · fase 1 (uke 45–51, 1–2)",D(2026,46,3))}${refCard("Linked boulders · fase 2 (uke 3–18)",D(2027,3,3))}${refCard("Rutedag på led · uke 20",D(2027,20,3))}`,
  tor:()=>`<h2 style="margin-top:18px">Torsdag · 3×10 + Styrke B</h2>${curLabel()}${refCard("Denne uka",nowOr(4,D(2026,46,4)))}`,
  lor:()=>`<h2 style="margin-top:18px">Lørdag · Board og prosjekter</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,6))}${refCard("Fase 2 (uke 3–18)",D(2027,3,6))}${refCard("Topping (uke 7–8, 15–16)",D(2027,8,6))}`,
@@ -970,7 +970,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-092227";
+const APP_VERSION="2026-11-06-092650";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
