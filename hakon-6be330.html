@@ -172,7 +172,7 @@ function isoWeek(d){
 function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; return addDays(jan4,(w-1)*7-(dow-1)); }
 
 const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
-const NYTT={45:"Test avtales med trener",47:"RPE 8",50:"Eksplosiv blokk",51:"Test mandag",2:"4 sett i supersett A og B",4:"5 sett på A1",7:"Eksplosiv blokk",9:"Test mandag · NM",10:"Tauøktene starter",11:"Hypertrofi 3",12:"Påske: bare Styrke A",15:"4 × 4 onsdag",16:"Eksplosiv blokk",17:"Test mandag",18:"Hypertrofi 4"};
+const NYTT={45:"Test avtales med trener",47:"RPE 8",50:"Maksstyrke: få reps, mindre klatrevolum",51:"Test mandag",2:"4 sett i supersett A og B",4:"5 sett på A1",7:"Maksstyrke: få reps, mindre klatrevolum",9:"Test mandag",10:"Lett uke · tauøktene starter",11:"Hypertrofi 3",12:"Påske: bare Styrke A",15:"Maksstyrke: få reps, mindre klatrevolum · 4 × 4 onsdag",16:"Test mandag",17:"Hypertrofi 4"};
 function info(date){
   const {y,w,dow}=isoWeek(date);
   const i={date,y,w,dow,light:false,phase:"utenfor",label:"Utenfor planen",blk:"H",post:false,test:null,rpe7:false};
@@ -182,16 +182,16 @@ function info(date){
   if(y===2026){
     if(w===45){ i.label="Innlæring"; }
     else if(w<=49){ i.label="Hypertrofi 1"; }
-    else if(w<=51){ i.label="Eksplosiv 1"; i.blk="E"; if(w===51) i.test=1; }
+    else if(w<=51){ i.label="Maksstyrke 1"; i.blk="E"; if(w===51) i.test=1; }
     else { i.phase="jul"; i.label="Jul"; }
   } else {
     if(w===1){ i.label="Jul · lett uke"; i.light=true; i.rpe7=true; i.jul1=true; }
     else if(w<=6){ i.label="Hypertrofi 2"; i.h2=true; }
-    else if(w<=9){ i.label=w===9?"Eksplosiv 2 · NM-uka":"Eksplosiv 2"; i.blk="E"; if(w===9){ i.test=1; i.nm=true; } }
+    else if(w<=9){ i.label="Maksstyrke 2"; i.blk="E"; if(w===9) i.test=1; if(w===9&&dow===6) i.nm=true; }
     else { i.post=true;
-      if(w===10){ i.label="Etter NM · lett"; i.light=true; i.rpe7=true; }
-      else if(w<=15) i.label="Hypertrofi 3";
-      else if(w<=17){ i.label="Eksplosiv 3"; i.blk="E"; if(w===17) i.test=1; }
+      if(w===10){ i.label="Lett uke"; i.light=true; i.rpe7=true; }
+      else if(w<=14) i.label="Hypertrofi 3";
+      else if(w<=16){ i.label="Maksstyrke 3"; i.blk="E"; if(w===16) i.test=1; }
       else i.label="Hypertrofi 4"; }
   }
   return i;
@@ -252,7 +252,7 @@ function setsFor(e,i,kort){
 function rpeOf(i,dag){ if(i.rpe7) return "RPE 7"; if(i.y===2026&&(i.w===45||(i.w===46&&dag==="B"))) return "RPE 7"; return "RPE 8"; }
 function styrkeHtml(i,dag,kort){
   const E=i.blk==="E", list=(dag==="A"?(E?SA_E:SA_H):(E?SB_E:SB_H)).filter(e=>!kort||/^[AB]/.test(e[0]));
-  const navn=`Styrke ${dag} · ${E?"eksplosiv":"hypertrofi"}${kort?" · kort":""}`;
+  const navn=`Styrke ${dag} · ${E?"maksstyrke":"hypertrofi"}${kort?" · kort":""}`;
   const dur=kort?"30 min":dag==="A"?(E?"45–50 min":"45–55 min"):(E?"ca. 55 min":"55–65 min");
   return `<div class="blk"><h4>${navn}<span class="dur">${dur}</span></h4><ul>
    <li>Oppvarming 10 min: strikk pull-aparts 2 × 15 · utadrotasjon med strikk 2 × 12 · scapula pull-ups 2 × 8 · 1–2 lette sett av første øvelse.</li>
@@ -296,7 +296,7 @@ const OPPV="Puls, skulder/hofte, pyramide lett → middels, 8–10 buldre.";
 function testBlocks(){ return [B("Oppvarming",["Puls, skulder/hofte, 5–6 lette buldre. Ikke slitne armer før testen."],"20 min"),
   B("Test · 1RM vektet pull-up",["Grep som A1, strake armer i utgangsheng, ingen kipping, haka tydelig over stanga.","Oppvarmingssett (% av forventet ekstravekt): kroppsvekt × 3, ca. 70 % × 2, ca. 90 % × 1. 3 min pause.","<span class=\"key\">Maks 3 forsøk på 1RM</span>: første på ca. 95 %, deretter +1,25–2,5 kg. 4–5 min pause.","Logg ekstravekt. Samme tidspunkt og utstyr hver gang."],"30 min"),
   B("Lett buldring",["Ingen maksbuldring."],"30 min")]; }
-function maksB(i,lør){ const f1=i.y===2026; const mx=i.light?4:(f1?10:8); if(lør&&f1) return B("Buldring etter fingerstyrke",[`4–5 buldre 2 grader under maks, RPE 7, maks 3 forsøk per buldre, 3 min pause.`,"Skrudde buldre, board og spraywall – fordel som du vil."],"30 min"); return B("Maksbuldring",[f1?`4–5 buldre 1 grad under maks, RPE 8, <span class="key">maks ${mx} forsøk</span>, 3 min pause.`:`3–4 buldre nær maks, RPE 8–9, <span class="key">maks ${mx} forsøk</span>, 3–4 min pause.`,
+function maksB(i,lør){ const f1=i.y===2026; const mx=i.light?4:(i.blk==="E"?6:8); if(lør&&f1) return B("Buldring etter fingerstyrke",[`4–5 buldre 2 grader under maks, RPE 7, maks 3 forsøk per buldre, 3 min pause.`,"Skrudde buldre, board og spraywall – fordel som du vil."],"30 min"); return B("Maksbuldring",[f1?`4–5 buldre 1 grad under maks, RPE 8, <span class="key">maks ${mx} forsøk</span>, 3 min pause.`:`3–4 buldre nær maks, RPE 8–9, <span class="key">maks ${mx} forsøk</span>, 3–4 min pause.`,
   "Skrudde buldre, board og spraywall – fordel som du vil.",i.blk==="E"?"Gjerne dynamiske flytt på store tak.":"Gjerne kraftige flytt og kompresjon.","Stopp: forsøkstaket, eller første forsøk med tydelig teknikkfall."],"30 min"); }
 function session(date,noTheme){
   const i=info(date), w=i.w;
@@ -309,7 +309,6 @@ function session(date,noTheme){
     else { s.title="Jul – fri"; s.blocks=[B("I dag",["Fri eller lett klatring."])]; }
     return s; }
   if(i.light) s.notes.push(["warn",i.jul1?"Lett uke: Styrke A og B med 2 sett, RPE 7. Klatring tirsdag–torsdag, ingen maksbuldring.":"Lett uke: Styrke A og B med 2 sett, RPE 7. Halvt antall forsøk og runder."]);
-  if(i.nm&&i.dow<=6) s.notes.push(["warn","NM-uka: NM senior buldring lør 6. mars."]);
   switch(i.dow){
   case 1: {
     s.key="man";
@@ -336,22 +335,21 @@ function session(date,noTheme){
     break; }
   case 3: {
     s.key="ons";
-    if(i.nm){ s.title="Teknikk, kort"; s.time="1 t"; s.blocks=[B("Teknikk",["Teknikk 1 t, RPE 5. Ingen PE."],"60 min")]; break; }
     if(i.post){
-      const four=w>=15, r=i.light?2:4;
+      const four=w>=15, r=i.light?2:(i.blk==="E"?3:4);
       s.title="Tau-utholdenhet"; s.time="ca. 1 t 30";
       s.blocks=[B("Oppvarming",["På tau."],"25 min"),
         four?B("4 × 4",["4 ruter på rad, 3–4 grader under onsight, RPE 7–8.",`<span class="key">${r} runder</span>, 8–10 min pause.`],"ca. 60 min")
             :B("2 × 4",["2 ruter på rad uten pause, 1–2 grader under onsight, RPE 7–8.",`<span class="key">${r} runder</span>, 8–10 min pause.`],"ca. 50 min"),
         B("Sluttpunkt",["Fall på en rute du har klart tidligere i økta."]),B("Nedtrapping",["Lett klatring."],"10 min")];
       s.fields=[["antall","Runder"]]; break; }
-    const jan=i.y===2027&&w>=2, sets=i.light?2:3;
+    const jan=i.y===2027&&w>=2, sets=(i.light||i.blk==="E")?2:3;
     s.title="Linked boulders"; s.time=lbTot(sets,40);
     s.blocks=[B("Oppvarming",["Som mandag."],"25 min"),B("Linked boulders",lbItems(sets,jan?2:1),lbDur(sets)),B("Nedtrapping",["Lett klatring."],"15 min")];
     s.fields=[["antall","Sett"]];
     break; }
   case 4: {
-    s.key="tor"; const r=(i.nm||i.light)?2:3;
+    s.key="tor"; const r=(i.light||i.blk==="E")?2:3;
     s.title="3×10 + mobilitet"; s.time="ca. 50 min";
     s.blocks=[B("3×10",["Ingen egen oppvarming – første runde er oppvarmingen.",`<span class="key">${r} runder × 10 min</span> sammenhengende lett klatring, 4+ grader under onsight, RPE 3–4, 5 min pause.`],r===3?"35 min":"25 min"),
       B("Mobilitet",["Utadrotasjon, wall slides, 90/90, dyp knebøy."],"15 min")];
@@ -360,7 +358,7 @@ function session(date,noTheme){
   case 5: s.blocks=[B("Hviledag",["Tapt økt tas ikke igjen."])]; break;
   case 6: {
     s.key="lor";
-    if(i.nm){ s.title="NM senior buldring"; s.time=""; s.blocks=[B("Konkurranse",["Ingen fingerstyrke og ingen Styrke B.","Én setning før hvert buldre."])]; s.fields=[["resultat","Resultat / plassering"]]; break; }
+    if(i.nm){ s.title="NM senior buldring"; s.time=""; s.blocks=[B("Konkurranse",["NM senior buldring. Ingen fingerstyrke og ingen Styrke B."])]; s.fields=[["resultat","Resultat / plassering"]]; break; }
     if(i.jul1){ s.title="Styrke B"; s.time="ca. 1 t"; s.blocks=[]; s.extra=styrkeHtml(i,"B"); s.fields=[["chin","Chin-up: kg × reps"]]; break; }
     s.blocks=[B("Oppvarming",[OPPV],"25 min")];
     if(i.post){
@@ -510,26 +508,26 @@ function nowOr(dow,fb){ const i=info(cur); return ["før","etter","jul"].include
 const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Maksbuldring + Styrke A</h2>${curLabel()}${refCard("Denne uka",nowOr(1,D(2026,47,1)))}`,
  tir:()=>`<h2 style="margin-top:18px">Tirsdag · Teknikk – buldring</h2>${curLabel()}${refCard("Hele sesongen",D(2026,47,2))}`,
- ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · uke 45–51, 1",D(2026,47,3))}${refCard("Linked boulders · uke 2–8",D(2027,3,3))}${refCard("Tau · 2 × 4 (uke 10–14)",D(2027,11,3))}${refCard("Tau · 4 × 4 (uke 15–20)",D(2027,15,3))}`,
+ ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · uke 45–51, 1",D(2026,47,3))}${refCard("Linked boulders · uke 2–8",D(2027,3,3))}${refCard("Tau · 2 × 4 (uke 10–14)",D(2027,11,3))}${refCard("Tau · 4 × 4, maksstyrke (uke 15–16)",D(2027,15,3))}${refCard("Tau · 4 × 4 (uke 17–20)",D(2027,15,3))}`,
  tor:()=>`<h2 style="margin-top:18px">Torsdag · 3×10 + mobilitet</h2>${curLabel()}${refCard("Denne uka",nowOr(4,D(2026,47,4)))}`,
  lor:()=>`<h2 style="margin-top:18px">Lørdag</h2>${curLabel()}${refCard("Denne uka",nowOr(6,D(2026,47,6)))}`,
 };
 function vStyrke(){
   const ref=info(D(2026,47,1)), refE=info(D(2026,50,1));
   return `<h2 style="margin-top:18px">Styrke</h2><p class="small muted">Oversikt. Sett for akkurat denne uka står i dagens økt under <a href="#idag">I dag</a>.</p>
-  <div class="card small"><ul><li><b>Blokker:</b> hypertrofi 4–6 uker → eksplosivt 2–3 uker, vekselvis hele sesongen.</li><li><b>Hypertrofi 2 (uke 2–6):</b> 4 sett på alle øvelser i supersett A og B. Uke 4–6: 5 sett på A1 begge dager.</li>
-   <li><b>Uke 1 og 10:</b> 2 sett, RPE 7. <b>Etter NM:</b> Styrke A full, Styrke B kort (bare A og B, 3 sett). Påske uke 12: bare Styrke A.</li><li><b>Supersett:</b> aldri samme muskelgruppe.</li></ul></div>
+  <div class="card small"><ul><li><b>Blokker:</b> hypertrofi 4–6 uker → maksstyrke 2–3 uker (få reps, tung belastning, mindre klatrevolum), vekselvis hele sesongen. Hypertrofi uke 46–49, 2–6, 11–14, 17–20. Maksstyrke uke 50–51, 7–9, 15–16.</li><li><b>Hypertrofi 2 (uke 2–6):</b> 4 sett på alle øvelser i supersett A og B. Uke 4–6: 5 sett på A1 begge dager.</li>
+   <li><b>Uke 1 og 10:</b> 2 sett, RPE 7. <b>Fra uke 10:</b> Styrke A full, Styrke B kort (bare A og B, 3 sett). Påske uke 12: bare Styrke A.</li><li><b>Supersett:</b> aldri samme muskelgruppe.</li></ul></div>
   <div class="card">${styrkeHtml(ref,"A")}</div><div class="card">${styrkeHtml(ref,"B")}</div><div class="card">${styrkeHtml(refE,"A")}</div><div class="card">${styrkeHtml(refE,"B")}</div><div class="card">${fingerHtml(ref)}</div>`;
 }
 function vTest(){
-  return `<h2 style="margin-top:18px">Test</h2><p class="small muted">Lørdag uke 45 · mandag uke 51 · mandag uke 9 · mandag uke 17. Mandagstestene erstatter maksbuldring og Styrke A den dagen. Fingerstyrke testes ikke.</p>
+  return `<h2 style="margin-top:18px">Test</h2><p class="small muted">Første test avtales med trener. Deretter mandag uke 51 · mandag uke 9 · mandag uke 16, siste uke i hver maksstyrkeblokk. Mandagstestene erstatter maksbuldring og Styrke A den dagen. Fingerstyrke testes ikke.</p>
   <div class="card">${testBlocks().map(blkHtml).join("")}</div>`;
 }
 function vTeknikk(){
   const card=x=>`<div class="card" id="tema-${x.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${x.n}</h3><ul>${x.d.map(y=>`<li>${y}</li>`).join("")}</ul></div>`;
   return `<h2 style="margin-top:18px">Teknikk</h2>
   <h3>Buldring (tirsdag)</h3><p class="small muted">Ett tema per uke, først i økta. RPE 3–4. Roterer under <a href="#idag">I dag</a>.</p>${BTEMA.map(card).join("")}
-  <h3>Ro på ruta (hard led, lørdag etter NM)</h3><p class="small muted">Én drill per rute på onsight-lørdager. Redpoint: les ruta og hvil før krux.</p>${DRILL.map(card).join("")}`;
+  <h3>Ro på ruta (hard led, lørdag fra uke 10)</h3><p class="small muted">Én drill per rute på onsight-lørdager. Redpoint: les ruta og hvil før krux.</p>${DRILL.map(card).join("")}`;
 }
 function vPlan(){
   const {w:cw,y:cy}=isoWeek(cur);
@@ -538,20 +536,18 @@ function vPlan(){
   return `<h2 style="margin-top:18px">Plan</h2>
   <div class="card small"><ul>
    <li><b>Tre ting denne vinteren:</b> sterkere · målt framgang · ro på led.</li>
-   <li><b>Uka før NM:</b> man maksbuldring + Styrke A · tir teknikk (buldring) · ons linked boulders · tor 3×10 + mobilitet · lør fingerstyrke + maksbuldring + Styrke B. Fre og søn hvile.</li>
-   <li><b>Etter NM (uke 10–20):</b> onsdag tau-utholdenhet · lørdag hard led med Ro på ruta i stedet for maksbuldring, Styrke B kort.</li>
-   <li><b>NM-uka (uke 9):</b> man test · tir teknikk (buldring) · ons teknikk 1 t, RPE 5 · tor 3×10 med 2 runder · lør NM, ingen fingerstyrke og ingen Styrke B.</li>
+   <li><b>Uke 10–20:</b> onsdag tau-utholdenhet · lørdag hard led med Ro på ruta i stedet for maksbuldring, Styrke B kort.</li>
    <li><b>Jul (52, 53):</b> fri eller lett klatring, én kjerneøkt i uka. <b>Uke 1:</b> Styrke A og B 2 sett, RPE 7, klatring tir–tor.</li></ul></div>
   <div class="card"><div class="tscroll"><table><thead><tr><th>Uke</th><th>Fra</th><th>Blokk</th><th>Nytt</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
 function vRpe(){
   return `<h2 style="margin-top:18px">RPE og intensitet</h2><p class="small muted">RPE = hvor hardt det kjennes, 1–10. Nå: uke ${info(cur).w} · ${info(cur).label}.</p>
   <div class="card"><h3 style="margin-top:0">RPE-skala</h3><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">3–4</div><div><div class="small"><b>Buldring:</b> Lette buldre, flytende (tirsdag teknikk).</div><div class="small"><b>Styrke:</b> Lette oppvarmingssett.</div><div class="small"><b>Tau:</b> Rolig pust, lett varme i underarmene (3×10).</div></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">5–6</div><div><div class="small"><b>Buldring:</b> Middels buldre, første–andre forsøk.</div><div class="small"><b>Styrke:</b> 4 eller flere reps igjen.</div><div class="small"><b>Tau:</b> Merkbar pump som går tilbake.</div></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">7</div><div><div class="small"><b>Buldring:</b> Må ta i på nøkkelflyttet, kontrollert.</div><div class="small"><b>Styrke:</b> 3 reps igjen.</div><div class="small"><b>Tau:</b> Tydelig pump, føttene krever jobb.</div></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">8</div><div><div class="small"><b>Buldring:</b> Full kraft, treffer og holder.</div><div class="small"><b>Styrke:</b> 2 reps igjen.</div><div class="small"><b>Tau:</b> Hard pump, flyttene sitter.</div></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">9</div><div><div class="small"><b>Buldring:</b> Alt du har, treffer så vidt.</div><div class="small"><b>Styrke:</b> 1 rep igjen – brukes ikke i trening.</div><div class="small"><b>Tau:</b> Kvaliteten holder akkurat.</div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">10</div><div><div class="small"><b>Buldring:</b> Bom eller fall.</div><div class="small"><b>Styrke:</b> Tyngste løft du klarer med god teknikk – bare i 1RM-testen. Aldri til svikt.</div><div class="small"><b>Tau:</b> Falt av pump.</div><p class="small">Brukes i: 1RM-test (uke 45, 51, 9, 17)</p></div></div></div></div>
-  <div class="card"><h3 style="margin-top:0">Intensitet gjennom sesongen</h3><ul><li>Maksbuldring: fase 1 (nov–des) 1 grad under maks, RPE 8, maks 10 forsøk. Fra januar nær maks, RPE 8–9, maks 8.</li><li>Styrke: hypertrofiblokker RPE 8 (2 reps igjen), eksplosive blokker full fart, RPE 8. Uke 1 og 10: 2 sett, RPE 7.</li><li>Etter NM: tau 2 × 4 og 4 × 4 RPE 7–8, hard led RPE 8–9.</li><li>Tirsdag og torsdag er alltid lette, RPE 3–4.</li></ul></div>`;
+  <div class="card"><h3 style="margin-top:0">Intensitet gjennom sesongen</h3><ul><li>Maksbuldring: fase 1 (nov–des) 1 grad under maks, RPE 8, maks 8 forsøk. Fra januar nær maks, RPE 8–9, maks 8. I maksstyrkeblokkene maks 6 forsøk.</li><li>Styrke: hypertrofiblokker RPE 8 (2 reps igjen), maksstyrkeblokker få reps, RPE 8. Klatrevolum ned i maksstyrkeblokkene: maksbuldring maks 6 forsøk, linked boulders 2 sett, 3×10 med 2 runder, tau 3 runder. Uke 1 og 10: 2 sett, RPE 7.</li><li>Fra uke 10: tau 2 × 4 og 4 × 4 RPE 7–8, hard led RPE 8–9.</li><li>Tirsdag og torsdag er alltid lette, RPE 3–4.</li></ul></div>`;
 }
 function vRegler(){
   return `<h2 style="margin-top:18px">Regler</h2>
-  <div class="card"><h3 style="margin-top:0">Fra samtalen</h3><ul><li><b>Konkurranse:</b> første senioråret. Deltar på alt, ingen plasseringsfokus, ingen formtopp. NM senior buldring lør 6. mars.</li><li><b>Etter NM:</b> fokus over på tau.</li>
+  <div class="card"><h3 style="margin-top:0">Fra samtalen</h3><ul><li><b>Konkurranse:</b> første senioråret. Deltar på alt, ingen plasseringsfokus, ingen formtopp. NM senior buldring lør 6. mars.</li><li><b>Fra uke 10:</b> fokus over på tau.</li>
    <li><b>Utfordringer i konkurranse:</b> led – noen ganger litt jagete klatring. Buldring – styrke og eksplosivitet.</li><li><b>Prioritet i styrke:</b> 1 kjerne · 2 drastyrke · 3 skuldre.</li></ul></div>
   <div class="card"><h3 style="margin-top:0">Det som ligger fast</h3><ul><li><b>Hviledager:</b> fredag og søndag. Tapt økt tas ikke igjen.</li><li><b>Styrkedager:</b> maksbuldring først, maks 8 forsøk. Kortes noe, kortes klatringen.</li>
    <li><b>Sluttpunkt:</b> teknikkbrudd eller forhåndsbestemt antall forsøk.</li><li><b>Styrke:</b> RPE 8 = 2 reps igjen, på alle sett. Aldri til svikt.</li><li><b>Supersett:</b> aldri samme muskelgruppe.</li>
@@ -995,7 +991,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-111321";
+const APP_VERSION="2026-11-06-114657";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
