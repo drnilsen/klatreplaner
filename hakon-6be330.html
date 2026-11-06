@@ -172,7 +172,7 @@ function isoWeek(d){
 function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; return addDays(jan4,(w-1)*7-(dow-1)); }
 
 const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
-const NYTT={45:"Test avtales med trener",47:"RPE 8",50:"Maksstyrke: få reps, mindre klatrevolum",51:"Test mandag",2:"4 sett i supersett A og B",4:"5 sett på A1",7:"Maksstyrke: få reps, mindre klatrevolum",9:"Test mandag",10:"Lett uke · tauøktene starter",11:"Hypertrofi 3",12:"Påske: bare Styrke A",15:"Maksstyrke: få reps, mindre klatrevolum · 4 × 4 onsdag",16:"Test mandag",17:"Hypertrofi 4"};
+const NYTT={45:"Test avtales med trener",47:"RPE 8",48:"Lett uke",50:"Maksstyrke: få reps, mindre klatrevolum",51:"Test mandag",2:"Hypertrofi 2, 3 sett",3:"4 sett i supersett A og B",4:"5 sett på A1",5:"Lett uke",7:"Maksstyrke: få reps, mindre klatrevolum",9:"Test mandag",10:"Lett uke · tauøktene starter",11:"Hypertrofi 3",12:"Påske: bare Styrke A",15:"Maksstyrke: få reps, mindre klatrevolum · 4 × 4 onsdag",16:"Test mandag",17:"Hypertrofi 4"};
 function info(date){
   const {y,w,dow}=isoWeek(date);
   const i={date,y,w,dow,light:false,phase:"utenfor",label:"Utenfor planen",blk:"H",post:false,test:null,rpe7:false};
@@ -181,12 +181,12 @@ function info(date){
   i.phase="tr";
   if(y===2026){
     if(w===45){ i.label="Innlæring"; }
-    else if(w<=49){ i.label="Hypertrofi 1"; }
+    else if(w<=49){ i.label="Hypertrofi 1"; if(w===48){ i.label="Hypertrofi 1 · lett uke"; i.light=true; i.rpe7=true; } }
     else if(w<=51){ i.label="Maksstyrke 1"; i.blk="E"; if(w===51) i.test=1; }
     else { i.phase="jul"; i.label="Jul"; }
   } else {
     if(w===1){ i.label="Jul · lett uke"; i.light=true; i.rpe7=true; i.jul1=true; }
-    else if(w<=6){ i.label="Hypertrofi 2"; i.h2=true; }
+    else if(w<=6){ i.label="Hypertrofi 2"; i.h2=w>=3; if(w===5){ i.label="Hypertrofi 2 · lett uke"; i.light=true; i.rpe7=true; } }
     else if(w<=9){ i.label="Maksstyrke 2"; i.blk="E"; if(w===9) i.test=1; if(w===9&&dow===6) i.nm=true; }
     else { i.post=true;
       if(w===10){ i.label="Lett uke"; i.light=true; i.rpe7=true; }
@@ -251,9 +251,9 @@ function setsFor(e,i,kort){
 }
 function rpeOf(i,dag){ if(i.rpe7) return "RPE 7"; if(i.y===2026&&(i.w===45||(i.w===46&&dag==="B"))) return "RPE 7"; return "RPE 8"; }
 function styrkeHtml(i,dag,kort){
-  const E=i.blk==="E", list=(dag==="A"?(E?SA_E:SA_H):(E?SB_E:SB_H)).filter(e=>!kort||/^[AB]/.test(e[0]));
+  const E=i.blk==="E", list=(dag==="A"?(E?SA_E:SA_H):(E?SB_E:SB_H)).filter(e=>kort?/^[AB]/.test(e[0]):!(dag==="B"&&/^D/.test(e[0])));
   const navn=`Styrke ${dag} · ${E?"maksstyrke":"hypertrofi"}${kort?" · kort":""}`;
-  const dur=kort?"30 min":dag==="A"?(E?"45–50 min":"45–55 min"):(E?"ca. 55 min":"55–65 min");
+  const dur=kort?"30 min":dag==="A"?(E?"45–50 min":"45–55 min"):(E?"ca. 45 min":"45–50 min");
   return `<div class="blk"><h4>${navn}<span class="dur">${dur}</span></h4><ul>
    <li>Oppvarming 10 min: strikk pull-aparts 2 × 15 · utadrotasjon med strikk 2 × 12 · scapula pull-ups 2 × 8 · 1–2 lette sett av første øvelse.</li>
    <li><span class="key">${rpeOf(i,dag)}</span>${rpeOf(i,dag)==="RPE 8"?" = 2 reps igjen, på alle sett. Aldri til svikt.":" = 3 reps igjen."}${E?" Full fart opp, 2–3 min pause.":""} Supersett A1/A2 osv.</li>
@@ -262,10 +262,10 @@ function styrkeHtml(i,dag,kort){
    <div class="exlist">${list.map(e=>exRow(e,setsFor(e,i,kort))).join("")}</div>`;
 }
 function fingerHtml(i){
-  const n=i.blk==="E"?4:5;
+  const n=i.light?3:i.blk==="E"?4:5;
   return `<div class="blk"><h4>Fingerstyrke<span class="dur">20 min</span></h4><ul>
    <li>Opptrapping: 2–3 lette heng på større list, 1–2 min pause.</li>
-   <li><span class="key">${n} sett</span> × 10 s heng på 20 mm, halvkrimp, 3 min pause. RPE 8: ekstravekt slik at 13 s ville vært maks.</li>
+   <li><span class="key">${n} sett</span> × 10 s heng på 20 mm, halvkrimp, 3 min pause. ${i.light?"RPE 7: litt mindre ekstravekt enn sist.":"RPE 8: ekstravekt slik at 13 s ville vært maks."}</li>
    <li>Ekstravekt: start +0–5 kg, øk 1–2 kg når 10 s går på RPE 7. Aldri mer enn én økning per uke.</li>
    <li>Stopp: grepet åpner seg, eller smerte i fingerledd.</li></ul></div>
    <div class="exlist"><div class="ex"><div class="fig" role="img" aria-label="Fingerheng">${FIG.hang}</div><div><div class="exh"><span>Fingerheng${vid("Fingerheng")}</span><span class="sets">${n} × 10 s</span></div><p>20 mm, halvkrimp, ekstravekt i belte. Pause 3 min.</p></div></div></div>`;
@@ -296,7 +296,7 @@ const OPPV="Puls, skulder/hofte, pyramide lett → middels, 8–10 buldre.";
 function testBlocks(){ return [B("Oppvarming",["Puls, skulder/hofte, 5–6 lette buldre. Ikke slitne armer før testen."],"20 min"),
   B("Test · 1RM vektet pull-up",["Grep som A1, strake armer i utgangsheng, ingen kipping, haka tydelig over stanga.","Oppvarmingssett (% av forventet ekstravekt): kroppsvekt × 3, ca. 70 % × 2, ca. 90 % × 1. 3 min pause.","<span class=\"key\">Maks 3 forsøk på 1RM</span>: første på ca. 95 %, deretter +1,25–2,5 kg. 4–5 min pause.","Logg ekstravekt. Samme tidspunkt og utstyr hver gang."],"30 min"),
   B("Lett buldring",["Ingen maksbuldring."],"30 min")]; }
-function maksB(i,lør){ const f1=i.y===2026; const mx=i.light?4:(i.blk==="E"?6:8); if(lør&&f1) return B("Buldring etter fingerstyrke",[`4–5 buldre 2 grader under maks, RPE 7, maks 3 forsøk per buldre, 3 min pause.`,"Skrudde buldre, board og spraywall – fordel som du vil."],"30 min"); return B("Maksbuldring",[f1?`4–5 buldre 1 grad under maks, RPE 8, <span class="key">maks ${mx} forsøk</span>, 3 min pause.`:`3–4 buldre nær maks, RPE 8–9, <span class="key">maks ${mx} forsøk</span>, 3–4 min pause.`,
+function maksB(i,lør){ const f1=i.y===2026; const n=i.light?2:(i.blk==="E"?3:4); if(lør&&f1) return B("Buldring etter fingerstyrke",[`${bld(i.light?2:4,2)} 2 grader under maks, RPE 7, 3 min pause.`,"Skrudde buldre, board og spraywall – fordel som du vil."],"30 min"); return B("Maksbuldring",[f1?`${bld(n,2)} 1 grad under maks, RPE 8, 3 min pause.`:`${bld(n,2)} nær maks, RPE 8–9, 3–4 min pause.`,
   "Skrudde buldre, board og spraywall – fordel som du vil.",i.blk==="E"?"Gjerne dynamiske flytt på store tak.":"Gjerne kraftige flytt og kompresjon.","Stopp: forsøkstaket, eller første forsøk med tydelig teknikkfall."],"30 min"); }
 function session(date,noTheme){
   const i=info(date), w=i.w;
@@ -336,7 +336,7 @@ function session(date,noTheme){
   case 3: {
     s.key="ons";
     if(i.post){
-      const four=w>=15, r=i.light?2:(i.blk==="E"?3:4);
+      const four=w>=15, r=i.light?2:(four||i.blk==="E")?3:4;
       s.title="Tau-utholdenhet"; s.time="ca. 1 t 30";
       s.blocks=[B("Oppvarming",["På tau."],"25 min"),
         four?B("4 × 4",["4 ruter på rad, 3–4 grader under onsight, RPE 7–8.",`<span class="key">${r} runder</span>, 8–10 min pause.`],"ca. 60 min")
@@ -368,7 +368,7 @@ function session(date,noTheme){
         +(påske?`<div class="note warn">Påske: ingen Styrke B denne uka.</div>`:styrkeHtml(i,"B",true));
       s.fields=[["heng","Fingerheng ekstravekt (kg)"],...(påske?[]:[["chin","Chin-up: kg × reps"]])];
       break; }
-    s.title="Fingerstyrke + maksbuldring + Styrke B"; s.time="ca. 2 t 30";
+    s.title="Fingerstyrke + maksbuldring + Styrke B"; s.time="ca. 2 t 10";
     s.extra=fingerHtml(i)+`<div class="blk"><h4>${maksB(i,true).h}<span class="dur">30 min</span></h4><ul>${maksB(i,true).items.map(x=>`<li>${rpeLink(x)}</li>`).join("")}</ul></div><div class="blk"><h4>Nedtrapping<span class="dur">5 min</span></h4><ul><li>${rpeLink("RPE 1–2")}.</li><li>Lett klatring, drikke, skifte.</li></ul></div>`+styrkeHtml(i,"B");
     s.fields=[["heng","Fingerheng ekstravekt (kg)"],["chin","Chin-up: kg × reps"]];
     break; }
@@ -789,6 +789,8 @@ function simplify(root){
 
 
 /* ============ ANTALL BULDRE + MAKS FORSØK PER BULDRE ============ */
+function bld(n,per,what){ what=what||"buldre"; return `<span class="key">${n} ${what}, maks ${per} forsøk per ${what==="problemer"?"problem":"buldre"}</span>`; }
+function halfN(n){ return Math.max(2,Math.ceil(n/2)); }
 function perBoulder(root){
   try{
     root.querySelectorAll(".card > .blk").forEach(bl=>{
@@ -801,6 +803,7 @@ function perBoulder(root){
         if(/^Maks \d+ forsøk( totalt)?\.?$/i.test(t)){ li.remove(); return; }
         let html=li.innerHTML;
         html=html.replace(/,? ?<span class="key">maks \d+ (forsøk )?totalt<\/span>/gi,"").replace(/,? ?<span class="key">maks \d+ forsøk( totalt)?<\/span>/gi,"").replace(/, maks \d+ forsøk( totalt)?(?! per| på| hver)/gi,"").replace(/, maks \d+ totalt\./gi,".").replace(/ maks \d+ forsøk \(\d+ buldre × maks \d+\)/,"");
+        html=html.replace(/<span class="key">(\d+(?:–\d+)? (?:buldre|problemer)), (maks \d+ forsøk per (?:buldre|problem))<\/span> ([^,.–<][^,.]*?)([,.])/,'<span class="key">$1</span> $3, <span class="key">$2</span>$4');
         if(html!==li.innerHTML) li.innerHTML=html.replace(/,\s*\./g,".").replace(/\s+\./g,".");
       });
       const all=ul.textContent;
@@ -808,11 +811,42 @@ function perBoulder(root){
       if(!cntLi) return;
       const rpe=(all.match(/RPE (\d+)/)||[])[1]; if(rpe&&+rpe<6) return;
       if(!/per buldre|per problem|på hvert|på hver|maks \d+ forsøk hver/.test(all)){
-        const hard=/nær maks|på maks|over maks|RPE (8|9)/.test(cntLi.textContent);
-        cntLi.innerHTML=cntLi.innerHTML.replace(/(\d+(–\d+)? (nye |harde |koordinasjons)?(buldre|problemer)[^,.]*)/,`$1, maks ${hard?4:3} forsøk per ${/problemer/.test(cntLi.textContent)?"problem":"buldre"}`);
+        cntLi.innerHTML=cntLi.innerHTML.replace(/(\d+(–\d+)? (nye |harde |koordinasjons)?(buldre|problemer)[^,.]*)/,`$1, maks 3 forsøk per ${/problemer/.test(cntLi.textContent)?"problem":"buldre"}`);
       }
-      if(!/Går (de fleste|buldrene|problemene|de) på/.test(all)&&!/konkurranse/i.test(all)&&!/Ingen ekstra buldre|maks 2 forsøk/.test(all))
+      const hard=/nær maks|på maks|over maks|RPE (8|9)/.test(cntLi.textContent);
+      let reduced=false; try{ const si=session(selDate,true); const ii=si&&si.i; reduced=!!(ii&&(ii.light||ii.comp||ii.top||ii.nm||/^(nm|konk|topp)/.test(ii.phase||"")||(ii.c&&ii.c.vol))); }catch(e){}
+      if(!hard&&!reduced&&!/Går (de fleste|buldrene|problemene|de) på/.test(all)&&!/konkurranse/i.test(all)&&!/Ingen ekstra buldre|maks 2 forsøk/.test(all))
         ul.insertAdjacentHTML("beforeend",`<li>Går de fleste på første forsøk: ta 1–2 ${/problemer/.test(cntLi.textContent)?"problemer":"buldre"} til, så lenge tida rekker.</li>`);
+    });
+  }catch(e){}
+}
+
+/* ============ RPE-ANKER I HARDE BULDREØKTER ============ */
+const RPE_ANKER={"6":"kontrollert, aldri på grensa.","6–7":"kontrollert, aldri på grensa.","7":"du må ta i, men har kontroll. Ikke hardere.","7–8":"hardt, men du har kontroll. Ikke hardere.","8":"hardt, men flyttene sitter. Ikke hardere.","8–9":"full kraft, men flyttene sitter. Ikke hardere.","9":"alt du har, går så vidt. Ikke hardere."};
+function rpeAnchor(root){
+  try{
+    if(!["","#idag"].includes(location.hash)) return;
+    root.querySelectorAll(".card > .blk").forEach(bl=>{
+      const h=bl.querySelector("h4"); const name=h?(h.childNodes[0].textContent||"").trim():"";
+      if(/^(oppvarming|linked|3×10|nedtrapping|sva|lett|teknikk|forslag|mobilitet|styrke|fingerstyrke|test|spenst|pilates|aktivering|tau|hard led|4 × 4|2 × 4|ruter|falltrening)/i.test(name)) return;
+      const ul=bl.querySelector(":scope > ul"); if(!ul) return;
+      const lis=[...ul.children]; if(lis.some(li=>/^RPE \d/.test(li.textContent.trim()))) return;
+      const cnt=lis.find(li=>/\d+ (buldre|problemer)/.test(li.textContent)&&/RPE (\d)/.test(li.textContent)); if(!cnt) return;
+      const m=cnt.textContent.match(/RPE (\d(?:–\d)?)/); const a=m&&RPE_ANKER[m[1]]; if(!a) return;
+      cnt.innerHTML=cnt.innerHTML.replace(/,?\s*(<a[^>]*>)?RPE \d(?:–\d)?(<\/a>)?\.?/,"").replace(/\s+,/g,",").replace(/\.\s*\./g,".").replace(/\s+$/,"");
+      ul.insertAdjacentHTML("afterbegin",`<li><a href="#rpe">RPE ${m[1]}</a>: ${a}</li>`);
+    });
+  }catch(e){}
+}
+
+/* ============ ETTER INNLÆRING: KORTERE VISNING ============ */
+function isLate(){ try{ return (typeof selDate!=="undefined")&&selDate>=new Date(2026,10,30); }catch(e){ return false; } }
+function compactLate(root){
+  try{
+    if(!isLate()||!["","#idag"].includes(location.hash)) return;
+    root.querySelectorAll(".exlist .ex p").forEach(p=>{
+      const parts=p.innerHTML.split(/\s+·\s+(?=Pause)/); const first=parts[0].split(/(?<=\.)\s+(?=[A-ZÆØÅ«])/)[0];
+      p.innerHTML=first+(parts[1]?" · "+parts[1]:"");
     });
   }catch(e){}
 }
@@ -839,6 +873,7 @@ function warmTpl(root){
         else if(!first){ items=["10 min lett klatring, buldre eller autobelay."]; dur="10 min"; }
         else { items=["5 min puls.","5 min strikk.","10 min lett klatring, buldre eller autobelay.","5 min mobilitet."]; dur="25 min"; }
         const ul=bl.querySelector("ul")||(()=>{const u=document.createElement("ul"); bl.appendChild(u); return u;})();
+        if(isLate()&&items.length>1) items=[items.map(t=>t.replace(/\.$/,"")).join(" · ")+"."];
         ul.innerHTML=[R,...theme,...items].map(t=>"<li>"+t+"</li>").join("");
         bl.querySelectorAll(":scope > p").forEach(x=>x.remove());
         let d=h4.querySelector(".dur"); if(!d){ d=document.createElement("span"); d.className="dur"; h4.appendChild(d); } d.textContent=dur;
@@ -908,7 +943,9 @@ function normDay(root){
     });
     perBoulder(root);
     simplify(root);
+    rpeAnchor(root);
     warmTpl(root);
+    compactLate(root);
   }catch(e){}
 }
 
@@ -920,10 +957,10 @@ function lightRpe(root){
     const card=root.querySelector(".card"); if(!card) return;
     card.querySelectorAll(".blk").forEach(bl=>{
       const h=((bl.querySelector("h4")||{}).textContent||"").toUpperCase();
-      if(/OPPVARMING|NEDTRAPPING|STYRKE|MOBILITET/.test(h)) return;
-      const nx=bl.nextElementSibling; if(nx&&nx.classList.contains("exlist")) return;
-      if(/\b(sett|reps)\b/i.test(bl.textContent)) return;
-      bl.querySelectorAll("li").forEach(li=>{ li.innerHTML=li.innerHTML.replace(/RPE (\d+)(?:–(\d+))?/g,(m,a,b)=>{ a=+a; if(a<5) return m; return b?`RPE ${a-1}–${+b-1}`:`RPE ${a-1}`; }); });
+      if(/OPPVARMING|NEDTRAPPING|MOBILITET/.test(h)) return;
+      if(/STYRKE|KJERNE|SKULDER|BEIN/.test(h)&&["vilje","hakon"].includes(KEY)) return;
+      bl.querySelectorAll("li").forEach(li=>{ if(/lett uke|ett RPE-trinn/i.test(li.textContent)) return; li.innerHTML=li.innerHTML.replace(/RPE (\d+)(?:–(\d+))?/g,(m,a,b)=>{ a=+a; if(a<5) return m; return b?`RPE ${a-1}–${+b-1}`:`RPE ${a-1}`; }).replace(/\((\d+) reps igjen\)/g,(m,a)=>`(${+a+1} reps igjen)`);
+        const am=li.innerHTML.match(/^(?:<a [^>]*>)?RPE (\d(?:–\d)?)(?:<\/a>)?: /); if(am&&RPE_ANKER[am[1]]) li.innerHTML=am[0]+RPE_ANKER[am[1]]; });
     });
   }catch(e){}
 }
@@ -932,6 +969,7 @@ function lightRpe(root){
 function lbItems(sets,lvl,enkel){
   const fl=lvl===1?"ca. 14–16 flytt":"ca. 12 flytt";
   const grad=lvl===1?"RPE 6":"På flash-graden, RPE 7–8";
+  if(isLate()) return [`1–3 buldre på ${fl}. ${grad}.`,`<span class="key">${sets} sett × 4 repetisjoner</span>`,"1 repetisjon = én klatring fra start til topp eller fall, 2 min pause. 1 sett = 4 repetisjoner, 5 min pause."];
   const it=[enkel?`Velg 1–3 buldre på ${fl}. ${grad}. For få flytt: legg 2–4 traversflytt til starten.`:`Velg 1–3 buldre på ${fl}, jevnt vanskelige hele veien. ${grad}. For få flytt: legg 2–4 harde traversflytt til starten.`,
     `<span class="key">${sets} sett × 4 repetisjoner</span>`,
     "1 repetisjon = én klatring på buldret fra start til topp eller fall. 2 min pause mellom repetisjonene.",
@@ -991,7 +1029,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-114657";
+const APP_VERSION="2026-11-06-123018";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
