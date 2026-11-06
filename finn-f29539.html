@@ -339,7 +339,7 @@ function session(date,noTheme){
     if(!i.top) s.blocks.push(B("Del 2 · prosjekter",[f1?"RPE 7.":"RPE 8–9.","Det du ikke fikk på mandag. Skrudde buldre, board eller spraywall.",`<span class="key">Maks ${m2} forsøk.</span>`],"45 min"));
     s.blocks.push(B("Nedtrapping",["Store tak."],"15 min"));
     s.notes.push(["acc","Ute-lørdag: erstatter hele lørdagsøkta. Board flyttes til del 1 på mandag."]);
-    if(!noTheme&&kd){ s.blocks[1].items.splice(1,0,tLink(kd)); s.theme=kd.n; }
+    if(!noTheme&&kd){ const d2=s.blocks.find(x=>/^Del 2/.test(x.h)); if(d2){ d2.items.splice(1,0,tLink(kd)); s.theme=kd.n; } }
     s.fields=[["antall","Forsøk"],["topper","Topper"]];
     break; }
   case 7: s.blocks=[B("Hviledag",["Tapt økt tas ikke igjen."])]; break;
@@ -970,7 +970,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-091930";
+const APP_VERSION="2026-11-06-092215";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
