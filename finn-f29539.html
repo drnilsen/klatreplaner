@@ -291,7 +291,7 @@ function session(date,noTheme){
     let mx=i.M===1?20:15; if(i.top) mx=10; if(i.light) mx=half(mx);
     const hov=i.top?"4 buldre nær maks, RPE 8–9, maks 4 forsøk per buldre, 4 min pause.":i.M===1?"6–8 buldre 2 grader under maks, RPE 7, maks 3 forsøk per buldre, 3 min pause.":"4–6 buldre nær maks, RPE 8–9, maks 4 forsøk per buldre, 4 min pause.";
     s.blocks=[B("Oppvarming",["5 min puls, skulder/hofte.","15 min lett klatring, pyramide lett → middels, 10–12 buldre."],"25 min"),
-      B("Hoveddel",[hov,`<span class="key">Maks ${mx} forsøk totalt.</span>`,"Board/spraywall (40°) og skrudde buldre – fordel som du vil.","Gjerne noen kompresjonsbuldre.","Stopp: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"65–70 min"),
+      B("Hoveddel",[hov,`<span class="key">Maks ${mx} forsøk totalt.</span>`,"Board/spraywall og skrudde buldre – fordel som du vil.","Gjerne noen kompresjonsbuldre.","Stopp: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"65–70 min"),
       B("Nedtrapping",["Lett klatring."],"10 min")];
     if(!noTheme&&kd){ s.blocks[0].items.unshift(tLink(kd)); s.theme=kd.n; }
     s.fields=[["antall",`Buldre / forsøk (maks ${mx})`],["topper","Topper"]];
@@ -335,7 +335,7 @@ function session(date,noTheme){
     const d1=f1?"6–8 problemer 2 grader under maks, RPE 7, maks 3 forsøk per problem, 3 min pause.":"4–5 problemer nær maks, RPE 8–9, maks 4 forsøk per problem, 4 min pause.";
     s.title=i.top?"Board – bare del 1":"Hard buldring – board og prosjekter"; s.time=i.top?"ca. 1 t 30":"ca. 2 t 15";
     s.blocks=[B("Oppvarming",["Som mandag."],"30 min"),
-      B("Del 1 · board",[d1,`<span class="key">Maks ${m1} forsøk.</span>`,"Board 40°. Ikke to crimp-problemer på rad.","Stopp: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"45 min")];
+      B("Del 1 · tension board",[d1,`<span class="key">Maks ${m1} forsøk.</span>`,"Ikke to crimp-problemer på rad.","Stopp: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"45 min")];
     if(!i.top) s.blocks.push(B("Del 2 · prosjekter",[f1?"RPE 7.":"RPE 8–9.","Det du ikke fikk på mandag, eller nye buldre. Board/spraywall eller skrudde buldre.",`<span class="key">Maks ${m2} forsøk.</span>`],"45 min"));
     s.blocks.push(B("Nedtrapping",["Store tak."],"15 min"));
     s.notes.push(["acc","Ute-lørdag: erstatter hele lørdagsøkta. Board flyttes til del 1 på mandag."]);
@@ -939,7 +939,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-085418";
+const APP_VERSION="2026-11-06-085825";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
