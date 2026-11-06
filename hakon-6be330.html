@@ -172,7 +172,7 @@ function isoWeek(d){
 function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; return addDays(jan4,(w-1)*7-(dow-1)); }
 
 const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
-const NYTT={45:"Test lørdag",46:"Styrke B første gang (RPE 7)",47:"RPE 8",50:"Eksplosiv blokk",51:"Test mandag",2:"4 sett i supersett A og B",4:"5 sett på A1",7:"Eksplosiv blokk",9:"Test mandag · NM",10:"Tauøktene starter",11:"Hypertrofi 3",12:"Påske: bare Styrke A",15:"4 × 4 onsdag",16:"Eksplosiv blokk",17:"Test mandag",18:"Hypertrofi 4"};
+const NYTT={45:"Test avtales med trener",46:"Styrke B første gang (RPE 7)",47:"RPE 8",50:"Eksplosiv blokk",51:"Test mandag",2:"4 sett i supersett A og B",4:"5 sett på A1",7:"Eksplosiv blokk",9:"Test mandag · NM",10:"Tauøktene starter",11:"Hypertrofi 3",12:"Påske: bare Styrke A",15:"4 × 4 onsdag",16:"Eksplosiv blokk",17:"Test mandag",18:"Hypertrofi 4"};
 function info(date){
   const {y,w,dow}=isoWeek(date);
   const i={date,y,w,dow,light:false,phase:"utenfor",label:"Utenfor planen",blk:"H",post:false,test:null,rpe7:false};
@@ -180,7 +180,7 @@ function info(date){
   if(!inSeason){ i.phase=(y<2026||(y===2026&&w<45))?"før":"etter"; i.label=i.phase==="før"?"Før sesongstart":"Planen er ferdig"; return i; }
   i.phase="tr";
   if(y===2026){
-    if(w===45){ i.label="Innlæring + test"; i.test=6; }
+    if(w===45){ i.label="Innlæring"; }
     else if(w<=49){ i.label="Hypertrofi 1"; }
     else if(w<=51){ i.label="Eksplosiv 1"; i.blk="E"; if(w===51) i.test=1; }
     else { i.phase="jul"; i.label="Jul"; }
@@ -361,7 +361,7 @@ function session(date,noTheme){
   case 6: {
     s.key="lor";
     if(i.nm){ s.title="NM senior buldring"; s.time=""; s.blocks=[B("Konkurranse",["Ingen fingerstyrke og ingen Styrke B.","Én setning før hvert buldre."])]; s.fields=[["resultat","Resultat / plassering"]]; break; }
-    if(i.test===6){ s.title="Test"; s.time="ca. 1 t 20"; s.blocks=testBlocks(); s.fields=[["rm","1RM ekstravekt (kg)"]]; break; }
+    if(i.y===2026&&w===45){ s.title="Maksbuldring + lett buldring"; s.time="ca. 1 t 30"; s.blocks=[B("Oppvarming",[OPPV],"25 min"),maksB(i,true),B("Lett buldring",["Lette buldre, store tak."],"30 min")]; s.fields=[["antall","Forsøk"],["topper","Topper"]]; break; }
     if(i.jul1){ s.title="Styrke B"; s.time="ca. 1 t"; s.blocks=[]; s.extra=styrkeHtml(i,"B"); s.fields=[["chin","Chin-up: kg × reps"]]; break; }
     s.blocks=[B("Oppvarming",[OPPV],"25 min")];
     if(i.post){
@@ -898,7 +898,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-082321";
+const APP_VERSION="2026-11-06-082452";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
