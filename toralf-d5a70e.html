@@ -436,7 +436,7 @@ function vHodet(){
    <p class="small muted">Konkurranseuker: korte økter mandag og onsdag, ingen board, ingen styrke.</p></div>`;
 }
 function vTeknikk(){
-  return `<h2 style="margin-top:18px">Teknikk</h2><p class="small muted">Ett tema per uke: mandag, og lette buldre på slutten av fredag og lørdag. Roterer under <a href="#idag">I dag</a>.</p>
+  return `<h2 style="margin-top:18px">Teknikk</h2><p class="small muted">Ett tema per uke: mandag, og lette buldre på slutten av fredag og lørdag. Drillene er forslag – bytt gjerne. Roterer under <a href="#idag">I dag</a>.</p>
   ${TEMA.map(x=>`<div class="card" id="tema-${x.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${x.n}</h3><ul>${x.d.map(y=>`<li>${y}</li>`).join("")}</ul></div>`).join("")}`;
 }
 function vPlan(){
@@ -673,6 +673,7 @@ const SIMPLE_SUB=[[/ For få flytt: legg 2–4 (harde )?traversflytt til starten
  [/ Stopp øvelsen når høyden faller, kontakten blir lang eller landingen dyp eller ustabil\./,""],[/, pusterutine,/,","],[/ med beslutning,/,","],[/, rutinen\.$/,"."],
  [/^Første forsøk med hvile i tauet ved behov – finn beta og klippestillinger\. Deretter maks 3 forsøk, 15 min pause\./,"Maks 4 forsøk, 15 min pause."],[/ Rutinen før hvert forsøk\./,""],
  [/ Fingersmerte → stropper tilbake\./," Fingersmerte → stropper tilbake."]];
+function linkOnly(html,t){ const m=html.match(/^(\s*[^<]{0,40}?:\s*)?(<a [^>]*>[^<]*<\/a>)\s*(:|–|-)\s+[\s\S]*$/); if(m&&!/smerte/i.test(t||html)&&!/href="#rpe"/.test(m[2])) return (m[1]||"")+m[2]; return html; }
 function simplify(root){
   try{
     root.querySelectorAll(".card > .blk").forEach(bl=>{
@@ -683,6 +684,7 @@ function simplify(root){
         const t=li.textContent.trim();
         if(/smerte/i.test(t)&&!/^Stopp: grepet/.test(t)) return;
         if(SIMPLE_DROP.some(r=>r.test(t))){ li.remove(); return; }
+        { const h2=linkOnly(li.innerHTML,t); if(h2!==li.innerHTML){ li.innerHTML=h2; return; } }
         let html=li.innerHTML; SIMPLE_SUB.forEach(([r,b])=>{ html=html.replace(r,b); }); if(html!==li.innerHTML) li.innerHTML=html;
         let tx=li.textContent; const t0=tx; SIMPLE_SUB.forEach(([r,b])=>{ tx=tx.replace(r,b); }); if(tx!==t0) li.textContent=tx;
       });
@@ -733,7 +735,7 @@ function warmTpl(root){
         if(!/^oppvarming\b|· oppvarming$/i.test(name)) return;
         let nx=bl.nextElementSibling; while(nx&&!(nx.classList&&nx.classList.contains("blk")&&nx.querySelector("h4"))) nx=nx.nextElementSibling;
         const next=nx?(nx.querySelector("h4").childNodes[0].textContent||"").trim():"";
-        const theme=[...bl.querySelectorAll("li")].filter(li=>/^(Teknikktema|Kompresjonsdrill|Koordinasjon|Ukas tema)/.test(li.textContent.trim())).map(li=>li.innerHTML);
+        const theme=[...bl.querySelectorAll("li")].filter(li=>/^(Teknikktema|Kompresjonsdrill|Koordinasjon|Ukas tema)/.test(li.textContent.trim())).map(li=>linkOnly(li.innerHTML,li.textContent));
         const first=!blks.slice(0,idx).some(b=>!/^oppvarming/i.test(((b.querySelector("h4")||{}).textContent||"").trim()));
         const strength=/^(Styrke|Spenst|Topping|Test)/i.test(next)||/^Oppvarming · (Styrke|Test)/i.test(name);
         let items, dur;
@@ -895,7 +897,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-110345";
+const APP_VERSION="2026-11-06-111021";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

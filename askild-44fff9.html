@@ -295,7 +295,6 @@ function session(date,noTheme){
         main=[`${n} ruter nær maks på første forsøk, RPE 8.`,"6 min lesing, 10–15 min pause.","<a href='#teknikk' data-anchor='rutine'>Rutinen før hvert forsøk</a>.","Stopp: to fall på rad under eget onsight-nivå."]; dur="60 min"; }
       s.title=title+" (alt på led)";
       s.blocks=[B("Oppvarming",["Lett buldring, 2 lette ruter på led."],"20 min"), B(title.replace("Tau · ",""),main,dur)];
-      if((y===2026&&w>=50)||y===2027) s.blocks.push(B("Falltrening",["Kontrollerte fall på overhengende vegg, 4–6 fall.","Start med hofta ved siste slynge. Øk gradvis til føttene er 1–2 m over slynga."],"10 min"));
       s.blocks.push(B("Nedtrapping",["Lett klatring."],"10 min"));
     }
     s.notes.push(["acc","Konkurranse i dag? Den erstatter lørdagsøkta."]);
@@ -582,7 +581,7 @@ function vPlan(){
   }).join("");
   return `<h2 style="margin-top:18px">Periodisering</h2>
   <div class="card small"><ul>
-   <li><b>Fase 1 · Grunnlag (uke 45–51):</b> hard buldring 1–2 grader under maks. Tau: ledvolum, falltrening fra uke 50. Styrke 2 sett. Uke 48 lett.</li>
+   <li><b>Fase 1 · Grunnlag (uke 45–51):</b> hard buldring 1–2 grader under maks. Tau: ledvolum. Styrke 2 sett. Uke 48 lett.</li>
    <li><b>Jul (uke 52, 53, 1):</b> fri, lek, lett klatring. Ingen harde økter 24.–27. des. Uke 1: lett oppstart.</li>
    <li><b>Fase 2 (uke 2–7):</b> én ny ting per uke – uke 2 re-entry · uke 3 hard buldring nær maks · uke 4 tau onsight · uke 6 styrke 3 sett. Uke 5 lett.</li>
    <li><b>NM junior (uke 8):</b> lør 27. feb.</li>
@@ -634,7 +633,7 @@ function vRpe(){
    ["8","Full kraft, treffer og holder.","Hard pump, flyttene sitter.","Hard buldring fase 2 og 3, PE siste runder, 4 × 4, konkurranselikt tau, styrke (2 reps igjen)"],
    ["9","Alt du har, treffer så vidt.","Kvaliteten holder akkurat.","Brukes ikke i trening."],
    ["10","Bom eller fall.","Falt av pump.","Brukes ikke i trening."]];
-  const I=[["Hard buldring (man)","2 grader under maks, RPE 7, 3 min, maks 20 forsøk. Stopp: bom to ganger på et flytt du har klart før.","Nær maks, RPE 8, 3–4 min, maks 15 forsøk. Stopp: første forsøk med tydelig teknikkfall.","Nær maks, RPE 8, 4–5 min, maks 12 forsøk. Stopp: oppvarmingsbuldre begynner å kreve noe."],
+  const I=[["Hard buldring (man)","2 grader under maks, RPE 7, 3 min, maks 3 forsøk per buldre.","Nær maks, RPE 8, 3–4 min, maks 4 forsøk per buldre.","Nær maks, RPE 8, 4–5 min, maks 12 forsøk."],
    ["Onsdag","Linked: 3–4 grader under maks, RPE 6–7, 3–4 min.","Linked: 2–3 under maks, RPE 7–8, 3 min. Ingen PE uke 8.","Rutedag 2 × 4: 1–2 under onsight, RPE 7–8, 8 min."],
    ["3×10 (tor)","4+ grader under onsight, RPE 3–4.","Samme.","Samme, 2 runder i konkurranseuker."],
    ["Jam-format (lør)","RPE 5–8. 8–10 buldre, maks 3 forsøk per buldre, 20 totalt.","Samme.","Samme."],
@@ -677,8 +676,7 @@ const TEKNIKK=[
    "Klippetak bestemt på forhånd – velg selv under lesing, eller la sikringspartner velge. Også de dårlige.",
    "Bratt vegg: lås stillingen 3 s før du klipper.",
    "Pumpet klipp: siste rute i en 2 × 4- eller 4 × 4-runde – klippene teller like mye som flyttene.",
-   "Under lesing: bestem hvor du klipper fra for hvert klipp, ikke bare hvor flyttene går.",
-   "Falltrening: kontrollert fall med tau i hånden rett over bolten, lav høyde, øk gradvis."],
+   "Under lesing: bestem hvor du klipper fra for hvert klipp, ikke bare hvor flyttene går."],
   feil:["Klipper fra første tak bolten er ved, ikke det beste.","Henger i bøyd arm mens du klipper.","Drar opp for mye tau over hodet."],
   prog:"Dårligere tak, brattere vegg, mer pump."},
  {id:"hvile-tau",n:"Hvile på tau",mal:"Hente seg inn underveis – planlagt, ikke tilfeldig.",slik:[],
@@ -695,7 +693,7 @@ function vTeknikk(){
   ${TEKNIKK.map(t=>`<div class="card" id="tema-${t.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${t.n}</h3>
    <p style="margin:0 0 6px"><b>Mål:</b> ${t.mal}</p>
    ${t.slik.length?`<div class="blk"><h4>Slik</h4><ul>${t.slik.map(x=>`<li>${x}</li>`).join("")}</ul></div>`:""}
-   <div class="blk"><h4>Øvelse</h4><ul>${t.drill.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+   <div class="blk"><h4>Forslag til drill</h4><ul>${t.drill.map(x=>`<li>${x}</li>`).join("")}</ul></div>
    <div class="blk"><h4>Typiske feil</h4><ul>${t.feil.map(x=>`<li>${x}</li>`).join("")}</ul></div>
    <p class="small" style="margin:10px 0 0"><b>Vanskeligere:</b> ${t.prog}</p></div>`).join("")}`;
 }
@@ -918,6 +916,7 @@ const SIMPLE_SUB=[[/ For få flytt: legg 2–4 (harde )?traversflytt til starten
  [/ Stopp øvelsen når høyden faller, kontakten blir lang eller landingen dyp eller ustabil\./,""],[/, pusterutine,/,","],[/ med beslutning,/,","],[/, rutinen\.$/,"."],
  [/^Første forsøk med hvile i tauet ved behov – finn beta og klippestillinger\. Deretter maks 3 forsøk, 15 min pause\./,"Maks 4 forsøk, 15 min pause."],[/ Rutinen før hvert forsøk\./,""],
  [/ Fingersmerte → stropper tilbake\./," Fingersmerte → stropper tilbake."]];
+function linkOnly(html,t){ const m=html.match(/^(\s*[^<]{0,40}?:\s*)?(<a [^>]*>[^<]*<\/a>)\s*(:|–|-)\s+[\s\S]*$/); if(m&&!/smerte/i.test(t||html)&&!/href="#rpe"/.test(m[2])) return (m[1]||"")+m[2]; return html; }
 function simplify(root){
   try{
     root.querySelectorAll(".card > .blk").forEach(bl=>{
@@ -928,6 +927,7 @@ function simplify(root){
         const t=li.textContent.trim();
         if(/smerte/i.test(t)&&!/^Stopp: grepet/.test(t)) return;
         if(SIMPLE_DROP.some(r=>r.test(t))){ li.remove(); return; }
+        { const h2=linkOnly(li.innerHTML,t); if(h2!==li.innerHTML){ li.innerHTML=h2; return; } }
         let html=li.innerHTML; SIMPLE_SUB.forEach(([r,b])=>{ html=html.replace(r,b); }); if(html!==li.innerHTML) li.innerHTML=html;
         let tx=li.textContent; const t0=tx; SIMPLE_SUB.forEach(([r,b])=>{ tx=tx.replace(r,b); }); if(tx!==t0) li.textContent=tx;
       });
@@ -978,7 +978,7 @@ function warmTpl(root){
         if(!/^oppvarming\b|· oppvarming$/i.test(name)) return;
         let nx=bl.nextElementSibling; while(nx&&!(nx.classList&&nx.classList.contains("blk")&&nx.querySelector("h4"))) nx=nx.nextElementSibling;
         const next=nx?(nx.querySelector("h4").childNodes[0].textContent||"").trim():"";
-        const theme=[...bl.querySelectorAll("li")].filter(li=>/^(Teknikktema|Kompresjonsdrill|Koordinasjon|Ukas tema)/.test(li.textContent.trim())).map(li=>li.innerHTML);
+        const theme=[...bl.querySelectorAll("li")].filter(li=>/^(Teknikktema|Kompresjonsdrill|Koordinasjon|Ukas tema)/.test(li.textContent.trim())).map(li=>linkOnly(li.innerHTML,li.textContent));
         const first=!blks.slice(0,idx).some(b=>!/^oppvarming/i.test(((b.querySelector("h4")||{}).textContent||"").trim()));
         const strength=/^(Styrke|Spenst|Topping|Test)/i.test(next)||/^Oppvarming · (Styrke|Test)/i.test(name);
         let items, dur;
@@ -1141,7 +1141,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-110345";
+const APP_VERSION="2026-11-06-111021";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
