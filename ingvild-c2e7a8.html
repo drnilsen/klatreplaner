@@ -735,7 +735,7 @@ function fillRpe(root){
   if(!root||location.hash==="#rpe") return;
   root.querySelectorAll(".blk").forEach(bl=>{
     const h4=bl.querySelector("h4"); if(!h4) return;
-    const head=(h4.childNodes[0]&&h4.childNodes[0].textContent||"").trim().toUpperCase(); if(!head) return;
+    const head=(h4.childNodes[0]&&h4.childNodes[0].textContent||"").trim().toUpperCase(); if(!head||/FALLTRENING/.test(head)) return;
     let t=bl.innerText||bl.textContent; const nx=bl.nextElementSibling; if(nx&&nx.classList.contains("exlist")) t+=nx.textContent;
     if(/RPE/.test(t)) return;
     const r=RPE_DEF.find(x=>x[0].test(head)); if(!r||!r[1]) return;
@@ -983,7 +983,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-090657";
+const APP_VERSION="2026-11-06-110345";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
