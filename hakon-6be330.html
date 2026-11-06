@@ -296,7 +296,7 @@ const OPPV="Puls, skulder/hofte, pyramide lett → middels, 8–10 buldre.";
 function testBlocks(){ return [B("Oppvarming",["Puls, skulder/hofte, 5–6 lette buldre. Ikke slitne armer før testen."],"20 min"),
   B("Test · 1RM vektet pull-up",["Grep som A1, strake armer i utgangsheng, ingen kipping, haka tydelig over stanga.","Oppvarmingssett (% av forventet ekstravekt): kroppsvekt × 3, ca. 70 % × 2, ca. 90 % × 1. 3 min pause.","<span class=\"key\">Maks 3 forsøk på 1RM</span>: første på ca. 95 %, deretter +1,25–2,5 kg. 4–5 min pause.","Logg ekstravekt. Samme tidspunkt og utstyr hver gang."],"30 min"),
   B("Lett buldring",["Ingen maksbuldring."],"30 min")]; }
-function maksB(i,lør){ const f1=i.y===2026; const mx=i.light?4:(f1?10:8); return B("Maksbuldring",[f1?`4–5 buldre 1 grad under maks, RPE 8, <span class="key">maks ${mx} forsøk</span>, 3 min pause.`:`3–4 buldre nær maks, RPE 8–9, <span class="key">maks ${mx} forsøk</span>, 3–4 min pause.`,
+function maksB(i,lør){ const f1=i.y===2026; const mx=i.light?4:(f1?10:8); if(lør&&f1) return B("Buldring etter fingerstyrke",[`4–5 buldre 2 grader under maks, RPE 7, maks 3 forsøk per buldre, 3 min pause.`,"Skrudde buldre, board og spraywall – fordel som du vil."],"30 min"); return B("Maksbuldring",[f1?`4–5 buldre 1 grad under maks, RPE 8, <span class="key">maks ${mx} forsøk</span>, 3 min pause.`:`3–4 buldre nær maks, RPE 8–9, <span class="key">maks ${mx} forsøk</span>, 3–4 min pause.`,
   "Skrudde buldre, board og spraywall – fordel som du vil.",i.blk==="E"?"Gjerne dynamiske flytt på store tak.":"Gjerne kraftige flytt og kompresjon.","Stopp: forsøkstaket, eller første forsøk med tydelig teknikkfall."],"30 min"); }
 function session(date,noTheme){
   const i=info(date), w=i.w;
@@ -371,7 +371,7 @@ function session(date,noTheme){
       s.fields=[["heng","Fingerheng ekstravekt (kg)"],...(påske?[]:[["chin","Chin-up: kg × reps"]])];
       break; }
     s.title="Fingerstyrke + maksbuldring + Styrke B"; s.time="ca. 2 t 30";
-    s.extra=fingerHtml(i)+`<div class="blk"><h4>Maksbuldring<span class="dur">30 min</span></h4><ul>${maksB(i,true).items.map(x=>`<li>${rpeLink(x)}</li>`).join("")}</ul></div><div class="blk"><h4>Nedtrapping<span class="dur">5 min</span></h4><ul><li>${rpeLink("RPE 1–2")}.</li><li>Lett klatring, drikke, skifte.</li></ul></div>`+styrkeHtml(i,"B");
+    s.extra=fingerHtml(i)+`<div class="blk"><h4>${maksB(i,true).h}<span class="dur">30 min</span></h4><ul>${maksB(i,true).items.map(x=>`<li>${rpeLink(x)}</li>`).join("")}</ul></div><div class="blk"><h4>Nedtrapping<span class="dur">5 min</span></h4><ul><li>${rpeLink("RPE 1–2")}.</li><li>Lett klatring, drikke, skifte.</li></ul></div>`+styrkeHtml(i,"B");
     s.fields=[["heng","Fingerheng ekstravekt (kg)"],["chin","Chin-up: kg × reps"]];
     break; }
   case 7: s.blocks=[B("Hviledag",["Tapt økt tas ikke igjen."])]; break;
@@ -993,7 +993,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-090657";
+const APP_VERSION="2026-11-06-091529";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
