@@ -299,7 +299,7 @@ function session(date,noTheme){
         main=[`${n} ruter nær maks på første forsøk, RPE 8.`,"6 min lesing, 10–15 min pause.","<a href='#teknikk' data-anchor='rutine'>Rutinen før hvert forsøk</a>.","Stopp: to fall på rad under eget onsight-nivå."]; dur="60 min"; }
       s.title=title+" (alt på led)";
       s.blocks=[B("Oppvarming",["Lett buldring, 2 lette ruter på led."],"20 min"), B(title.replace("Tau · ",""),main,dur)];
-      if((y===2026&&w>=50)||y===2027) s.blocks.push(B("Falltrening",["Kontrollerte fall over taudraget på overhengende vegg, trener sikrer.","4–6 fall. Start 0,5 m over draget, øk 0,5 m per økt til 2–3 m."],"10 min"));
+      if((y===2026&&w>=50)||y===2027) s.blocks.push(B("Falltrening",["Kontrollerte fall på overhengende vegg, 4–6 fall.","Start med hofta ved siste ekspress. Øk gradvis til føttene er 1–2 m over ekspressen."],"10 min"));
       s.blocks.push(B("Nedtrapping",["Lett klatring."],"10 min"));
     }
     s.notes.push(["acc","Konkurranse i dag? Den erstatter lørdagsøkta."]);
@@ -1049,7 +1049,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-074028";
+const APP_VERSION="2026-11-06-074435";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
