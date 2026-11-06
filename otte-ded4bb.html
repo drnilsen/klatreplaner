@@ -339,13 +339,13 @@ function session(date,noTheme){
     if(i.phase==="led"){ s.title="Enkel ledøkt"; s.time="ca. 1 t 30";
       s.blocks=[B("Oppvarming",["Lett buldring, 2 lette ruter på led."],"20 min"),B("Ruter",["8–10 ruter 3–4 grader under onsight, RPE 5–6."],"60 min"),B("Nedtrapping",["Lett klatring."],"10 min")];
       s.fields=[["antall","Ruter"]]; break; }
-    let tot=i.L===1?20:18, del2=i.L===1?10:8;
-    if(i.phase==="top"&&i.top===2) tot=12;
+    let tot=i.L===1?18:14, del2=i.L===1?12:8;
+    if(i.phase==="top"&&i.top===2) tot=10;
     if(i.light){ tot=half(tot); del2=half(del2); }
     s.title=i.phase==="top"?"Konkurranseformat – bare del 1":"Hard buldring – konkurranseformat"; s.time=i.phase==="top"?"ca. 1 t 30":"ca. 2 t 15";
     s.blocks=[B("Oppvarming",["Som mandag. Avslutt med 2–3 buldre som krever presisjon på første forsøk."],"30 min"),
-      B("Del 1 · nye buldre",[i.L===1?"RPE 7: buldre 2 grader under maks.":"RPE 8–9.",`5 nye buldre i <a href='#teknikk' data-anchor='format'>konkurranseformat</a>. Maks 4 forsøk per buldre, <span class="key">maks ${tot} totalt</span>.`,"Ingen beta fra andre. Registrer topp, sone og forsøk."],"50 min")];
-    if(i.phase!=="top") s.blocks.push(B("Del 2",[i.L===1?"RPE 7: repetere med beta.":"RPE 8–9.",`Prosjektering eller repetere det du falt på, med beta. <span class="key">Maks ${del2} forsøk.</span>`],"40 min"));
+      B("Del 1 · nye buldre",[i.L===1?"6 nye buldre 2 grader under maks, RPE 7, maks 3 forsøk per buldre.":"4 nye buldre nær maks, RPE 8–9, maks 4 forsøk per buldre.",`<a href='#teknikk' data-anchor='format'>Konkurranseformat</a>, <span class="key">maks ${tot} forsøk totalt</span>.`,"Ingen beta fra andre. Registrer topp, sone og forsøk."],"50 min")];
+    if(i.phase!=="top") s.blocks.push(B("Del 2",[i.L===1?"RPE 7.":"RPE 8–9.",`Prosjektering eller repetere det du falt på, med beta. <span class="key">Maks ${del2} forsøk.</span>`],"40 min"));
     s.blocks.push(B("Uten nye buldre",[i.L===1?"RPE 7.":"RPE 8–9.",`Mandagens tak for fasen (${i.L===1?20:15}), ingen del 2.`]));
     s.blocks.push(B("Nedtrapping",["Lett klatring."],"15 min"));
     s.fields=[["poeng","Poeng nye buldre"],["topper","Topper og soner"]];
@@ -574,8 +574,8 @@ function vKonk(){
    <li><b>Lør:</b> oppvarming 30–40 min før isolasjon (pyramide 6–8 buldre), rutinen, mat og drikke mellom runder.</li>
    <li><b>Søn:</b> semi/finale, samme rutine. Mandag etter NM: hvile.</li><li>Ingen styrke og ingen spenst siste 5 dager.</li></ul></div>
   <div class="card"><h3 style="margin-top:0">Topping (uke 7–8 og 15–16)</h3><div class="tscroll"><table><thead><tr><th>Uke</th><th>Harde forsøk (man + lør)</th><th>Linked (sett × 4)</th><th>Styrke</th></tr></thead><tbody>
-   <tr><td>Fase 2</td><td>15 + 26 = 41</td><td>3</td><td>Fullt</td></tr><tr><td>7 / 15</td><td>10 + 18 = 28</td><td>2</td><td>Tirsdag 30 min</td></tr>
-   <tr><td>8 / 16</td><td>10 + 12 = 22</td><td>1</td><td>2 sett, RPE 8</td></tr><tr><td>9 / 17 / 19</td><td>Man: maks 12</td><td>0</td><td>0</td></tr></tbody></table></div>
+   <tr><td>Fase 2</td><td>15 + 22 = 37</td><td>3</td><td>Fullt</td></tr><tr><td>7 / 15</td><td>10 + 14 = 24</td><td>2</td><td>Tirsdag 30 min</td></tr>
+   <tr><td>8 / 16</td><td>10 + 10 = 20</td><td>1</td><td>2 sett, RPE 8</td></tr><tr><td>9 / 17 / 19</td><td>Man: maks 12</td><td>0</td><td>0</td></tr></tbody></table></div>
    <p class="small muted" style="margin-bottom:0">Intensitet og antall økter som i fase 2.</p></div>`;
 }
 function vPlan(){
@@ -990,7 +990,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-074757";
+const APP_VERSION="2026-11-06-075819";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
