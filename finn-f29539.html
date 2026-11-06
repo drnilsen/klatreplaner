@@ -736,6 +736,36 @@ function fillRpe(root){
 
 
 
+
+/* ============ FORENKLING AV ØKTBESKRIVELSER ============ */
+const SIMPLE_DROP=[/^Stopp\b/,/^Stopp:/,/^Sluttpunkt/,/^Rutinen\b/,/Rutinen før hvert forsøk\.?$/,/^Pusterutine/,/^Pust ut tre ganger/,/^Les ferdig før/,/^Ett problem om gangen/,
+ /^Ingen egen oppvarming/,/^Greit å falle/,/^Bytt buldre/,/^Tak: /,/^Volumvegg, slopere/,/^Varier: /,/^Gjerne /,/^Et flytt tregere/,/^Fokus: /,/^Siste rute i siste runde/,/^Fall eller heng/,
+ /^Alltid: /,/^Runde 1: 3 s stillstand/,/^Ingen forsøk på noe du kan falle/,/^Stopp klatringen/,/^Snakketempo/,/^Én rute = ett tema/,/^Maks 2 problemer der lister/,/^Ingen dynamiske flytt til lister/,
+ /^Ingen beta fra andre/,/^Hvilestillinger: /,/^Lås sekvensene/,/^Ingen harde forsøk i denne delen/,/^Vil du øve på konkurranse/,/^Mat og drikke/,/^Én setning før hvert/,/^Verktøy 1–3/,/^Plan for kvalik/,
+ /^Oppvarming ferdig 15 min/,/^Stopp i et sett/,/^Pause 60–90 s\. Stopp/,/^Les hele buldret/];
+const SIMPLE_SUB=[[/ For få flytt: legg 2–4 (harde )?traversflytt til starten\./,""],[/, jevnt vanskelige hele veien\./,"."],[/ Har du valgt 2–3 buldre: bytt buldre mellom settene\./,""],
+ [/^1 repetisjon = én klatring på buldret fra start til topp eller fall\. 2 min pause mellom repetisjonene\./,"1 repetisjon = én klatring fra start til topp eller fall. 2 min pause."],
+ [/^Land på to bein\. .*/,"Land på to bein."],[/ Se på buldret, lag en plan, prøv\./,""],[/ Bruker du alle tre forsøkene på de fleste: hold deg til antallet over\./,""],
+ [/ Stopp øvelsen når høyden faller, kontakten blir lang eller landingen dyp eller ustabil\./,""],[/, pusterutine,/,","],[/ med beslutning,/,","],[/, rutinen\.$/,"."],
+ [/^Første forsøk med hvile i tauet ved behov – finn beta og klippestillinger\. Deretter maks 3 forsøk, 15 min pause\./,"Maks 4 forsøk, 15 min pause."],[/ Rutinen før hvert forsøk\./,""],
+ [/ Fingersmerte → stropper tilbake\./," Fingersmerte → stropper tilbake."]];
+function simplify(root){
+  try{
+    root.querySelectorAll(".card > .blk").forEach(bl=>{
+      const h=bl.querySelector("h4"); const name=h?(h.childNodes[0].textContent||"").trim():"";
+      if(/^(Sluttpunkt|Stopp økta)$/i.test(name)){ bl.remove(); return; }
+      if(/^oppvarming/i.test(name)) return;
+      bl.querySelectorAll(":scope > ul > li").forEach(li=>{
+        const t=li.textContent.trim();
+        if(/smerte/i.test(t)&&!/^Stopp: grepet/.test(t)) return;
+        if(SIMPLE_DROP.some(r=>r.test(t))){ li.remove(); return; }
+        let html=li.innerHTML; SIMPLE_SUB.forEach(([r,b])=>{ html=html.replace(r,b); }); if(html!==li.innerHTML) li.innerHTML=html;
+        let tx=li.textContent; const t0=tx; SIMPLE_SUB.forEach(([r,b])=>{ tx=tx.replace(r,b); }); if(tx!==t0) li.textContent=tx;
+      });
+    });
+  }catch(e){}
+}
+
 /* ============ FELLES OPPVARMINGSMAL ============ */
 function warmTpl(root){
   try{
@@ -770,6 +800,7 @@ function warmTpl(root){
 function normDay(root){
   try{
     if(!root) return;
+    simplify(root);
     if(!["","#idag"].includes(location.hash)){ warmTpl(root); return; }
     const card=[...root.querySelectorAll(".card")].find(c=>c.querySelector(":scope > h2")); if(!card) return;
     const title=card.querySelector(":scope > h2").textContent.trim();
@@ -824,6 +855,7 @@ function normDay(root){
       const lis=[...ul.children]; if(!lis.length||/RPE/.test(lis[0].textContent)) return;
       const r=lis.find(x=>/RPE/.test(x.textContent)); if(r) ul.insertBefore(r,lis[0]);
     });
+    simplify(root);
     warmTpl(root);
   }catch(e){}
 }
@@ -907,7 +939,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-083811";
+const APP_VERSION="2026-11-06-085332";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
