@@ -559,13 +559,7 @@ const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,1))}${refCard("Fase 2 og etter NM",D(2027,4,1))}${refCard("Topping",D(2027,7,1))}${refCard("Konkurranseuke",D(2027,9,1))}`,
  tir:()=>`<h2 style="margin-top:18px">Tirsdag · Styrke A</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,49,2)))}${refCard("Topping",D(2027,7,2))}`,
  ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · fase 1 (uke 45–51, 1–2)",D(2026,47,3))}${refCard("Linked boulders · fase 2 (uke 3–18)",D(2027,4,3))}${refCard("Rutedag på led · uke 20",D(2027,20,3))}`,
- tor:()=>`<h2 style="margin-top:18px">Torsdag · Spenst + 3×10 + skulder</h2>${curLabel()}
-   <div class="card"><h3 style="margin-top:0">Spenst per uke · maks 80 kontakter</h3><div class="tscroll"><table><thead><tr><th>Uker</th><th>Innhold</th><th>Kontakter</th></tr></thead><tbody>
-   <tr><td>45–46</td><td>Pogos 2 × 15 · gå av kasse 3 × 5</td><td>45</td></tr><tr><td>47–49</td><td>+ kassehopp 40 cm 3 × 4</td><td>57</td></tr>
-   <tr><td>50–5</td><td>Pogos 2 × 15 · kassehopp 3 × 4 · lengdehopp 3 × 4</td><td>54</td></tr><tr><td>6, 10</td><td>Pogos 2 × 15 · lengdehopp 3 × 4 · ettbeins landing 3 × 4 /bein</td><td>66</td></tr>
-   <tr><td>11–</td><td>Pogos 2 × 15 · ettbeins landing 3 × 4 /bein · kvart rotasjon 3 × 3 /side</td><td>72</td></tr>
-   <tr><td>Topping</td><td>Pogos 2 × 10 · kassehopp 2 × 3</td><td>26</td></tr><tr><td>9, 17, 19, 20</td><td>Ingen spenst</td><td>0</td></tr></tbody></table></div></div>
-   ${refCard("Denne uka",nowOr(4,D(2026,47,4)))}`,
+ tor:()=>`<h2 style="margin-top:18px">Torsdag · Spenst + 3×10 + skulder</h2>${curLabel()}${refCard("Denne uka",nowOr(4,D(2026,47,4)))}`,
  lor:()=>`<h2 style="margin-top:18px">Lørdag · Hard buldring – konkurranseformat</h2>${curLabel()}${refCard("Fase 1",D(2026,46,6))}${refCard("Fase 2 og etter NM",D(2027,4,6))}${refCard("Topping",D(2027,8,6))}`,
 };
 function vKonk(){
@@ -996,7 +990,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-074028";
+const APP_VERSION="2026-11-06-074757";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
