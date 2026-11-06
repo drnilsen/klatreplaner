@@ -532,7 +532,7 @@ function vPlan(){
 function vRpe(){
   return `<h2 style="margin-top:18px">RPE og intensitet</h2>
   <p class="small muted">RPE = hvor hardt det kjennes, 1–10. Nå: uke ${info(cur).w} · ${info(cur).label}.</p>
-  <div class="card"><h3 style="margin-top:0">RPE-skala</h3><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">3–4</div><div><div class="small"><b>Styrke:</b> Oppvarmingssett.</div><div class="small"><b>Lett klatring:</b> Rolig pust, lett varme. Trinn 1.</div></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">5</div><div><div class="small"><b>Styrke:</b> 4 eller flere reps igjen.</div><div class="small"><b>Lett klatring:</b> Lett pump som går over i pausen. Fra trinn 2.</div></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">6–7</div><div><div class="small"><b>Styrke:</b> 3–4 reps igjen. Lette uker, tung skoleuke.</div><div class="small"><b>Lett klatring:</b> Merkbar pump – for hardt.</div></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">7–8</div><div><div class="small"><b>Styrke:</b> 2–3 reps igjen. Arbeidssett 8–12.</div></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">8</div><div><div class="small"><b>Styrke:</b> 2 reps igjen. Hovedløft 3–5.</div></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">9</div><div><div class="small"><b>Styrke:</b> 1 rep igjen. Brukes ikke.</div></div></div></div>
+  ${rpeTable({"1–2": "Oppvarming", "3–4": "Lett klatring trinn 1, oppvarmingssett", "5–6": "Lett klatring fra trinn 2 (RPE 5). Lette uker: styrke RPE 6–7", "7": "Styrke 8–12 reps (RPE 7–8). Hovedløft uke 1 og lette uker", "8": "Hovedløft 3–5 reps fra uke 2", "9": "Brukes ikke.", "10": "Brukes ikke."})}
   <div class="card"><h3 style="margin-top:0">Intensitet gjennom sesongen</h3><ul><li>Uke 43–52: styrke 8–12 reps, RPE 7–8. Lett klatring RPE 3–4.</li><li>Fra uke 1: hovedløft 3–6 reps, RPE 8. Øvrige øvelser 8–12 reps.</li><li>Lett klatring øker trinn for trinn, RPE 3–5. Smerteregelen gjelder alltid.</li><li>Lette uker: 2 sett, RPE 6–7.</li></ul></div>`;
 }
 function vRegler(){
@@ -868,7 +868,20 @@ function perBoulder(root){
 }
 
 /* ============ RPE-ANKER I HARDE BULDREØKTER ============ */
-const RPE_ANKER={"6":"kontrollert, aldri på grensa.","6–7":"kontrollert, aldri på grensa.","7":"du må ta i, men har kontroll. Ikke hardere.","7–8":"hardt, men du har kontroll. Ikke hardere.","8":"hardt, men flyttene sitter. Ikke hardere.","8–9":"full kraft, men flyttene sitter. Ikke hardere.","9":"alt du har, går så vidt. Ikke hardere."};
+const RPE_ANKER={"6":"kontrollert, aldri på grensa.","6–7":"kontrollert, aldri på grensa.","7":"du må ta i, men har kontroll. Ikke hardere.","7–8":"du må ta i, flyttene sitter. Ikke hardere.","8":"full kraft, flyttene sitter. Ikke hardere.","8–9":"full kraft, flyttene sitter – de hardeste så vidt. Ikke hardere.","9":"alt du har, går så vidt. Ikke hardere."};
+/* ============ FELLES RPE-SKALA (lik for alle) ============ */
+const RPE_SKALA=[
+ ["1–2","Ingen flytt krever noe.","Oppvarmingssett, langt fra slitsomt.","Kan snakke hele setninger. Ingen pump."],
+ ["3–4","Lette buldre, flytende.","Lette oppvarmingssett.","Rolig pust, lett varme i underarmene."],
+ ["5–6","Middels buldre, går på første eller andre forsøk.","4 eller flere reps igjen.","Merkbar pump som går tilbake i pausen."],
+ ["7","Du må ta i, men har kontroll.","3 reps igjen.","Tydelig pump, føttene krever jobb."],
+ ["8","Full kraft, flyttene sitter.","2 reps igjen.","Hard pump, flyttene sitter."],
+ ["9","Alt du har, går så vidt.","1 rep igjen – brukes ikke.","Kvaliteten holder akkurat."],
+ ["10","Bom eller fall.","Svikt – brukes ikke.","Falt av pump."]];
+function rpeTable(brukes){
+  brukes=brukes||{};
+  return `<div class="card"><h3 style="margin-top:0">RPE-skala</h3><p class="small muted">Lik for alle i gruppa. RPE 8–9 i en økt betyr 8 på de fleste forsøkene, 9 på de hardeste.</p>${RPE_SKALA.map(r=>`<div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">${r[0]}</div><div><div class="small"><b>Buldring:</b> ${r[1]}</div><div class="small"><b>Styrke:</b> ${r[2]}</div><div class="small"><b>Linked, tau:</b> ${r[3]}</div>${brukes[r[0]]?`<p class="small">Brukes i: ${brukes[r[0]]}</p>`:""}</div></div>`).join("")}</div>`;
+}
 function rpeAnchor(root){
   try{
     if(!["","#idag"].includes(location.hash)) return;
@@ -1080,7 +1093,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-123018";
+const APP_VERSION="2026-11-06-220016";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
