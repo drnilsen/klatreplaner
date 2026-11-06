@@ -280,11 +280,7 @@ function session(date,noTheme){
       s.key="lor"; s.title="Buldring i jam-format"; s.time="ca. 2 t";
       const max=i.light?10:20; s.count={label:"Forsøk",max,extra:"Topper"};
       s.blocks=[B("Oppvarming",["Samme rutine hver gang, lik konkurranse."],"25 min"),
-        B("Jam-format",["Nye buldre: 8–10 buldre fra lett til hardt, valgfri rekkefølge.",(lvl(i)===1?"RPE 5–7: hardeste buldre 2 grader under maks.":"RPE 5–8. Ingen buldre på RPE 9.")+" Unngå små lister og lukket krimp på de harde buldrene.",
-          `Maks 3 forsøk per buldre, <span class="key">maks ${max} forsøk totalt</span>, minst 2 min pause mellom forsøk.`,
-          "<a href='#teknikk' data-anchor='rutine'>Rutinen før hvert forsøk</a>.","Mål: like mange topper i siste tredjedel som i første.",
-          "Sluttpunkt: tiden, eller tre forsøk på rad med dårligere kvalitet.",
-          "Uten nye buldre: som mandag, hoveddel 60 min, eller buldre du ikke har prøvd på andre vegger."],"75 min"),
+        B("Jam-format",[(lvl(i)===1?"RPE 5–7.":"RPE 5–8."),"8–10 buldre fra lett til hardt.",`Maks 3 forsøk per buldre, <span class="key">maks ${max} totalt</span>.`],"75 min"),
         B("Nedtrapping",["Lett klatring."],"15 min")];
     } else {
       s.key="lor"; s.time="ca. 1 t 40";
@@ -641,7 +637,7 @@ function vRpe(){
   const I=[["Hard buldring (man)","2 grader under maks, RPE 7, 3 min, maks 20 forsøk. Stopp: bom to ganger på et flytt du har klart før.","Nær maks, RPE 8, 3–4 min, maks 15 forsøk. Stopp: første forsøk med tydelig teknikkfall.","Nær maks, RPE 8, 4–5 min, maks 12 forsøk. Stopp: oppvarmingsbuldre begynner å kreve noe."],
    ["Onsdag","Linked: 3–4 grader under maks, RPE 6–7, 3–4 min.","Linked: 2–3 under maks, RPE 7–8, 3 min. Ingen PE uke 8.","Rutedag 2 × 4: 1–2 under onsight, RPE 7–8, 8 min."],
    ["3×10 (tor)","4+ grader under onsight, RPE 3–4.","Samme.","Samme, 2 runder i konkurranseuker."],
-   ["Jam-format (lør)","RPE 5–8, ingen buldre på RPE 9. Maks 3 forsøk per buldre, 20 totalt, 2 min mellom forsøk.","Samme.","Samme."],
+   ["Jam-format (lør)","RPE 5–8. 8–10 buldre, maks 3 forsøk per buldre, 20 totalt.","Samme.","Samme."],
    ["Tau (lør)","Ledvolum: 3–4 under onsight, RPE 5.","Onsight: 1–2 under onsight, RPE 7, 8–10 min.","Uke 9–14 4 × 4: 3–4 under onsight, RPE 7–8, 10 min. Uke 15–20: nær maks, RPE 8, 10–15 min. Stopp: to fall på rad under eget onsight-nivå."],
    ["Styrke A (tor)","2 sett, RPE 7, 45–60 s.","Fra uke 6: 3 sett (B2, C1, D, E: 2), RPE 7–8, 45–60 s. Ett sett ned når onsdagen ble oransje.","2 sett, RPE 7. Ingen styrke siste 5 dager før konkurranse."]];
   const ph=["Fase 1 · uke 45–51, 1–2","Fase 2 · uke 3–7","Fase 3 · uke 9–20"];
@@ -1082,7 +1078,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-083811";
+const APP_VERSION="2026-11-06-084859";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
