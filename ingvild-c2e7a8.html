@@ -243,7 +243,7 @@ const LED=[
  {id:"klipp",n:"Klipp i vanskelige posisjoner",d:["Hvert klipp fra en ny stilling: lavt, høyt, dårlig posisjon, motsatt hånd.","Klippestillingen bestemt på forhånd – velg selv under lesing, eller la sikringspartner velge."]},
  {id:"hvile",n:"Hvile",d:["Tre hvilestillinger per rute, 10 pust i hver, rist ut én arm om gangen."]}];
 const pick=(arr,i,off=0)=>arr[(Math.max(0,weekIndex(i))+off)%arr.length];
-function tLink(t,txt){ return `Teknikktema: <a class="key" href="#teknikk" data-anchor="tema-${t.id}">${t.n}</a> – ${txt||t.d[0]}`; }
+function tLink(t,txt){ return `Forslag til teknikktema: <a class="key" href="#teknikk" data-anchor="tema-${t.id}">${t.n}</a> – ${txt||t.d[0]}`; }
 
 /* ============ ØKTENE ============ */
 const B=(h,items,dur)=>({h,items,dur});
@@ -825,7 +825,7 @@ function warmTpl(root){
         if(!/^oppvarming\b|· oppvarming$/i.test(name)) return;
         let nx=bl.nextElementSibling; while(nx&&!(nx.classList&&nx.classList.contains("blk")&&nx.querySelector("h4"))) nx=nx.nextElementSibling;
         const next=nx?(nx.querySelector("h4").childNodes[0].textContent||"").trim():"";
-        const theme=[...bl.querySelectorAll("li")].filter(li=>/^(Teknikktema|Kompresjonsdrill|Koordinasjon|Ukas tema)/.test(li.textContent.trim())).map(li=>linkOnly(li.innerHTML,li.textContent));
+        const theme=[...bl.querySelectorAll("li")].filter(li=>/^(Teknikktema|Forslag til|Kompresjonsdrill|Koordinasjon|Ukas tema)/.test(li.textContent.trim())).map(li=>linkOnly(li.innerHTML,li.textContent));
         const first=!blks.slice(0,idx).some(b=>!/^oppvarming/i.test(((b.querySelector("h4")||{}).textContent||"").trim()));
         const strength=/^(Styrke|Spenst|Topping|Test)/i.test(next)||/^Oppvarming · (Styrke|Test)/i.test(name);
         let items, dur;
@@ -985,7 +985,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-111021";
+const APP_VERSION="2026-11-06-111321";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

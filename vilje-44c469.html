@@ -271,7 +271,7 @@ function session(date,noTheme){
   const AUTO=["Stille føtter","Hofta inn","Rette armer","Flagg og dropknee"];
   const satT = noTheme?null:themeFor(lastSaturday(date));
   const warmTheme = satT&&AUTO.includes(satT[0])?satT:null;
-  const warm=(extra)=>B("Oppvarming",["Lett klatring på autobelay, 8–10 min: store tak, rolig tempo."+(warmTheme?` Teknikktema fra lørdag: ${themeLink(warmTheme[0])}.`:""),
+  const warm=(extra)=>B("Oppvarming",["Lett klatring på autobelay, 8–10 min: store tak, rolig tempo."+(warmTheme?` Forslag til teknikktema fra lørdag: ${themeLink(warmTheme[0])}.`:""),
      "Strikk pull-aparts 2 × 15. "+extra,"Ett lett oppvarmingssett av første øvelse."],"12 min");
   const climb=(dur,first)=>{
     const items=[];
@@ -310,7 +310,7 @@ function session(date,noTheme){
   default:
     s.blocks=[B("Hviledag",["Tapt økt tas ikke igjen."])];
   }
-  if(s.climb&&!noTheme){ const th=themeFor(date); s.theme=th[0]; s.blocks[0].items.unshift(`Teknikktema: ${themeLink(th[0],true)} – ${th[1]}`); }
+  if(s.climb&&!noTheme){ const th=themeFor(date); s.theme=th[0]; s.blocks[0].items.unshift(`Forslag til teknikktema: ${themeLink(th[0],true)} – ${th[1]}`); }
   return s;
 }
 
@@ -875,7 +875,7 @@ function warmTpl(root){
         if(!/^oppvarming\b|· oppvarming$/i.test(name)) return;
         let nx=bl.nextElementSibling; while(nx&&!(nx.classList&&nx.classList.contains("blk")&&nx.querySelector("h4"))) nx=nx.nextElementSibling;
         const next=nx?(nx.querySelector("h4").childNodes[0].textContent||"").trim():"";
-        const theme=[...bl.querySelectorAll("li")].filter(li=>/^(Teknikktema|Kompresjonsdrill|Koordinasjon|Ukas tema)/.test(li.textContent.trim())).map(li=>linkOnly(li.innerHTML,li.textContent));
+        const theme=[...bl.querySelectorAll("li")].filter(li=>/^(Teknikktema|Forslag til|Kompresjonsdrill|Koordinasjon|Ukas tema)/.test(li.textContent.trim())).map(li=>linkOnly(li.innerHTML,li.textContent));
         const first=!blks.slice(0,idx).some(b=>!/^oppvarming/i.test(((b.querySelector("h4")||{}).textContent||"").trim()));
         const strength=/^(Styrke|Spenst|Topping|Test)/i.test(next)||/^Oppvarming · (Styrke|Test)/i.test(name);
         let items, dur;
@@ -1041,7 +1041,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-111021";
+const APP_VERSION="2026-11-06-111321";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
