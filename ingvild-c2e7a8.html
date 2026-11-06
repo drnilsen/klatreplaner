@@ -263,7 +263,7 @@ function session(date,noTheme){
   case 1: {
     s.key="man"; s.title="Hard buldring"; s.time=i.light?"ca. 1 t 15":i.phase==="led"?"ca. 1 t 35":"ca. 1 t 50";
     if(c){ const mx=c.vol===40?8:10; s.title="Konkurranseformat – siste harde økt"; s.time="ca. 1 t 30";
-      s.blocks=[B("Oppvarming",["30 min."],"30 min"),B("Hoveddel",[`4 nye buldre i <a href='#hodet' data-anchor='v5'>konkurranseformat</a>, RPE 9, <span class="key">maks ${mx} forsøk</span>${c.vol===40?" (4 buldre × maks 2)":""}.`,`${V(2,"Pusterutine")} og ${V(3,"reset")} på hvert forsøk.`])];
+      s.blocks=[B("Oppvarming",["30 min."],"30 min"),B("Hoveddel",[`4 buldre i <a href='#hodet' data-anchor='v5'>konkurranseformat</a>, RPE 9, <span class="key">maks ${mx} forsøk</span>${c.vol===40?" (4 buldre × maks 2)":""}.`,`${V(2,"Pusterutine")} og ${V(3,"reset")} på hvert forsøk.`])];
       s.fields=[["antall",`Forsøk (maks ${mx})`],["topper","Topper"]]; break; }
     if(i.y===2027&&w===13) s.notes.push(["warn","2. påskedag: økta flyttes til tirsdag ved behov – da utgår Styrke A."]);
     const u6=i.y===2027&&w===6, u9=i.y===2027&&w===9;
@@ -274,7 +274,7 @@ function session(date,noTheme){
     else if(i.M===2) hov=u6?"4–6 buldre nær maks, RPE 8–9, 3–4 min pause.":"4–6 buldre på og over maks, RPE 9–10, 3–4 min pause.";
     else hov=i.light?"4–6 buldre 1–2 grader under maks, RPE 7–8, 3–4 min pause.":"4–6 buldre nær maks, RPE 8–9, 3–4 min pause.";
     s.blocks=[B("Oppvarming",["5 min puls, mobilitet skulder/hofte.",`15 min lett klatring, pyramide lett → middels.`],"30 min"),
-      B("Hoveddel",[hov,`<span class="key">Maks ${mx} forsøk.</span>`,"Board/spraywall og skrudde buldre – fordel som du vil.","Gjerne noen koordinasjonsbuldre.","Stopp: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"60–70 min"),
+      B("Hoveddel",[hov,`<span class="key">Maks ${mx} forsøk.</span>`,"Skrudde buldre, board og spraywall – fordel som du vil.","Gjerne noen koordinasjonsbuldre.","Stopp: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"60–70 min"),
       B("Nedtrapping",["Lett klatring."],"10 min")];
     if(!noTheme){ s.blocks[0].items.unshift(tLink(koord)); s.theme=koord.n; }
     s.fields=[["antall",`Forsøk (maks ${mx})`],["topper","Topper"]]; s.checks=[["rutine","Rutine på hvert forsøk"]];
@@ -509,7 +509,7 @@ function vKonk(){
   return `<h2 style="margin-top:18px">Konkurranse</h2>
   <div class="card"><h3 style="margin-top:0">Konkurranser</h3><ul><li><b>NC buldring</b> Kristiansund lør 6. feb (uke 5)</li><li><b>NC2 buldring</b> lør 20. feb (uke 7)</li><li><b>NM junior</b> Trondheim lør 27. feb (uke 8) – formtopp</li><li><b>NC led</b> Molde lør 5. juni (uke 22, egen plan etter uke 20)</li></ul></div>
   <div class="card"><h3 style="margin-top:0">Konkurranseuker</h3><div class="tscroll"><table><thead><tr><th>Dag</th><th>Uke 5 og 7 (ca. 60 %)</th><th>Uke 8 NM (ca. 40 %)</th></tr></thead><tbody>
-   <tr><td>Man</td><td>Oppvarming 30 min, 4 nye buldre i konkurranseformat, maks 10 forsøk, RPE 9. Siste harde økt.</td><td>Samme, maks 8 forsøk (4 × maks 2).</td></tr>
+   <tr><td>Man</td><td>Oppvarming 30 min, 4 buldre i konkurranseformat, maks 10 forsøk, RPE 9. Siste harde økt.</td><td>Samme, maks 8 forsøk (4 × maks 2).</td></tr>
    <tr><td>Tir</td><td>Lett sva og mobilitet, 45–60 min. Ingen Styrke A.</td><td>Samme.</td></tr>
    <tr><td>Ons</td><td>35 min: oppvarming 20 min, 3 buldre på RPE 8, maks 2 forsøk hver.</td><td>Samme.</td></tr>
    <tr><td>Tor</td><td>2–3 lette ruter, 45 min. Pusterutine og lesing på hver rute.</td><td>Samme.</td></tr>
@@ -952,7 +952,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-085825";
+const APP_VERSION="2026-11-06-090155";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

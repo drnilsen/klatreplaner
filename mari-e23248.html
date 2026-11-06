@@ -285,7 +285,7 @@ function session(date,noTheme){
     if(i.phase==="nm") mx=8; else if(i.comp||i.light) mx=halfDown(mx);
     if(i.phase==="nm") hov="Hard buldring, RPE 8–9. Siste harde økt.";
     s.count=mx;
-    s.blocks=[warm(true),B("Hoveddel",[hov,`<span class="key">Maks ${mx} forsøk.</span>`,"Board/spraywall og skrudde buldre – fordel som du vil.","Gjerne noen buldre med timing og koordinasjon.","Stopp: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"65–70 min"),
+    s.blocks=[warm(true),B("Hoveddel",[hov,`<span class="key">Maks ${mx} forsøk.</span>`,"Skrudde buldre, board og spraywall – fordel som du vil.","Gjerne noen buldre med timing og koordinasjon.","Stopp: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"65–70 min"),
       B("Nedtrapping",["Lett klatring."],"10 min")];
     s.fields=[["antall",`Forsøk (maks ${mx})`]];
     break; }
@@ -974,7 +974,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-085825";
+const APP_VERSION="2026-11-06-090155";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

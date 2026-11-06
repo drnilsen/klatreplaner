@@ -240,14 +240,14 @@ function session(date,noTheme){
     s.key="man";
     if(i.y===2027&&w===13) s.notes.push(["warn","2. påskedag: sjekk åpningstider i hallen."]);
     if(i.y===2027&&w===20) s.notes.push(["warn","17. mai: sjekk åpningstider i hallen."]);
-    if(c){ s.title="Nye buldre – kort økt"; s.time="ca. 1 t";
-      s.blocks=[B("Oppvarming",[OPPV],"25 min"),B("Nye buldre",[`4 buldre du ikke har prøvd før, RPE 8–9. Maks ${c.mx===8?2:3} forsøk på hvert.`,"4 min på hvert buldre, 4 min pause – som i konkurranse.",PUST+"."],"30 min"),B("Nedtrapping",["Lett buldring."],"5 min")];
+    if(c){ s.title="Buldring – kort økt"; s.time="ca. 1 t";
+      s.blocks=[B("Oppvarming",[OPPV],"25 min"),B("Buldring",[`4 buldre, RPE 8–9. Maks ${c.mx===8?2:3} forsøk på hvert.`,"4 min på hvert buldre, 4 min pause – som i konkurranse.",PUST+"."],"30 min"),B("Nedtrapping",["Lett buldring."],"5 min")];
       s.fields=[["topper","Topper"]]; break; }
     let mx=i.mb===1?14:12; if(i.light) mx=half(mx);
     s.title="Buldring + teknikk"; s.time="ca. 1 t 35";
     s.blocks=[B("Oppvarming",[OPPV],"25 min"),
       B("Teknikk",["Lette buldre med ukas tema, RPE 3–4."],"15 min"),
-      B("Vanskelige buldre",[i.mb===1?"RPE 7: du må ta i, men har kontroll. Ikke hardere.":"RPE 8–9: full kraft, men flyttene sitter. Ikke hardere.",`<span class="key">${i.light?"3 buldre":i.mb===1?"6 buldre":"4 buldre"} du har lyst til å få til, maks 3 forsøk på hvert.</span>`,"Board/spraywall og skrudde buldre – fordel som du vil.",...(i.light?[]:[`Går de på 1–2 forsøk: ta ett eller to til (maks ${i.mb===1?8:6}).`]),"Stopp når du bommer på ting du klarte tidligere i økta."],"45 min"),
+      B("Vanskelige buldre",[i.mb===1?"RPE 7: du må ta i, men har kontroll. Ikke hardere.":"RPE 8–9: full kraft, men flyttene sitter. Ikke hardere.",`<span class="key">${i.light?"3 buldre":i.mb===1?"6 buldre":"4 buldre"} du har lyst til å få til, maks 3 forsøk på hvert.</span>`,"Skrudde buldre, board og spraywall – fordel som du vil.",...(i.light?[]:[`Går de på 1–2 forsøk: ta ett eller to til (maks ${i.mb===1?8:6}).`]),"Stopp når du bommer på ting du klarte tidligere i økta."],"45 min"),
       B("Nedtrapping",["Lett buldring."],"10 min")];
     if(!noTheme){ s.blocks[1].items.unshift(tLink(t)); s.theme=t.n; }
     s.fields=[["antBuldre","Buldre"],["topper","Topper"]];
@@ -274,9 +274,9 @@ function session(date,noTheme){
     s.key="lor";
     if(c){ s.title=`${c.navn}${c.sted?" "+c.sted:""}`; s.time=""; s.blocks=[B("Konkurranse",[PUST+". Første fot.",`Sjekk <a href="#hodet" data-anchor="format">formatet</a> i innbydelsen.`])]; s.fields=[["resultat","Resultat / plassering"]]; break; }
     const f=i.light?3:(i.mb===1?6:5), fb=i.light?2:3;
-    s.title="Nye buldre + styrke"; s.time="ca. 2 t 10";
+    s.title="Buldring + styrke"; s.time="ca. 2 t 10";
     s.blocks=[B("Oppvarming",[OPPV],"25 min"),
-      B("Nye buldre",["Buldre du ikke har prøvd før. Se på buldret, lag en plan, prøv.",i.mb===1?"RPE 7.":"RPE 8–9.",`<span class="key">${f} buldre, maks 3 forsøk på hvert</span> – ${fb} buldre hvis du klatret board fredag.`,i.light?"Ingen ekstra buldre i lett uke.":"Går buldrene på 1–2 forsøk: ta ett eller to buldre til (maks 7). Bruker du alle tre forsøkene på de fleste: hold deg til antallet over.","Vil du øve på konkurranse: 4 min på hvert buldre, 4 min pause."],"40 min"),
+      B("Buldring",[i.mb===1?"RPE 7.":"RPE 8–9.",`<span class="key">${f} buldre, maks 3 forsøk på hvert</span>, fordelt på skrudde buldre, board og spraywall.`,`Klatret board fredag: ${fb} buldre, uten board.`,...(i.light?[]:["Går buldrene på 1–2 forsøk: ta ett eller to til (maks 7)."])],"40 min"),
       B("Lette buldre med teknikktema",[...(noTheme?[]:[tLink(t)]),"Lette buldre, RPE 3–4. Hvert buldre med ukas teknikktema.","Ingen harde forsøk i denne delen."],"30 min"),
       B("Nedtrapping",["Lett buldring."],"5 min")];
     s.extra=styrkeHtml(i);
@@ -419,7 +419,7 @@ const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Buldring + teknikk</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,1))}${refCard("Fase 2 og 3 (uke 3–20)",D(2027,3,1))}${refCard("Konkurranseuke (uke 5, 7, 8)",D(2027,5,1))}`,
  ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · fase 1 (uke 45–51, 1–2)",D(2026,46,3))}${refCard("Linked boulders · fase 2 og 3 (uke 3–20)",D(2027,4,3))}`,
  fre:()=>`<h2 style="margin-top:18px">Fredag · Board + teknikk – valgfri</h2>${curLabel()}${refCard("Board",D(2026,46,5))}`,
- lor:()=>`<h2 style="margin-top:18px">Lørdag · Nye buldre + styrke</h2>${curLabel()}${refCard("Vanlig lørdag",D(2026,46,6))}`,
+ lor:()=>`<h2 style="margin-top:18px">Lørdag · Buldring + styrke</h2>${curLabel()}${refCard("Vanlig lørdag",D(2026,46,6))}`,
 };
 function vStyrke(){
   const i=info(cur), ref=["før","etter","jul"].includes(i.phase)?info(D(2026,46,6)):i;
@@ -445,15 +445,15 @@ function vPlan(){
     return `<tr class="${y===cy&&w===cw?"now":""}"><td><a href="#uka" data-week="${ymd(m)}">${w}</a></td><td>${fmt(m)}</td><td>${i.label}</td><td>${i.phase==="jul"?"":(i.comp?i.comp.navn:(NYTT[w]||""))}</td></tr>`; }).join("");
   return `<h2 style="margin-top:18px">Plan</h2>
   <div class="card small"><ul>
-   <li><b>Uka:</b> man buldring + teknikk · ons linked boulders · fre board (valgfri) · lør nye buldre + styrke. Tir, tor og søn hvile.</li>
+   <li><b>Uka:</b> man buldring + teknikk · ons linked boulders · fre board (valgfri) · lør buldring + styrke. Tir, tor og søn hvile.</li>
    <li><b>Bare 2 økter:</b> mandag og lørdag.</li>
    <li><b>Fase 1 (45–51)</b>, uke 48 lett · <b>jul (52, 53, 1)</b> fri, uke 1 lett · <b>fase 2 (2–6)</b> · <b>topping (7)</b> · <b>NM-uka (8)</b> · <b>fase 3 (9–20)</b>, lette uker 9, 12, 16.</li></ul></div>
   <div class="card"><div class="tscroll"><table><thead><tr><th>Uke</th><th>Fra</th><th>Periode</th><th>Nytt</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
 function vRpe(){
   return `<h2 style="margin-top:18px">RPE og intensitet</h2><p class="small muted">RPE = hvor hardt det kjennes, 1–10. Hver økt har et RPE-tall. Hold deg på det. Kjennes det hardere: lettere buldre eller lengre pause.</p>
-  <div class="card"><h3 style="margin-top:0">RPE-skala</h3><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">3–4</div><div><div class="small"><b>Buldring:</b> Lette buldre, flytende.</div><div class="small"><b>Styrke:</b> Lette oppvarmingssett.</div><div class="small"><b>Linked boulders:</b> Rolig pust, lett varme i underarmene.</div><p class="small">Brukes i: Oppvarming, teknikk</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">6–7</div><div><div class="small"><b>Buldring:</b> Krevende, kontrollert.</div><div class="small"><b>Styrke:</b> 3–4 reps igjen.</div><div class="small"><b>Linked boulders:</b> Merkbar pump som går tilbake i pausen.</div><p class="small">Brukes i: Linked boulders til uke 3, styrke</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">7–8</div><div><div class="small"><b>Buldring:</b> Må ta i på nøkkelflyttet.</div><div class="small"><b>Styrke:</b> 2–3 reps igjen.</div><div class="small"><b>Linked boulders:</b> Tydelig pump, føttene krever jobb.</div><p class="small">Brukes i: Vanskelige og nye buldre til uke 2, board, linked boulders fra uke 4</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">8–9</div><div><div class="small"><b>Buldring:</b> Full kraft, treffer og holder.</div><div class="small"><b>Styrke:</b> Brukes ikke – styrke stopper på RPE 8.</div><p class="small">Brukes i: Vanskelige og nye buldre fra uke 3, konkurranseuker</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">9</div><div><div class="small"><b>Buldring:</b> Alt du har, treffer så vidt.</div><div class="small"><b>Styrke:</b> 1 rep igjen – brukes ikke.</div><p class="small">Brukes i: Bare i konkurranse</p></div></div></div>
-  <div class="card"><h3 style="margin-top:0">Intensitet gjennom sesongen</h3><ul><li>Fase 1 · uke 45–51 og 1–2: vanskelige og nye buldre RPE 7, litt flere buldre. Board RPE 7. Linked boulders RPE 6.</li><li>Fra uke 3: vanskelige og nye buldre RPE 8–9. Fra uke 4: linked boulders RPE 7–8.</li><li>Teknikk og lette buldre alltid RPE 3–4. Styrke RPE 7.</li><li>Lette uker: halvt antall buldre og ett RPE-trinn lavere.</li></ul></div>`;
+  <div class="card"><h3 style="margin-top:0">RPE-skala</h3><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">3–4</div><div><div class="small"><b>Buldring:</b> Lette buldre, flytende.</div><div class="small"><b>Styrke:</b> Lette oppvarmingssett.</div><div class="small"><b>Linked boulders:</b> Rolig pust, lett varme i underarmene.</div><p class="small">Brukes i: Oppvarming, teknikk</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">6–7</div><div><div class="small"><b>Buldring:</b> Krevende, kontrollert.</div><div class="small"><b>Styrke:</b> 3–4 reps igjen.</div><div class="small"><b>Linked boulders:</b> Merkbar pump som går tilbake i pausen.</div><p class="small">Brukes i: Linked boulders til uke 3, styrke</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">7–8</div><div><div class="small"><b>Buldring:</b> Må ta i på nøkkelflyttet.</div><div class="small"><b>Styrke:</b> 2–3 reps igjen.</div><div class="small"><b>Linked boulders:</b> Tydelig pump, føttene krever jobb.</div><p class="small">Brukes i: Vanskelige buldre til uke 2, board, linked boulders fra uke 4</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">8–9</div><div><div class="small"><b>Buldring:</b> Full kraft, treffer og holder.</div><div class="small"><b>Styrke:</b> Brukes ikke – styrke stopper på RPE 8.</div><p class="small">Brukes i: Vanskelige buldre fra uke 3, konkurranseuker</p></div></div><div class="ex" style="grid-template-columns:52px minmax(0,1fr)"><div class="sets" style="font-size:20px;font-weight:700;color:var(--accent)">9</div><div><div class="small"><b>Buldring:</b> Alt du har, treffer så vidt.</div><div class="small"><b>Styrke:</b> 1 rep igjen – brukes ikke.</div><p class="small">Brukes i: Bare i konkurranse</p></div></div></div>
+  <div class="card"><h3 style="margin-top:0">Intensitet gjennom sesongen</h3><ul><li>Fase 1 · uke 45–51 og 1–2: vanskelige buldre RPE 7, litt flere buldre. Board RPE 7. Linked boulders RPE 6.</li><li>Fra uke 3: vanskelige buldre RPE 8–9. Fra uke 4: linked boulders RPE 7–8.</li><li>Teknikk og lette buldre alltid RPE 3–4. Styrke RPE 7.</li><li>Lette uker: halvt antall buldre og ett RPE-trinn lavere.</li></ul></div>`;
 }
 function vRegler(){
   return `<h2 style="margin-top:18px">Regler</h2>
@@ -864,7 +864,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-085825";
+const APP_VERSION="2026-11-06-090155";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

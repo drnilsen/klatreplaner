@@ -287,12 +287,12 @@ function session(date,noTheme){
       s.blocks=[warm("30 min"),B("Hoveddel",["4 buldre i <a href='#teknikk' data-anchor='format'>konkurranseformat</a>, <span class=\"key\">maks 3 forsøk per buldre</span>.","Rutinen før hvert forsøk."],"40–50 min")];
       s.count={label:"Forsøk",max:12}; break; }
     if(i.phase==="top"){ const mx=10; s.title="Konkurranseformat"; s.time="ca. 1 t 30";
-      s.blocks=[warm("25–30 min"),B("Hoveddel",[`4 nye buldre i <a href='#teknikk' data-anchor='format'>konkurranseformat</a>, nær maks, RPE 8–9, maks 4 forsøk per buldre, <span class="key">maks ${mx} forsøk totalt</span>.`,"Les ferdig før første forsøk. Rutinen før hvert forsøk."],"40–50 min"),B("Nedtrapping",["Volumvegg."],"10 min")];
+      s.blocks=[warm("25–30 min"),B("Hoveddel",[`4 buldre i <a href='#teknikk' data-anchor='format'>konkurranseformat</a>, nær maks, RPE 8–9, maks 4 forsøk per buldre, <span class="key">maks ${mx} forsøk totalt</span>.`,"Les ferdig før første forsøk. Rutinen før hvert forsøk."],"40–50 min"),B("Nedtrapping",["Volumvegg."],"10 min")];
       s.count={label:"Forsøk",max:mx}; break; }
     s.title="Hard buldring"; s.time="ca. 1 t 50";
     let mx=i.L===1?20:15; if(i.light) mx=half(mx);
     const hov=i.L===1?"6–8 buldre 2 grader under maks, RPE 7, maks 3 forsøk per buldre, 3 min pause.":"4–6 buldre nær maks, RPE 8–9, maks 4 forsøk per buldre, 4 min pause.";
-    s.blocks=[warm("25–30 min"),B("Hoveddel",[hov,`<span class="key">Maks ${mx} forsøk.</span>`,"Board/spraywall og skrudde buldre – fordel som du vil.","Stopp: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"60–75 min"),B("Nedtrapping",["Volumvegg."],"10 min")];
+    s.blocks=[warm("25–30 min"),B("Hoveddel",[hov,`<span class="key">Maks ${mx} forsøk.</span>`,"Skrudde buldre, board og spraywall – fordel som du vil.","Stopp: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"60–75 min"),B("Nedtrapping",["Volumvegg."],"10 min")];
     s.count={label:"Forsøk",max:mx};
     if((i.y===2027&&w===13)||(i.y===2027&&w===20)) s.notes.push(["warn",`${w===13?"2. påskedag":"17. mai"}: mandagsøkta utgår hvis hallen er stengt.`]);
     break; }
@@ -339,16 +339,16 @@ function session(date,noTheme){
     if(i.phase==="led"){ s.title="Enkel ledøkt"; s.time="ca. 1 t 30";
       s.blocks=[B("Oppvarming",["Lett buldring, 2 lette ruter på led."],"20 min"),B("Ruter",["8–10 ruter 3–4 grader under onsight, RPE 5–6."],"60 min"),B("Nedtrapping",["Lett klatring."],"10 min")];
       s.fields=[["antall","Ruter"]]; break; }
-    let tot=i.L===1?18:14, del2=i.L===1?12:8;
-    if(i.phase==="top"&&i.top===2) tot=10;
-    if(i.light){ tot=half(tot); del2=half(del2); }
-    s.title=i.phase==="top"?"Konkurranseformat – bare del 1":"Hard buldring – konkurranseformat"; s.time=i.phase==="top"?"ca. 1 t 30":"ca. 2 t 15";
-    s.blocks=[B("Oppvarming",["Som mandag. Avslutt med 2–3 buldre som krever presisjon på første forsøk."],"30 min"),
-      B("Del 1 · nye buldre",[i.L===1?"6 nye buldre 2 grader under maks, RPE 7, maks 3 forsøk per buldre.":"4 nye buldre nær maks, RPE 8–9, maks 4 forsøk per buldre.",`<a href='#teknikk' data-anchor='format'>Konkurranseformat</a>, <span class="key">maks ${tot} forsøk totalt</span>.`,"Ingen beta fra andre. Registrer topp, sone og forsøk."],"50 min")];
-    if(i.phase!=="top") s.blocks.push(B("Del 2",[i.L===1?"RPE 7.":"RPE 8–9.",`Prosjektering eller repetere det du falt på, med beta. <span class="key">Maks ${del2} forsøk.</span>`],"40 min"));
-    s.blocks.push(B("Uten nye buldre",[i.L===1?"RPE 7.":"RPE 8–9.",`Mandagens tak for fasen (${i.L===1?20:15}), ingen del 2.`]));
+    let T=i.L===1?30:22; if(i.phase==="top") T=i.top===1?14:10; if(i.light) T=half(T);
+    const a=Math.round(T*0.4), b=Math.floor((T-a)/2), c3=T-a-b, R=i.L===1?"RPE 7, 2 grader under maks.":"RPE 8–9, nær maks.";
+    s.title="Hard buldring – skrudde buldre, board, spraywall"; s.time=i.phase==="top"?"ca. 1 t 30":"ca. 2 t 15";
+    const d=i.phase==="top"?["25 min","20 min","20 min"]:["40 min","30 min","30 min"];
+    s.blocks=[B("Oppvarming",[""],"25 min"),
+      B("Del 1 · skrudde buldre",[R,`<span class="key">Maks ${a} forsøk.</span>`],d[0]),
+      B("Del 2 · board",[R,`<span class="key">Maks ${b} forsøk.</span>`],d[1]),
+      B("Del 3 · spraywall",[R,`<span class="key">Maks ${c3} forsøk.</span>`],d[2])];
     s.blocks.push(B("Nedtrapping",["Lett klatring."],"15 min"));
-    s.fields=[["poeng","Poeng nye buldre"],["topper","Topper og soner"]];
+    s.fields=[["antall","Forsøk"],["topper","Topper"]];
     break; }
   case 7:
     if(cf){ s.key="lor2"; s.hard=true; s.title=`${cf.navn} ${cf.sted}`+(w===9?" – semi/finale":" – dag 2");
@@ -1055,7 +1055,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-085825";
+const APP_VERSION="2026-11-06-090155";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
