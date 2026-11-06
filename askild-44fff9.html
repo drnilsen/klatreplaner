@@ -900,7 +900,7 @@ function fillRpe(root){
     const r=RPE_DEF.find(x=>x[0].test(head)); if(!r||!r[1]) return;
     let txt=typeof r[1]==="function"?r[1](t):r[1]; if(!txt) return;
     if(txt==="__OPPV__"){ const card=bl.closest(".card")||root; const klatr=[...card.querySelectorAll(".blk")].filter(x=>x!==bl&&!/\b(reps|sett)\b/i.test(x.textContent)&&!(x.nextElementSibling&&x.nextElementSibling.classList.contains("exlist"))).map(x=>x.textContent).join(" "); const nums=[...(klatr.matchAll(/RPE (\d+)(?:–(\d+))?/g))].map(m=>+(m[2]||m[1])); const mx=nums.length?Math.max(...nums):0;
-      txt=mx>=8?"RPE 2 → 6–7, gradvis opp. Siste 1–2 buldre rett under øktas arbeidsintensitet.":"RPE 2–5, gradvis opp."; }
+      txt="RPE 2–5, gradvis opp."; }
     const html=txt.replace(/RPE \d+(–\d+)?/,m=>`<a href="#rpe">${m}</a>`);
     const ul=bl.querySelector("ul");
     if(ul) ul.insertAdjacentHTML("afterbegin",`<li>${html}</li>`); else h4.insertAdjacentHTML("afterend",`<ul><li>${html}</li></ul>`);
@@ -908,10 +908,42 @@ function fillRpe(root){
 }
 
 
+
+/* ============ FELLES OPPVARMINGSMAL ============ */
+function warmTpl(root){
+  try{
+    if(!root) return;
+    const R='<a href="#rpe">RPE 2–5</a>, gradvis opp.';
+    root.querySelectorAll(".card").forEach(card=>{
+      const blks=[...card.querySelectorAll(":scope > .blk")];
+      blks.forEach((bl,idx)=>{
+        const h4=bl.querySelector("h4"); if(!h4) return;
+        const name=(h4.childNodes[0]&&h4.childNodes[0].textContent||"").trim();
+        if(!/^oppvarming\b|· oppvarming$/i.test(name)) return;
+        let nx=bl.nextElementSibling; while(nx&&!(nx.classList&&nx.classList.contains("blk")&&nx.querySelector("h4"))) nx=nx.nextElementSibling;
+        const next=nx?(nx.querySelector("h4").childNodes[0].textContent||"").trim():"";
+        const theme=[...bl.querySelectorAll("li")].filter(li=>/^(Teknikktema|Kompresjonsdrill|Koordinasjon|Ukas tema)/.test(li.textContent.trim())).map(li=>li.innerHTML);
+        const first=!blks.slice(0,idx).some(b=>!/^oppvarming/i.test(((b.querySelector("h4")||{}).textContent||"").trim()));
+        const strength=/^(Styrke|Spenst|Topping|Test)/i.test(next)||/^Oppvarming · (Styrke|Test)/i.test(name);
+        let items, dur;
+        if(strength&&first){ items=["5 min puls.","5 min strikk.","5 min mobilitet.","1–2 lette sett av første øvelse."]; dur="15 min"; }
+        else if(strength){ items=["5 min strikk.","1–2 lette sett av første øvelse."]; dur="10 min"; }
+        else if(!first){ items=["10 min lett klatring, buldre eller autobelay."]; dur="10 min"; }
+        else { items=["5 min puls.","5 min strikk.","10 min lett klatring, buldre eller autobelay.","5 min mobilitet."]; dur="25 min"; }
+        const ul=bl.querySelector("ul")||(()=>{const u=document.createElement("ul"); bl.appendChild(u); return u;})();
+        ul.innerHTML=[R,...theme,...items].map(t=>"<li>"+t+"</li>").join("");
+        bl.querySelectorAll(":scope > p").forEach(x=>x.remove());
+        let d=h4.querySelector(".dur"); if(!d){ d=document.createElement("span"); d.className="dur"; h4.appendChild(d); } d.textContent=dur;
+      });
+    });
+  }catch(e){}
+}
+
 /* ============ FELLES DAGMAL ============ */
 function normDay(root){
   try{
-    if(!root||!["","#idag"].includes(location.hash)) return;
+    if(!root) return;
+    if(!["","#idag"].includes(location.hash)){ warmTpl(root); return; }
     const card=[...root.querySelectorAll(".card")].find(c=>c.querySelector(":scope > h2")); if(!card) return;
     const title=card.querySelector(":scope > h2").textContent.trim();
     // 1. Merknader rett under Tid/tagger
@@ -965,6 +997,7 @@ function normDay(root){
       const lis=[...ul.children]; if(!lis.length||/RPE/.test(lis[0].textContent)) return;
       const r=lis.find(x=>/RPE/.test(x.textContent)); if(r) ul.insertBefore(r,lis[0]);
     });
+    warmTpl(root);
   }catch(e){}
 }
 
@@ -1049,7 +1082,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-082321";
+const APP_VERSION="2026-11-06-083348";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
