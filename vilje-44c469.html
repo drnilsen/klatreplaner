@@ -558,7 +558,8 @@ function vRegler(){
   <div class="card"><h3 style="margin-top:0">Fargen på dagen</h3>
    <p><span class="dot f-gronn"></span> <b>Grønn</b> uthvilt, god kvalitet, neste økt føles sterkere<br>
    <span class="dot f-gul"></span> <b>Gul</b> vedlikehold<br><span class="dot f-oransje"></span> <b>Oransje</b> trente for sliten, lav kvalitet<br>
-   <span class="dot f-rod"></span> <b>Rød</b> trenger flere hviledager<br><span class="dot f-svart"></span> <b>Svart</b> skade</p></div>`;
+   <span class="dot f-rod"></span> <b>Rød</b> trenger flere hviledager<br><span class="dot f-svart"></span> <b>Svart</b> skade</p></div>
+  ${kilderCard([["Schöffl m.fl. 2020 – Tendon injuries in the hands in rock climbers: an update","https://ejcrim.com/index.php/mltj/article/view/7062"],["Ehiogu, Schöffl & Jones 2023 – Rehabilitation of annular pulley injuries in climbers","https://doi.org/10.1249/JSR.0000000000001107"]],["Konkurranse"])}`;
 }
 const TEKNIKK=[
  {id:"stille-fotter",n:"Stille føtter",mal:"Én plassering, ingen justering – også i fart og på små tak.",slik:[],
@@ -870,6 +871,35 @@ function perBoulder(root){
   }catch(e){}
 }
 
+/* ============ KILDER (felles boks under Regler) ============ */
+const KILDER_FELLES=[
+ ["Periodisering og lette uker",[
+  ["Bosquet m.fl. 2007 – Effects of tapering on performance (meta-analyse)","https://doi.org/10.1249/mss.0b013e31806010e0"],
+  ["Mujika & Padilla 2003 – Scientific bases for precompetition tapering","https://doi.org/10.1249/01.MSS.0000074448.73931.11"]]],
+ ["Intensitet og RPE",[
+  ["Zourdos m.fl. 2016 – RPE-skala basert på reps i reserve","https://doi.org/10.1519/JSC.0000000000001049"],
+  ["Helms m.fl. 2016 – Bruk av RIR-basert RPE i styrketrening","https://doi.org/10.1519/SSC.0000000000000218"],
+  ["Randall / Lattice Training – UKC-serien om utholdenhet og power endurance","https://www.ukclimbing.com/articles/features/lattice_training_series_with_tom_randall_-_part_2_power_endurance-11352"]]],
+ ["Styrke for ungdom",[
+  ["Lloyd m.fl. 2014 – Youth resistance training, internasjonal konsensus (BJSM)","https://bjsm.bmj.com/content/48/7/498"],
+  ["Schoenfeld m.fl. 2017 – Ukentlig volum og muskelvekst (meta-analyse)","https://doi.org/10.1080/02640414.2016.1210197"]]],
+ ["Fingre og vekstskiver",[
+  ["Morrison & Schöffl 2007 – Unge klatrere, fingre og vekstskiver (BJSM)","https://pmc.ncbi.nlm.nih.gov/articles/PMC2658987"],
+  ["BMC 2024 – Growth plate injuries: guide for climbers, coaches and parents","https://services.thebmc.co.uk/media/files/240221_Growth%20Plate%20Injuries%20Info%20sheet_v1_0.pdf"],
+  ["Jones m.fl. 2022 – Periphyseal stress injuries in adolescent climbers","https://doi.org/10.1249/JSR.0000000000001016"]]],
+ ["Teknikk",[
+  ["Catalyst Climbing (Parkinson, Gresham m.fl.) – YouTube","https://www.youtube.com/@CatalystClimbing"],
+  ["Gresham – Technique and Training: Improve your movement (UKC)","https://www.ukclimbing.com/articles/skills/series/neil_gresham_technique_and_training/improve_your_movement-12519"]]],
+ ["Konkurranse",[
+  ["Norges Klatreforbund 2026 – Konkurransereglement v3.7","https://klatring.no/siteassets/dokumenter/konkurranse/reglement/nasjonale-konkurranser/nkf-opdatert-konkurranse-reglement-v-3.7-2026_02.02.26.pdf"],
+  ["IFSC Europe 2022 – Rules for European Climbing Competitions","https://austriaclimbing.com/fileadmin/userdaten/Dokumente/Regelwerk/IFSC_Europe_Rules_2022.pdf"]]]
+];
+function kilderCard(extra,skip){
+  skip=skip||[]; extra=extra||[];
+  const grupper=KILDER_FELLES.filter(g=>!skip.includes(g[0])).concat(extra.length?[["Spesielt for denne planen",extra]]:[]);
+  return `<div class="card"><h3 style="margin-top:0">Kilder</h3><p class="small muted">Klatring har lite egen forskning. Periodisering, intensitetsstyring og styrketrening bygger på forskning fra etablerte idretter. Klatrespesifikke kilder brukes der de finnes.</p>${grupper.map(g=>`<p class="small" style="margin:8px 0 2px"><b>${g[0]}</b></p><ul class="small" style="margin:0 0 0 18px;padding:0">${g[1].map(k=>`<li>${k[1]?`<a href="${k[1]}" target="_blank" rel="noopener">${k[0]}</a>`:k[0]}</li>`).join("")}</ul>`).join("")}</div>`;
+}
+
 /* ============ JUL: FRIDAGER OG LETTE UKER ============ */
 function julFri(d){ const m=d.getMonth(), md=d.getDate(); return (m===11&&md>=23&&md<=27)||(m===11&&md===31)||(m===0&&md===1); }
 // Returnerer true hvis dagen er fri i jula (fridag, eller tor/fre som utgår). Setter s som hviledag.
@@ -1108,7 +1138,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-07-120037";
+const APP_VERSION="2026-11-07-122920";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
