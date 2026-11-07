@@ -374,7 +374,7 @@ function session(date,noTheme){
     break; }
   case 7: s.blocks=[B("Hviledag",["Tapt økt tas ikke igjen."])]; break;
   }
-  if(!["hvile","jul","utenfor"].includes(s.key)) s.checks.push(["finger","Smerte i finger"]);
+
   return s;
 }
 
@@ -391,7 +391,7 @@ async function deleteEntry(date){ delete LOG[date]; lsSet(LS_KEY,JSON.stringify(
 const FN={gronn:"grønn",gul:"gul",oransje:"oransje",rod:"rød",svart:"svart"};
 const has=v=>v!=null&&v!=="";
 const FIELDS=["rm","hoved","antall","drill","chin","heng","resultat"];
-function reportDetail(e){ const t=[]; if(e.miljo) t.push("ga en yngre utøver oppmerksomhet"); for(const f of FIELDS) if(has(e[f])) t.push(`${e[f+"Navn"]||f} ${e[f]}`); if(e.finger) t.push("SMERTE I FINGER"); if(e.kommentar) t.push(e.kommentar); return t.join(" · "); }
+function reportDetail(e){ const t=[]; if(e.miljo) t.push("ga en yngre utøver oppmerksomhet"); for(const f of FIELDS) if(has(e[f])) t.push(`${e[f+"Navn"]||f} ${e[f]}`); if(e.kommentar) t.push(e.kommentar); return t.join(" · "); }
 function entryLine(k){ const e=LOG[k], d=parseYmd(k); const det=reportDetail(e); return `${DAYS[isoWeek(d).dow]} ${fmt(d)}: ${FN[e.farge]||"–"} · ${e.okt||""}${det?" · "+det:""}`; }
 function summary(scope){
   let keys=Object.keys(LOG).sort();
@@ -426,7 +426,6 @@ function alerts(date){
   const prev=Object.keys(LOG).filter(k=>k<ds).sort(); const lastK=prev[prev.length-1];
   const last2=prev.slice(-2).map(k=>LOG[k].farge);
   if(last2.length===2&&last2.every(f=>f==="oransje"||f==="rod")) out.push(["stop","To oransje/røde dager på rad → neste maksbuldring utgår, styrken med ett sett mindre."]);
-  if(lastK&&LOG[lastK].finger) out.push(["warn","Smerte i finger sist: varer det mer enn noen dager → si fra. Ingen maksheng, åpne grep i to uker."]);
   if(lastK&&LOG[lastK].farge==="rod") out.push(["stop","Sist logget rød: hvile neste dag, si fra samme dag."]);
   if(lastK&&LOG[lastK].farge==="svart") out.push(["stop","Sist logget svart: ikke tren før du har snakket med trener."]);
   return out;
@@ -1042,7 +1041,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-220016";
+const APP_VERSION="2026-11-07-112653";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
