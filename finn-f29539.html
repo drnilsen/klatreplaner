@@ -174,15 +174,15 @@ function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; 
 const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
 const COMP={5:{navn:"NC buldring",sted:"Kristiansund",dato:"lør 6. feb"},7:{navn:"NC2 buldring",sted:"",dato:"lør 20. feb"},9:{navn:"NM senior",sted:"Kristiansand",dato:"lør 6.–søn 7. mars"},
   17:{navn:"Europe Series",sted:"Göteborg",dato:"lør 1.–søn 2. mai"},19:{navn:"Europe Series",sted:"Wien",dato:"lør 15.–søn 16. mai"}};
-const NYTT={46:"",48:"Lett uke",2:"Fase 1-nivå etter jul",3:"Fase 2: hardere klatring, færre sett styrke",6:"Belastningsuke",8:"Topping",10:"Lett uke",11:"Skulder 4 sett på A og B",15:"Topping",16:"Topping",18:"Fase 2-nivå",20:"Tau starter"};
+const NYTT={46:"",48:"Lett uke",1:"Vanlig uke etter jul",3:"Fase 2: hardere klatring, færre sett styrke",6:"Belastningsuke",8:"Topping",10:"Lett uke",11:"Skulder 4 sett på A og B",15:"Topping",16:"Topping",18:"Fase 2-nivå",20:"Tau starter"};
 function info(date){
   const {y,w,dow}=isoWeek(date);
   const i={date,y,w,dow,light:false,phase:"utenfor",label:"Utenfor planen",M:1,comp:null,top:false};
   const inSeason=(y===2026&&w>=45)||(y===2027&&w<=20);
   if(!inSeason){ i.phase=(y<2026||(y===2026&&w<45))?"før":"etter"; i.label=i.phase==="før"?"Før sesongstart":"Planen er ferdig"; return i; }
   if(y===2026&&w<=51){ i.phase="f1"; i.label="Fase 1 · Mengde"; i.light=w===48; }
-  else if(y===2026){ i.phase="jul"; i.label="Jul"; }
-  else if(w===1){ i.phase="f1"; i.label="Jul · lett uke"; i.light=true; }
+  else if(y===2026){ i.phase="f1"; i.jul=true; i.light=true; i.label="Jul · lett uke"; }
+  else if(w===1){ i.phase="f1"; i.label="Fase 1 · Mengde"; }
   else if(w<=6){ i.phase="f2"; i.label=w===2?"Fase 1 · Mengde":"Fase 2 · Hardere"; i.M=w>=3?2:1; }
   else if(w<=8){ i.phase="f2"; i.label=w===7?"NC2 og topping":"Topping"; i.M=2; i.top=true; }
   else if(w===9){ i.phase="f2"; i.label="NM-uka"; i.M=2; }
@@ -225,15 +225,15 @@ function exRow(e,sets,rpe){
 }
 function rpeStr(i){ return i.phase==="f1"||(i.y===2027&&i.w<=2)?"RPE 7–8, pause 60–90 s":"RPE 8, pause 90 s"; }
 function skulderSett(i,code){
-  if(i.phase==="jul"||i.comp) return 2;
+  if(i.comp) return 2;
   if(i.y===2027&&(i.w===8||i.w===16)) return 2;
   return i.light?2:3;
 }
 function strF2(i){ return !(i.phase==="f1"||(i.y===2027&&i.w<=2)); }
-function beinSett(i,e){ if(i.comp||i.phase==="jul") return 0; let n=e[3]; if(strF2(i)&&(e[0]==="A1"||e[0]==="C1")) n-=1; if(i.top) n=Math.min(n,2); return i.light?Math.ceil(n/2):n; }
+function beinSett(i,e){ if(i.comp) return 0; let n=e[3]; if(strF2(i)&&(e[0]==="A1"||e[0]==="C1")) n-=1; if(i.top) n=Math.min(n,2); return i.light?Math.ceil(n/2):n; }
 function beinReps(i,e){ if(!strF2(i)) return e[4]; return e[0]==="A1"?"5–6":e[0]==="C1"?"6–8 /bein":e[4]; }
 function skulderHtml(i){
-  const comp=i.comp||i.phase==="jul";
+  const comp=i.comp;
   return `<div class="blk"><h4>Skulderprogram på ringer<span class="dur">${comp?"25 min":"ca. 45 min"}</span></h4><ul>
    <li>${comp?"2 sett, RPE 7.":"RPE 7–8, pause 60–90 s. Likt hele sesongen. Supersett A1/A2 osv. Ingen fingerbelastning."}</li>
    <li>Toppen av rep-området på alle sett → tyngre (vinkel, vekt i belte, vanskeligere variant), ikke flere reps.</li></ul></div>
@@ -270,13 +270,9 @@ function session(date,noTheme){
   const i=info(date), w=i.w, c=i.comp;
   const s={i,key:"hvile",title:"Hvile",time:"–",blocks:[],notes:[],fields:[],checks:[],extra:""};
   if(i.phase==="før"||i.phase==="etter"){ s.title=i.label; s.key="utenfor"; return s; }
-  if(i.phase==="jul"){
-    const md=date.getMonth()===11?date.getDate():0;
-    if(i.dow===2){ s.key="jul"; s.title="Jul – skulderprogram"; s.time="25 min"; s.blocks=[B("I dag",["Fri eller lett klatring.","Skulderprogram 2 sett, RPE 7 – én gang i uka."])]; s.extra=skulderHtml(i); s.fields=[["dips","Ringdips: reps beste sett"]]; }
-    else { s.key="jul"; s.title="Jul – fri"; s.blocks=[B("I dag",["Fri eller lett klatring."])]; }
-    if(md>=24&&md<=27) s.notes.push(["stop","24.–27. des: ingen harde økter."]);
-    return s; }
-  if(i.light) s.notes.push(["warn","Lett uke: samme økter, halvt antall forsøk/runder/sett og ett RPE-trinn lavere."]);
+  if(julDay(s,i)) return s;
+  if(i.jul) s.notes.push(["warn",JUL_NOTE]);
+  else if(i.light) s.notes.push(["warn","Lett uke: samme økter, halvt antall forsøk/runder/sett og ett RPE-trinn lavere."]);
   if(i.top) s.notes.push(["warn","Topping: volum ned, intensitet som i fase 2."]);
   if(c) s.notes.push(["warn",`Konkurranseuke – ${c.navn}${c.sted?" "+c.sted:""} ${c.dato}: halvt volum, samme intensitet. Ingen linked, ingen beinstyrke.`]);
   const kd=(i.dow in SLOT)?pickKomp(i):null;
@@ -800,6 +796,18 @@ function perBoulder(root){
   }catch(e){}
 }
 
+/* ============ JUL: FRIDAGER OG LETTE UKER ============ */
+function julFri(d){ const m=d.getMonth(), md=d.getDate(); return (m===11&&md>=23&&md<=27)||(m===11&&md===31)||(m===0&&md===1); }
+// Returnerer true hvis dagen er fri i jula (fridag, eller tor/fre som utgår). Setter s som hviledag.
+function julDay(s,i){
+  if(!i.jul) return false;
+  const mk=(h,items)=>({h,items,dur:undefined});
+  if(julFri(i.date)){ s.key="hvile"; s.title="Jul – fri"; s.time="–"; s.blocks=[mk("Fri",["Fridager: 23.–27. des og 31. des – 1. jan."])]; return true; }
+  if(i.dow===4||i.dow===5||i.dow===7){ s.key="hvile"; s.title="Jul – fri"; s.time="–"; s.blocks=[mk("Fri",["Torsdag og fredag utgår i jula."])]; return true; }
+  return false;
+}
+const JUL_NOTE="Jul: lett uke. Fri 23.–27. des og 31. des – 1. jan.";
+
 /* ============ RPE-ANKER I HARDE BULDREØKTER ============ */
 const RPE_ANKER={"6":"kontrollert, aldri på grensa.","6–7":"kontrollert, aldri på grensa.","7":"du må ta i, men har kontroll. Ikke hardere.","7–8":"du må ta i, flyttene sitter. Ikke hardere.","8":"full kraft, flyttene sitter. Ikke hardere.","8–9":"full kraft, flyttene sitter – de hardeste så vidt. Ikke hardere.","9":"alt du har, går så vidt. Ikke hardere."};
 /* ============ FELLES RPE-SKALA (lik for alle) ============ */
@@ -1021,7 +1029,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-220016";
+const APP_VERSION="2026-11-07-120037";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

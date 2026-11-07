@@ -173,7 +173,7 @@ function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; 
 
 const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
 const COMP={5:{navn:"NC buldring",sted:"Kristiansund",dato:"lør 6. feb",vol:60},7:{navn:"NC2 buldring",sted:"",dato:"lør 20. feb",vol:60},8:{navn:"NM junior",sted:"Trondheim",dato:"lør 27. feb",vol:40}};
-const NYTT={45:"Oppstart · kalketelling",48:"Lett uke",49:"Slynge 3 sett",51:"Kalketelling: halvert?",1:"Lett uke",3:"Fase 2: buldring på/over maks, linked og board",
+const NYTT={45:"Oppstart · kalketelling",48:"Lett uke",49:"Slynge 3 sett",51:"Kalketelling: halvert?",1:"Vanlig uke etter jul",3:"Fase 2: buldring nær maks, linked og board",
   6:"Ingen nye ting",9:"Lett uke etter NM",10:"Hard led onsdag",11:"Første 4 × 4 (2 runder)",12:"Påske, lett uke",16:"Lett uke",18:"Lett uke"};
 function info(date){
   const {y,w,dow}=isoWeek(date);
@@ -181,8 +181,8 @@ function info(date){
   const inSeason=(y===2026&&w>=45)||(y===2027&&w<=20);
   if(!inSeason){ i.phase=(y<2026||(y===2026&&w<45))?"før":"etter"; i.label=i.phase==="før"?"Før sesongstart":"Planen er ferdig"; return i; }
   if(y===2026&&w<=51){ i.phase="f1"; i.label="Fase 1 · Kapasitet"; i.light=w===48; }
-  else if(y===2026){ i.phase="jul"; i.label="Jul"; }
-  else if(w===1){ i.phase="f1"; i.label="Jul · lett uke"; i.light=true; }
+  else if(y===2026){ i.phase="f1"; i.jul=true; i.light=true; i.label="Jul · lett uke"; }
+  else if(w===1){ i.phase="f1"; i.label="Fase 1 · Kapasitet"; }
   else if(w<=6){ i.phase=w===2?"f1":"f2"; i.label=w===2?"Fase 1 · Kapasitet":"Fase 2 · Intensitet"; i.M=w>=3?2:1; }
   else if(w===7){ i.phase="f2"; i.label="Topping"; i.M=2; }
   else if(w===8){ i.phase="nm"; i.label="NM junior"; i.M=2; }
@@ -250,12 +250,13 @@ const B=(h,items,dur)=>({h,items,dur});
 const LB="Lange buldre: så mange flytt at det tilsvarer 2–3 vanlige buldre satt sammen (45–90 s). Fullfør hvert.";
 const V=(n,t)=>`<a href="#hodet" data-anchor="v${n}">${t||"verktøy "+n}</a>`;
 function session(date,noTheme){
-  const i=info(date), w=i.w, c=i.comp||(i.phase==="nm"?COMP[8]:null);
+  let i=info(date); const w=i.w, c=i.comp||(i.phase==="nm"?COMP[8]:null);
   const s={i,key:"hvile",title:"Hvile",time:"–",blocks:[],notes:[],fields:[],checks:[]};
   if(i.phase==="før"||i.phase==="etter"){ s.title=i.label; s.key="utenfor"; return s; }
-  if(i.phase==="jul"){ s.key="jul"; s.title="Jul – fri"; s.title="Jul – valgfri lett økt"; s.blocks=[B("I dag",["Valgfri lett økt – maks 3 denne uka. RPE 3–4."])];
-    const md=date.getMonth()===11?date.getDate():0; if(md>=24&&md<=27) s.notes.push(["stop","24.–27. des: ingen harde økter."]); return s; }
-  if(i.light) s.notes.push(["warn","Lett uke: halvt antall forsøk/runder/sett og ett RPE-trinn lavere."]);
+  if(julDay(s,i)) return s;
+  if(i.jul&&i.dow===6) i={...i,dow:4};
+  if(i.jul) s.notes.push(["warn",JUL_NOTE]);
+  else if(i.light) s.notes.push(["warn","Lett uke: halvt antall forsøk/runder/sett og ett RPE-trinn lavere."]);
   if(c) s.notes.push(["warn",`Konkurranseuke – ${c.navn} ${c.dato}: ca. ${c.vol} % volum, samme intensitet. Ingen linked, ingen styrke siste 5 dager.`]);
   const koord=pick(KOORD,i);
   switch(i.dow){
@@ -814,6 +815,18 @@ function perBoulder(root){
   }catch(e){}
 }
 
+/* ============ JUL: FRIDAGER OG LETTE UKER ============ */
+function julFri(d){ const m=d.getMonth(), md=d.getDate(); return (m===11&&md>=23&&md<=27)||(m===11&&md===31)||(m===0&&md===1); }
+// Returnerer true hvis dagen er fri i jula (fridag, eller tor/fre som utgår). Setter s som hviledag.
+function julDay(s,i){
+  if(!i.jul) return false;
+  const mk=(h,items)=>({h,items,dur:undefined});
+  if(julFri(i.date)){ s.key="hvile"; s.title="Jul – fri"; s.time="–"; s.blocks=[mk("Fri",["Fridager: 23.–27. des og 31. des – 1. jan."])]; return true; }
+  if(i.dow===4||i.dow===5||i.dow===7){ s.key="hvile"; s.title="Jul – fri"; s.time="–"; s.blocks=[mk("Fri",["Torsdag og fredag utgår i jula."])]; return true; }
+  return false;
+}
+const JUL_NOTE="Jul: lett uke. Fri 23.–27. des og 31. des – 1. jan.";
+
 /* ============ RPE-ANKER I HARDE BULDREØKTER ============ */
 const RPE_ANKER={"6":"kontrollert, aldri på grensa.","6–7":"kontrollert, aldri på grensa.","7":"du må ta i, men har kontroll. Ikke hardere.","7–8":"du må ta i, flyttene sitter. Ikke hardere.","8":"full kraft, flyttene sitter. Ikke hardere.","8–9":"full kraft, flyttene sitter – de hardeste så vidt. Ikke hardere.","9":"alt du har, går så vidt. Ikke hardere."};
 /* ============ FELLES RPE-SKALA (lik for alle) ============ */
@@ -1034,7 +1047,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-07-112656";
+const APP_VERSION="2026-11-07-120037";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

@@ -177,7 +177,7 @@ function mondayOf(y,w){ // ISO
 
 // Sesongens uker i rekkefølge
 const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
-const LIGHT=new Set([48,1,5,12,16]);
+const LIGHT=new Set([48,52,53,5,12,16]);
 const COMP={8:"NM junior lør 27. feb"};
 
 function info(date){
@@ -187,7 +187,8 @@ function info(date){
   if(!inSeason){ i.phase = (y<2026||(y===2026&&w<45))?"før":"etter"; i.label = i.phase==="før"?"Før sesongstart":"Planen er ferdig"; return i; }
   i.light=LIGHT.has(w); i.comp=COMP[w]||null;
   if(y===2026&&w<=51){ i.phase="f1"; i.label="Fase 1 · Grunnlag"; }
-  else if((y===2026&&w>=52)||(y===2027&&w===1)){ i.phase="jul"; i.label= w===1?"Jul · lett oppstart":"Jul"; }
+  else if(y===2026){ i.phase="f1"; i.jul=true; i.label="Jul · lett uke"; }
+  else if(w===1){ i.phase="f2"; i.label="Fase 1 · Grunnlag"; }
   else if(w<=7){ i.phase="f2"; i.label=w===2?"Fase 1 · Grunnlag":"Fase 2 · Mer intensitet"; }
   else if(w===8){ i.phase="nm"; i.label="NM-uka"; }
   else { i.phase="f3"; i.label="Fase 3 · Konkurranseperiode"; }
@@ -207,21 +208,16 @@ const half=n=>Math.max(1,Math.round(n/2));
 const B=(h,items,dur)=>({h,items,dur});
 
 function session(date,noTheme){
-  const i=info(date);
+  let i=info(date);
   const s={i,key:"hvile",title:"Hvile",time:"–",blocks:[],notes:[],count:null};
   if(i.phase==="før"||i.phase==="etter"){ s.title=i.label; s.key="utenfor"; return s; }
 
-  const md=date.getMonth()===11?date.getDate():0;
-  if(i.phase==="jul" && i.w!==1){
-    s.key="jul"; s.title="Jul – fri";
-    s.blocks=[B("I dag",["Fri, lek, lett klatring hvis du har lyst.","Ingen faste økter."])];
-    if(md>=24&&md<=27) s.notes.push(["stop","24.–27. des: ingen harde økter."]);
-    return s;
-  }
+  if(julDay(s,i)) return s;
+  if(i.jul&&i.w===52&&i.dow===2) i={...i,dow:3};
   const L=lvl(i);
-  const lightNote = i.light ? "Lett uke: halvt antall forsøk/runder/sett og ett RPE-trinn lavere." : null;
+  const lightNote = i.jul ? JUL_NOTE : i.light ? "Lett uke: halvt antall forsøk/runder/sett og ett RPE-trinn lavere." : null;
   const compNote = i.comp ? "Konkurranseuke: halvt volum, samme intensitet, ingen nye øvelser." : null;
-  const jan1 = i.phase==="jul"&&i.w===1 ? "Uke 1: lett oppstart på fase 1-intensitet." : null;
+  const jan1 = null;
 
   switch(i.dow){
   case 1: { // MANDAG
@@ -965,6 +961,18 @@ function perBoulder(root){
   }catch(e){}
 }
 
+/* ============ JUL: FRIDAGER OG LETTE UKER ============ */
+function julFri(d){ const m=d.getMonth(), md=d.getDate(); return (m===11&&md>=23&&md<=27)||(m===11&&md===31)||(m===0&&md===1); }
+// Returnerer true hvis dagen er fri i jula (fridag, eller tor/fre som utgår). Setter s som hviledag.
+function julDay(s,i){
+  if(!i.jul) return false;
+  const mk=(h,items)=>({h,items,dur:undefined});
+  if(julFri(i.date)){ s.key="hvile"; s.title="Jul – fri"; s.time="–"; s.blocks=[mk("Fri",["Fridager: 23.–27. des og 31. des – 1. jan."])]; return true; }
+  if(i.dow===4||i.dow===5||i.dow===7){ s.key="hvile"; s.title="Jul – fri"; s.time="–"; s.blocks=[mk("Fri",["Torsdag og fredag utgår i jula."])]; return true; }
+  return false;
+}
+const JUL_NOTE="Jul: lett uke. Fri 23.–27. des og 31. des – 1. jan.";
+
 /* ============ RPE-ANKER I HARDE BULDREØKTER ============ */
 const RPE_ANKER={"6":"kontrollert, aldri på grensa.","6–7":"kontrollert, aldri på grensa.","7":"du må ta i, men har kontroll. Ikke hardere.","7–8":"du må ta i, flyttene sitter. Ikke hardere.","8":"full kraft, flyttene sitter. Ikke hardere.","8–9":"full kraft, flyttene sitter – de hardeste så vidt. Ikke hardere.","9":"alt du har, går så vidt. Ikke hardere."};
 /* ============ FELLES RPE-SKALA (lik for alle) ============ */
@@ -1188,7 +1196,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-220016";
+const APP_VERSION="2026-11-07-120037";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

@@ -174,7 +174,7 @@ const SEASON=[]; for(let w=45;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<
 const COMP={5:{navn:"NC buldring",sted:"Kristiansund",dato:"lør 6. feb"},7:{navn:"NC2 buldring",sted:"",dato:"lør 20. feb"},8:{navn:"NM junior",sted:"Trondheim",dato:"lør 27. feb"}};
 const TESTUKER=new Set(["2026-45","2026-51","2027-7","2027-13","2027-19"]);
 const CAMPUS=new Set([4,10,14,18,20]);
-const NYTT={45:"Fase 1 · test",47:"Vekt på tirsdag",48:"Lett uke",51:"Test",1:"Lett uke",3:"Fase 2: buldring nær maks, linked, vektet pull-up",4:"Campus",
+const NYTT={45:"Fase 1 · test",47:"Vekt på tirsdag",48:"Lett uke",51:"Test",1:"Vanlig uke etter jul",3:"Fase 2: buldring nær maks, linked, vektet pull-up",4:"Campus",
   5:"Lett uke · NC",6:"Tau onsight",7:"NC2 · test",8:"NM junior",9:"Fase 3",10:"4 × 4 · campus",11:"Tyngre kettlebell",12:"Påske, lett uke",13:"Test · tyngre kettlebell",
   14:"Campus",15:"Tyngre kettlebell",16:"Lett uke · onsight",18:"Redpoint · campus",19:"Test",20:"Campus"};
 
@@ -185,8 +185,8 @@ function info(date){
   if(!inSeason){ i.phase=(y<2026||(y===2026&&w<45))?"før":"etter"; i.label=i.phase==="før"?"Før sesongstart":"Planen er ferdig"; return i; }
   i.test=TESTUKER.has(`${y}-${w}`);
   if(y===2026&&w<=51){ i.phase="f1"; i.label="Fase 1 · Innlæring"; i.light=w===48; }
-  else if(y===2026){ i.phase="jul"; i.label="Jul"; }
-  else if(w===1){ i.phase="f1"; i.label="Jul · lett uke"; i.light=true; }
+  else if(y===2026){ i.phase="f1"; i.jul=true; i.light=true; i.label="Jul · lett uke"; }
+  else if(w===1){ i.phase="f1"; i.label="Fase 1 · Innlæring"; }
   else if(w<=7){ i.phase="f2"; i.label=w===2?"Fase 1 · Innlæring":"Fase 2 · Belastning"; i.M=w>=3?2:1; i.S=w>=3?2:1; i.light=w===5; }
   else if(w===8){ i.phase="nm"; i.label="NM junior"; i.M=2; i.S=2; }
   else { i.phase="f3"; i.label="Fase 3 · Konkurranseperiode"; i.M=3; i.S=3; i.light=(w===12||w===16); }
@@ -264,14 +264,9 @@ function session(date,noTheme){
   const i=info(date), w=i.w;
   const s={i,key:"hvile",title:"Hvile",time:"–",blocks:[],notes:[],fields:[]};
   if(i.phase==="før"||i.phase==="etter"){ s.title=i.label; s.key="utenfor"; return s; }
-  const md=date.getMonth()===11?date.getDate():0;
-  if(i.phase==="jul"){
-    s.key="jul"; s.title="Jul – fri";
-    s.blocks=[B("I dag",["Fri, lek, lett klatring. Mobilitet hjemme."])];
-    if(md>=24&&md<=27) s.notes.push(["stop","24.–27. des: ingen harde økter."]);
-    return s;
-  }
-  if(i.light) s.notes.push(["warn","Lett uke: samme økter, halvt antall forsøk/runder/sett (avrund ned) og ett RPE-trinn lavere."]);
+  if(julDay(s,i)) return s;
+  if(i.jul) s.notes.push(["warn",JUL_NOTE]);
+  else if(i.light) s.notes.push(["warn","Lett uke: samme økter, halvt antall forsøk/runder/sett (avrund ned) og ett RPE-trinn lavere."]);
   if(i.comp) s.notes.push(["warn",`Konkurranseuke – ${i.comp.navn} ${i.comp.dato}: halvt volum, samme intensitet, ingen campus, ingen PE, ingen nye øvelser.`]);
   const warm=(mob)=>B("Oppvarming",["5 min puls"+(mob?", 8 min mobilitet (dyp knebøy, couch, 90/90, maks 30 s per hold)":", 5 min mobilitet")+".","15 min lett klatring med teknikktemaet – pyramide lett → middels."],mob?"28 min":"25 min");
   switch(i.dow){
@@ -836,6 +831,18 @@ function perBoulder(root){
   }catch(e){}
 }
 
+/* ============ JUL: FRIDAGER OG LETTE UKER ============ */
+function julFri(d){ const m=d.getMonth(), md=d.getDate(); return (m===11&&md>=23&&md<=27)||(m===11&&md===31)||(m===0&&md===1); }
+// Returnerer true hvis dagen er fri i jula (fridag, eller tor/fre som utgår). Setter s som hviledag.
+function julDay(s,i){
+  if(!i.jul) return false;
+  const mk=(h,items)=>({h,items,dur:undefined});
+  if(julFri(i.date)){ s.key="hvile"; s.title="Jul – fri"; s.time="–"; s.blocks=[mk("Fri",["Fridager: 23.–27. des og 31. des – 1. jan."])]; return true; }
+  if(i.dow===4||i.dow===5||i.dow===7){ s.key="hvile"; s.title="Jul – fri"; s.time="–"; s.blocks=[mk("Fri",["Torsdag og fredag utgår i jula."])]; return true; }
+  return false;
+}
+const JUL_NOTE="Jul: lett uke. Fri 23.–27. des og 31. des – 1. jan.";
+
 /* ============ RPE-ANKER I HARDE BULDREØKTER ============ */
 const RPE_ANKER={"6":"kontrollert, aldri på grensa.","6–7":"kontrollert, aldri på grensa.","7":"du må ta i, men har kontroll. Ikke hardere.","7–8":"du må ta i, flyttene sitter. Ikke hardere.","8":"full kraft, flyttene sitter. Ikke hardere.","8–9":"full kraft, flyttene sitter – de hardeste så vidt. Ikke hardere.","9":"alt du har, går så vidt. Ikke hardere."};
 /* ============ FELLES RPE-SKALA (lik for alle) ============ */
@@ -1057,7 +1064,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-220016";
+const APP_VERSION="2026-11-07-120037";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

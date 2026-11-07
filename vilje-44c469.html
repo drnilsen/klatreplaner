@@ -171,14 +171,14 @@ function isoWeek(d){
 }
 function mondayOf(y,w){ const jan4=new Date(y,0,4); const dow=jan4.getDay()||7; return addDays(jan4,(w-1)*7-(dow-1)); }
 const SEASON=[]; for(let w=43;w<=53;w++) SEASON.push({y:2026,w}); for(let w=1;w<=20;w++) SEASON.push({y:2027,w});
-const LIGHT=new Set([48,52,53]); const LIGHT27=new Set([5,10,12,16]);
+const LIGHT=new Set([48,52]); const LIGHT27=new Set([5,10,12,16]);
 
 function info(date){
   const {y,w,dow}=isoWeek(date);
   const i={date,y,w,dow,light:false,phase:"utenfor",label:"Utenfor planen"};
   const inSeason=(y===2026&&w>=43)||(y===2027&&w<=20);
   if(!inSeason){ i.phase=(y<2026||(y===2026&&w<43))?"før":"etter"; i.label=i.phase==="før"?"Før start":"Planen er ferdig"; return i; }
-  if(y===2026){ i.phase="h"; i.light=LIGHT.has(w); i.label=w>=52?"8–12 reps · jul, lett uke":"8–12 reps"; }
+  if(y===2026){ i.phase="h"; i.light=LIGHT.has(w); i.jul=w>=52; i.label=w===52?"8–12 reps · jul, lett uke":w===53?"8–12 reps · jul":"8–12 reps"; }
   else { i.phase="s"; i.light=LIGHT27.has(w); i.intro=w===1; i.label=w===1?"3–5 reps · innlæring, RPE 7":i.light?"3–5 reps · lett uke":"3–5 reps"; }
   return i;
 }
@@ -265,10 +265,13 @@ function strengthHead(i){
 const B=(h,items,dur)=>({h,items,dur});
 function lastSaturday(d){ let x=new Date(d); while(isoWeek(x).dow!==6) x=addDays(x,-1); return x; }
 function session(date,noTheme){
-  const i=info(date), t=TRINN.trinn;
+  let i=info(date); const t=TRINN.trinn;
   const s={i,key:"hvile",title:"Hvile",time:"–",blocks:[],notes:[],ex:null,fields:[]};
   if(i.phase==="før"||i.phase==="etter"){ s.title=i.label; s.key="utenfor"; return s; }
-  if(i.light) s.notes.push(["warn",i.w>=52?"Jul, lett uke: samme øvelser, 2 sett, RPE 6–7.":"Lett uke: samme øvelser, 2 sett, RPE 6–7."]);
+  if(julDay(s,i)) return s;
+  if(i.jul){ if(i.w===52&&i.dow===2) i={...i,dow:5}; else if(i.w===53&&i.dow===2) i={...i,dow:3}; else if(i.w===53&&i.dow===3) i={...i,dow:5}; }
+  if(i.jul) s.notes.push(["warn",i.light?"Jul, lett uke: samme øvelser, 2 sett, RPE 6–7. Styrke B tirsdag. Fri 23.–27. des.":"Vanlig uke. Styrke B onsdag. Fri 31. des – 1. jan."]);
+  else if(i.light) s.notes.push(["warn","Lett uke: samme øvelser, 2 sett, RPE 6–7."]);
   const AUTO=["Stille føtter","Hofta inn","Rette armer","Flagg og dropknee"];
   const satT = noTheme?null:themeFor(lastSaturday(date));
   const warmTheme = satT&&AUTO.includes(satT[0])?satT:null;
@@ -867,6 +870,18 @@ function perBoulder(root){
   }catch(e){}
 }
 
+/* ============ JUL: FRIDAGER OG LETTE UKER ============ */
+function julFri(d){ const m=d.getMonth(), md=d.getDate(); return (m===11&&md>=23&&md<=27)||(m===11&&md===31)||(m===0&&md===1); }
+// Returnerer true hvis dagen er fri i jula (fridag, eller tor/fre som utgår). Setter s som hviledag.
+function julDay(s,i){
+  if(!i.jul) return false;
+  const mk=(h,items)=>({h,items,dur:undefined});
+  if(julFri(i.date)){ s.key="hvile"; s.title="Jul – fri"; s.time="–"; s.blocks=[mk("Fri",["Fridager: 23.–27. des og 31. des – 1. jan."])]; return true; }
+  if(i.dow===4||i.dow===5||i.dow===7){ s.key="hvile"; s.title="Jul – fri"; s.time="–"; s.blocks=[mk("Fri",["Torsdag og fredag utgår i jula."])]; return true; }
+  return false;
+}
+const JUL_NOTE="Jul: lett uke. Fri 23.–27. des og 31. des – 1. jan.";
+
 /* ============ RPE-ANKER I HARDE BULDREØKTER ============ */
 const RPE_ANKER={"6":"kontrollert, aldri på grensa.","6–7":"kontrollert, aldri på grensa.","7":"du må ta i, men har kontroll. Ikke hardere.","7–8":"du må ta i, flyttene sitter. Ikke hardere.","8":"full kraft, flyttene sitter. Ikke hardere.","8–9":"full kraft, flyttene sitter – de hardeste så vidt. Ikke hardere.","9":"alt du har, går så vidt. Ikke hardere."};
 /* ============ FELLES RPE-SKALA (lik for alle) ============ */
@@ -1093,7 +1108,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-06-220016";
+const APP_VERSION="2026-11-07-120037";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
