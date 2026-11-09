@@ -287,9 +287,9 @@ function session(date,noTheme){
     s.key="tir";
     if(c){ s.title="Lett sva og mobilitet"; s.time="45–60 min"; s.blocks=[B("Økt",["Lett sva og mobilitet. Ingen Styrke A."],"45–60 min")]; break; }
     const t=i.phase==="led"?pick(LED,i,2):pick(SVA,i);
-    s.title=i.phase==="led"?"Sva/led-teknikk + Styrke A":"Sva og teknikk + Styrke A"; s.time="ca. 1 t 40";
-    s.notes.push(["warn","Lett klatring: ingen pump, ingen slitne fingre."]);
-    s.blocks=[B("Oppvarming",["Puls, mobilitet ankel/hofte, balanse på ett bein med lukkede øyne 3 × 30 s."],"15 min"),
+    s.title=i.phase==="led"?"Styrke A (formiddag) + sva/led-teknikk (kveld)":"Styrke A (formiddag) + sva og teknikk (kveld)"; s.time="45 min + ca. 1 t 20";
+    s.am=[B("Formiddag · Oppvarming",[""],"15 min")];
+    s.blocks=[B("Kveld · Oppvarming",[""],"25 min"),
       B(i.phase==="led"?"Sva med led-tema":"Sva",["RPE 3–4.",...(noTheme?[]:[tLink(t)]),"Lette svabuldre eller -ruter, 4–5 grader under maks.","Alltid: bestem fotplasseringen før du flytter foten, og la den stå.","Runde 1: 3 s stillstand før hvert fottak.","Ingen forsøk på noe du kan falle stygt på.","Stopp klatringen: pump, merkbar tretthet i fingre eller føtter, eller RPE over 4."],"45 min"),
       B("Nedtrapping",["Mobilitet."],"10 min")];
     if(!noTheme) s.theme=t.n;
@@ -436,8 +436,8 @@ function sessionCard(s,withAlerts){
   const i=s.i;
   let h=`<div class="card"><h2>${s.title}</h2>${tagsHtml(i)}${s.time&&s.time!=="–"?`<div class="small muted">Tid: ${s.time}</div>`:""}
    ${withAlerts?notesHtml(alerts(i.date)):""}${notesHtml(s.notes.filter(n=>n[0]!=="acc"))}`;
-  h+=s.blocks.map(blkHtml).join("");
-  if(s.slynge) h+=slyngeHtml(i);
+  if(s.am){ h+=s.am.map(blkHtml).join("")+(s.slynge?slyngeHtml(i):""); h+=s.blocks.map(blkHtml).join(""); }
+  else { h+=s.blocks.map(blkHtml).join(""); if(s.slynge) h+=slyngeHtml(i); }
   h+=s.notes.filter(n=>n[0]==="acc"&&!(s.title==="Hvile"&&/Prosessmål/.test(n[1]))).map(n=>`<p class="small muted">${n[1]}</p>`).join("")+`</div>`;
   return h;
 }
@@ -487,11 +487,11 @@ function vUka(){
 
 const D=(y,w,dow)=>addDays(mondayOf(y,w),dow-1);
 function curLabel(){ const i=info(cur); return `<p class="small muted">Nå: uke ${i.w} · ${i.label}</p>`; }
-function refCard(title,date){ const s=session(date,true); return `<div class="card"><h3 style="margin-top:0">${title}</h3>${s.blocks.map(blkHtml).join("")}${s.slynge?slyngeHtml(s.i):""}</div>`; }
+function refCard(title,date){ const s=session(date,true); return `<div class="card"><h3 style="margin-top:0">${title}</h3>${s.am?s.am.map(blkHtml).join("")+(s.slynge?slyngeHtml(s.i):"")+s.blocks.map(blkHtml).join(""):s.blocks.map(blkHtml).join("")+(s.slynge?slyngeHtml(s.i):"")}</div>`; }
 function nowOr(dow,fb){ const i=info(cur); return ["før","etter","jul"].includes(i.phase)?fb:addDays(mondayOf(i.y,i.w),dow-1); }
 const VIEWS={
  man:()=>`<h2 style="margin-top:18px">Mandag · Hard buldring</h2>${curLabel()}${refCard("Fase 1 (uke 45–51, 1–2)",D(2026,46,1))}${refCard("Fase 2 (uke 3–7)",D(2027,3,1))}${refCard("Led-fase (uke 9–20)",D(2027,10,1))}`,
- tir:()=>`<h2 style="margin-top:18px">Tirsdag · Sva og teknikk + Styrke A</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,49,2)))}
+ tir:()=>`<h2 style="margin-top:18px">Tirsdag · Styrke A formiddag, sva og teknikk kveld</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,49,2)))}
    <div class="card small"><b>Slynge, sett:</b> 2 sett uke 45–48 · 3 sett fra uke 49 og uke 2–4 · 2 sett uke 6 · ingen styrke uke 5, 7, 8 · uke 9: 1 sett · led-fase: 2 sett (lette uker 1).</div>`,
  ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · fase 1 (uke 45–51, 1–2)",D(2026,46,3))}${refCard("Linked boulders · fase 2 (uke 3–7)",D(2027,3,3))}${refCard("Hard led · onsight (partallsuker)",D(2027,10,3))}${refCard("Hard led · redpoint (oddetallsuker)",D(2027,11,3))}`,
  tor:()=>`<h2 style="margin-top:18px">Fredag</h2>${curLabel()}<div class="card small">Uke 45–8: board. Led-fase: tau i oddetallsuker, board i partallsuker. Maks 2 t 15.</div>${refCard("Board · fase 1 (uke 45–51, 1–2)",D(2026,46,5))}${refCard("Board · fase 2 (uke 3–7)",D(2027,4,5))}${refCard("Tau · 4 × 4 (uke 9, 11, 13)",D(2027,11,5))}${refCard("Tau · 2 × 4 (uke 15, 17, 19)",D(2027,15,5))}`,
@@ -918,7 +918,7 @@ function warmTpl(root){
         let nx=bl.nextElementSibling; while(nx&&!(nx.classList&&nx.classList.contains("blk")&&nx.querySelector("h4"))) nx=nx.nextElementSibling;
         const next=nx?(nx.querySelector("h4").childNodes[0].textContent||"").trim():"";
         const theme=[...bl.querySelectorAll("li")].filter(li=>/^(Teknikktema|Forslag til|Kompresjonsdrill|Koordinasjon|Ukas tema)/.test(li.textContent.trim())).map(li=>linkOnly(li.innerHTML,li.textContent));
-        const first=!blks.slice(0,idx).some(b=>!/^oppvarming/i.test(((b.querySelector("h4")||{}).textContent||"").trim()));
+        const first=/^Kveld/i.test(name)||!blks.slice(0,idx).some(b=>!/^(oppvarming|formiddag · oppvarming)/i.test(((b.querySelector("h4")||{}).textContent||"").trim()));
         const strength=/^(Styrke|Spenst|Topping|Test)/i.test(next)||/^Oppvarming · (Styrke|Test)/i.test(name);
         let items, dur;
         if(strength&&first){ items=["5 min puls.","5 min strikk.","5 min mobilitet."]; dur="15 min"; }
@@ -1081,7 +1081,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-09-184728";
+const APP_VERSION="2026-11-09-184953";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
