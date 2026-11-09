@@ -907,7 +907,7 @@ function perBoulder(root){
       if(!/per buldre|per problem|på hvert|på hver|maks \d+ forsøk hver/.test(all)){
         cntLi.innerHTML=cntLi.innerHTML.replace(/(\d+(–\d+)? (nye |harde |koordinasjons)?(buldre|problemer)[^,.]*)/,`$1, maks 3 forsøk per ${/problemer/.test(cntLi.textContent)?"problem":"buldre"}`);
       }
-      const hard=/nær maks|på maks|over maks|RPE (8|9)/.test(cntLi.textContent);
+      const hard=/nær maks|på maks|over maks|RPE (8|9)/.test(all);
       let reduced=false; try{ const si=session(selDate,true); const ii=si&&si.i; reduced=!!(ii&&(ii.light||ii.comp||ii.top||ii.nm||/^(nm|konk|topp)/.test(ii.phase||"")||(ii.c&&ii.c.vol))); }catch(e){}
       if(!hard&&!reduced&&!/Går (de fleste|buldrene|problemene|de) på/.test(all)&&!/konkurranse/i.test(all)&&!/Ingen ekstra buldre|maks 2 forsøk/.test(all))
         ul.insertAdjacentHTML("beforeend",`<li>Går de fleste på første forsøk: ta 1–2 ${/problemer/.test(cntLi.textContent)?"problemer":"buldre"} til, så lenge tida rekker.</li>`);
@@ -1177,7 +1177,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-09-184953";
+const APP_VERSION="2026-11-09-190403";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
