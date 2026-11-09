@@ -254,7 +254,10 @@ function session(date,noTheme){
   const s={i,key:"hvile",title:"Hvile",time:"–",blocks:[],notes:[],fields:[],checks:[]};
   if(i.phase==="før"||i.phase==="etter"){ s.title=i.label; s.key="utenfor"; return s; }
   if(julDay(s,i)) return s;
-  if(i.jul&&i.dow===6) i={...i,dow:4};
+  const realDow=i.dow;
+  if(realDow===4) i={...i,dow:0};
+  else if(realDow===5&&!c) i={...i,dow:6};
+  else if(realDow===6&&!c) i={...i,dow:8};
   if(i.jul) s.notes.push(["warn",JUL_NOTE]);
   else if(i.light) s.notes.push(["warn","Lett uke: halvt antall forsøk/runder/sett og ett RPE-trinn lavere."]);
   if(c) s.notes.push(["warn",`Konkurranseuke – ${c.navn} ${c.dato}: ca. ${c.vol} % volum, samme intensitet. Ingen linked, ingen styrke siste 5 dager.`]);
@@ -312,19 +315,20 @@ function session(date,noTheme){
     if(!noTheme){ s.blocks[0].items.unshift(tLink(koord)); s.theme=koord.n; }
     s.fields=[["antall","Sett"]];
     break; }
-  case 4: {
+  case 0: s.blocks=[B("Hviledag",["Tapt økt tas ikke igjen."])]; break;
+  case 8: {
     s.key="tor";
-    if(c){ s.title="Lette ruter"; s.time="45 min"; s.blocks=[B("Økt",["2–3 lette ruter.",`${V(2,"Pusterutine")} og ${V(1,"lesing")} på hver rute.`],"45 min")]; break; }
-    s.title="Lett led med teknikkfokus"; s.time="ca. 1 t 30";
-    const t=pick(LED,i);
-    s.blocks=[B("Oppvarming",["2 lette ruter. Klipping på bakken, begge hender."],"20 min"),
-      B("Lett led",[...(noTheme?[]:[tLink(t,"første rute; deretter ett nytt tema per rute.")]),`<span class="key">4 ruter</span> på led minst 4 grader under onsight, RPE 3–4.`,"Snakketempo, rette armer, rolig pust. Merkbar pump → én grad ned.",
+    s.title="Koordinasjon + lett led med teknikkfokus"; s.time="ca. 2 t 10";
+    const t=pick(LED,i), kn=i.light?3:5;
+    s.blocks=[B("Oppvarming",[""],"25 min"),
+      B("Koordinasjon",[i.light?"RPE 5–6.":"RPE 6–7.",...(noTheme?[]:[tLink(koord)]),`${bld(kn,3)} med koordinasjonsflytt på store tak og volumer. 3 min pause.`,"Paddle, deadpoint, dynamiske flytt."],"35 min"),
+      B("Lett led",[...(noTheme?[]:[tLink(t,"første rute; deretter ett nytt tema per rute.")]),`<span class="key">${i.light?2:4} ruter</span> på led minst 4 grader under onsight, RPE 3–4.`,"Snakketempo, rette armer, rolig pust. Merkbar pump → én grad ned.",
         "Én rute = ett tema: intensjon, kalkeregel, rette armer, hvilestillinger."],"50 min"),
       B("Falltrening",[`${V(6,"Fallrutine")}: 3–5 kontrollerte fall på overheng, fra der du er i ruta.${i.phase==="f1"?" Start lavt.":""}`],"10 min"),B("Nedtrapping",["Lett klatring."],"10 min")];
-    if(!noTheme) s.theme=t.n;
+    if(!noTheme) s.theme=koord.n;
     s.fields=[["kalk","Kalkinger per rute (snitt)"]];
     break; }
-  case 5: if(c){ s.key="fre"; s.title="Hvile eller aktivering"; s.blocks=[B("I dag",["Hvile, eller 20 min aktivering på store tak."])]; } else s.blocks=[B("Hviledag",["Tapt økt tas ikke igjen."])]; break;
+  case 5: s.key="fre"; s.title="Hvile eller aktivering"; s.blocks=[B("I dag",["Hvile, eller 20 min aktivering på store tak."])]; break;
   case 6: {
     s.key="lor";
     if(c){ s.title=`${c.navn}${c.sted?" "+c.sted:""}`; s.time=""; s.blocks=[B("Konkurranse",[`${V(1,"Verktøy 1–3")} og ${V(7,"7")}.`,"Oppvarming ferdig 15 min før start.","Plan for kvalik: 2 sikre → 1 hard → resten."])]; s.fields=[["resultat","Resultat / plassering"]]; break; }
@@ -413,7 +417,7 @@ function alerts(date){
 const METRIC={title:"Kalkinger per rute (lett led)",series:[{k:"kalk",name:"kalkinger per rute",color:"#0f6b5f"}]};
 
 /* ============ VISNINGER ============ */
-const TABS=[["idag","I dag"],["uka","Uka"],["man","Mandag"],["tir","Tirsdag"],["ons","Onsdag"],["tor","Torsdag"],["lor","Lørdag"],["hodet","Hodet"],["konk","Konkurranse"],["teknikk","Teknikk"],["plan","Plan"],["rpe","RPE"],["regler","Regler"],["logg","Logg"]];
+const TABS=[["idag","I dag"],["uka","Uka"],["man","Mandag"],["tir","Tirsdag"],["ons","Onsdag"],["tor","Fredag"],["lor","Lørdag"],["hodet","Hodet"],["konk","Konkurranse"],["teknikk","Teknikk"],["plan","Plan"],["rpe","RPE"],["regler","Regler"],["logg","Logg"]];
 let cur=new Date(); cur=new Date(cur.getFullYear(),cur.getMonth(),cur.getDate());
 let selDate=new Date(cur), weekRef=new Date(cur);
 function tabsHtml(t){ return TABS.map(([k,n])=>`<a href="#${k}" class="${k===t?"on":""}">${n}</a>`).join(""); }
@@ -490,8 +494,8 @@ const VIEWS={
  tir:()=>`<h2 style="margin-top:18px">Tirsdag · Sva og teknikk + Styrke A</h2>${curLabel()}${refCard("Denne uka",nowOr(2,D(2026,49,2)))}
    <div class="card small"><b>Slynge, sett:</b> 2 sett uke 45–48 · 3 sett fra uke 49 og uke 2–4 · 2 sett uke 6 · ingen styrke uke 5, 7, 8 · uke 9: 1 sett · led-fase: 2 sett (lette uker 1).</div>`,
  ons:()=>`<h2 style="margin-top:18px">Onsdag</h2>${curLabel()}${refCard("Linked boulders · fase 1 (uke 45–51, 1–2)",D(2026,46,3))}${refCard("Linked boulders · fase 2 (uke 3–7)",D(2027,3,3))}${refCard("Hard led · onsight (partallsuker)",D(2027,10,3))}${refCard("Hard led · redpoint (oddetallsuker)",D(2027,11,3))}`,
- tor:()=>`<h2 style="margin-top:18px">Torsdag · Lett led – ukas regenerering</h2>${curLabel()}${refCard("Denne uka",nowOr(4,D(2026,46,4)))}`,
- lor:()=>`<h2 style="margin-top:18px">Lørdag</h2>${curLabel()}<div class="card small">Uke 45–8: board. Led-fase: tau i oddetallsuker, board i partallsuker. Maks 2 t 15.</div>${refCard("Board · fase 1 (uke 45–51, 1–2)",D(2026,46,6))}${refCard("Board · fase 2 (uke 3–7)",D(2027,4,6))}${refCard("Tau · 4 × 4 (uke 9, 11, 13)",D(2027,11,6))}${refCard("Tau · 2 × 4 (uke 15, 17, 19)",D(2027,15,6))}`,
+ tor:()=>`<h2 style="margin-top:18px">Fredag</h2>${curLabel()}<div class="card small">Uke 45–8: board. Led-fase: tau i oddetallsuker, board i partallsuker. Maks 2 t 15.</div>${refCard("Board · fase 1 (uke 45–51, 1–2)",D(2026,46,5))}${refCard("Board · fase 2 (uke 3–7)",D(2027,4,5))}${refCard("Tau · 4 × 4 (uke 9, 11, 13)",D(2027,11,5))}${refCard("Tau · 2 × 4 (uke 15, 17, 19)",D(2027,15,5))}`,
+ lor:()=>`<h2 style="margin-top:18px">Lørdag · Koordinasjon + lett led med teknikkfokus</h2>${curLabel()}${refCard("Denne uka",nowOr(6,D(2026,46,6)))}`,
 };
 function vHodet(){
   const T=[[1,"Lesing med beslutning","Buldring: lesing i observasjonstida, 20–30 s ny lesing før første forsøk. Tau: 6 min. Pek ut hvert flytt. Velg beta for det vanskeligste flyttet. Alternativ B brukes først etter et fall. Hard led: hvilestedene og ett kalkested før hver nøkkelsekvens velges i lesingen."],
@@ -499,7 +503,7 @@ function vHodet(){
    [3,"Reset mellom forsøk","Snu deg bort fra veggen, tre pust, én setning om hva du gjør annerledes neste gang – eller «samme igjen»."],
    [4,"Prosessmål","Før økta: ett mål du selv bestemmer over. Etter økta vurderer du bare det."],
    [5,"Konkurranseformat","<b>NC-kvalik (kø):</b> 8 buldre, 45 min, fri rekkefølge, ett forsøk per tur. Registrer sone 1, sone 2, topp og flash. Maks 5 forsøk på et buldre uten framgang, så neste.<br><b>EYC-runde (NM junior, NC-finale):</b> 4 buldre × 4 min klatretid, 4 min pause, ingen lesing utenom klatretiden (8 min felles observasjon før start).<br>Sjekk innbydelsen til hver konkurranse."],
-   [6,"Fallrutine (tau)","Torsdag: 3–5 kontrollerte fall på overheng, fra der du er i ruta. Si fra til sikrer, pust ut, slipp."],
+   [6,"Fallrutine (tau)","Lørdag: 3–5 kontrollerte fall på overheng, fra der du er i ruta. Si fra til sikrer, pust ut, slipp."],
    [7,"Konkurransedag","Oppvarming ferdig 15 min før start. Plan for rekkefølge i kvalik: 2 sikre → 1 hard → resten. Verktøy 2–3 mellom buldrene."]];
   return `<h2 style="margin-top:18px">Mental verktøykasse</h2><p class="small muted">Verktøy 1–4 i hver økt.</p>
   ${T.map(([n,t,x])=>`<div class="card" id="v${n}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${n} · ${t}</h3><p style="margin:0">${x}</p></div>`).join("")}`;
@@ -518,9 +522,9 @@ function vKonk(){
 function vTeknikk(){
   const sec=(t,arr,intro)=>`<h3>${t}</h3><p class="small muted">${intro}</p>${arr.map(x=>`<div class="card" id="tema-${x.id}" style="scroll-margin-top:110px"><h3 style="margin-top:0">${x.n}</h3><ul>${x.d.map(y=>`<li>${y}</li>`).join("")}</ul></div>`).join("")}`;
   return `<h2 style="margin-top:18px">Teknikk</h2><p class="small muted">Temaene roterer og står under <a href="#idag">I dag</a>. Driller er forslag – bytt gjerne.</p>
-  ${sec("Buldring: koordinasjon",KOORD,"Ett tema per uke, i oppvarmingen mandag og onsdag.")}
+  ${sec("Buldring: koordinasjon",KOORD,"Ett tema per uke: lørdag, og i oppvarmingen mandag og onsdag.")}
   ${sec("Sva (tirsdag)",SVA,"Fase 1 og 2. Ett tema per uke.")}
-  ${sec("Led: mindre kalking, bedre mønster",LED,"Torsdag (lett led), og tirsdag i led-fasen. Kalkeregel: uke 45 tell utgangsnivå på 3 ruter, uke 51 halvparten, uke 2–20 hold nivået.")}
+  ${sec("Led: mindre kalking, bedre mønster",LED,"Lørdag (lett led etter koordinasjon), og tirsdag i led-fasen. Kalkeregel: uke 45 tell utgangsnivå på 3 ruter, uke 51 halvparten, uke 2–20 hold nivået.")}
   <div class="card small">Unngå samme type tak hele økta. Ikke to crimp-problemer på rad.</div>`;
 }
 function vPlan(){
@@ -544,13 +548,13 @@ function vRpe(){
 function vRegler(){
   return `<h2 style="margin-top:18px">Regler</h2>
   <div class="card"><h3 style="margin-top:0">Fra samtalen</h3><ul><li><b>Formtopp:</b> buldring i februar, NM junior viktigst. Led prioriteres etter NM.</li><li><b>Utfordringer i konkurranse:</b> stressmestring, rutelesning og betabeslutninger.</li><li><b>Teknikk:</b> buldring – koordinasjon. Led – mindre kalking, fotpresisjon, hofte, rette armer.</li><li><b>Styrke:</b> muskelkjeder i slynge, ellers styrke gjennom klatringen.</li></ul></div>
-  <div class="card"><h3 style="margin-top:0">Rammer</h3><ul><li><b>Ukeplanen er hele treningen.</b> Klatring utenom planen erstatter den økta som ligner mest.</li><li><b>Lørdag:</b> maks 2 t 15.</li><li><b>Prosessmål i hver økt.</b></li>
+  <div class="card"><h3 style="margin-top:0">Rammer</h3><ul><li><b>Ukeplanen er hele treningen.</b> Klatring utenom planen erstatter den økta som ligner mest.</li><li><b>Fredag:</b> maks 2 t 15.</li><li><b>Prosessmål i hver økt.</b></li>
    <li><b>Fingre:</b> smerte i et fingerledd: stopp lister, crimp og board samme økt, si fra samme dag. Smerte eller stivhet på oversiden av midtleddet i en finger: stopp all klatring som krever grep, lege samme uke – også uten hevelse. Fingersmerte to økter på rad: si fra, ingen board den uka.</li></ul></div>
-  <div class="card"><h3 style="margin-top:0">Det som ligger fast</h3><ul><li><b>Hviledager:</b> fredag og søndag. Tapt økt tas ikke igjen.</li><li><b>Sluttpunkt:</b> forsøkstaket, eller to forsøk på rad med tydelig teknikkfall.</li>
+  <div class="card"><h3 style="margin-top:0">Det som ligger fast</h3><ul><li><b>Hviledager:</b> torsdag og søndag. Tapt økt tas ikke igjen.</li><li><b>Sluttpunkt:</b> forsøkstaket, eller to forsøk på rad med tydelig teknikkfall.</li>
    <li><b>Grep:</b> unngå samme type tak hele økta. Ikke to crimp-problemer på rad.</li><li><b>Supersett:</b> aldri samme muskelgruppe.</li><li><b>Maks én ny ting per uke.</b></li></ul></div>
   <div class="card"><h3 style="margin-top:0">Justering</h3><ul><li><b>Tung dag</b> (prøver, sykdom på vei): økta som lett klatring, Styrke A 1 sett.</li><li><b>Sykdom:</b> ingen trening ved feber. Etter feber: lett klatring de første 2–3 dagene.</li>
    <li><b>To oransje dager på rad</b> → neste harde økt blir lett klatring.</li><li><b>Flere gule/oransje enn grønne økter to uker på rad</b> → neste uke er lett uke, samtale med trener.</li>
-   <li><b>Etter ≥ 5 dager fri:</b> første uke på fase 1-intensitet.</li><li><b>Lavenergi-uke</b> (prøver, reise): behold tirsdag og torsdag.</li>
+   <li><b>Etter ≥ 5 dager fri:</b> første uke på fase 1-intensitet.</li><li><b>Lavenergi-uke</b> (prøver, reise): behold tirsdag og lørdag.</li>
    <li><b>Skulder/albue:</b> smerte → ingen board i to uker, slyngeroing og Y-raise med lett vinkel uten smerte. Ikke bedre etter to uker → fysioterapeut.</li>
    <li><b>Progresjon:</b> fase 1 – litt mer volum, litt lavere intensitet · fase 2 – litt færre forsøk, høyere intensitet: vinkel og veggvalg · linked – kortere pause og hardere flytt i fase 2 · slynge – vinkel og ett bein · led – ruter nærmere maks først i led-fasen.</li></ul></div>
   <div class="card"><h3 style="margin-top:0">Fargen på dagen</h3><p><span class="dot f-gronn"></span> <b>Grønn</b> uthvilt, god kvalitet, neste økt sterkere<br><span class="dot f-gul"></span> <b>Gul</b> vedlikehold<br><span class="dot f-oransje"></span> <b>Oransje</b> trente for sliten, lav kvalitet<br><span class="dot f-rod"></span> <b>Rød</b> trenger flere hviledager – hvile neste dag, si fra samme dag<br><span class="dot f-svart"></span> <b>Svart</b> skade</p></div>
@@ -1077,7 +1081,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-09-184332";
+const APP_VERSION="2026-11-09-184728";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
