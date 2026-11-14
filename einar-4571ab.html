@@ -169,7 +169,7 @@ function esc(t){ return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",
 /* ============ LAGRING ============ */
 let LOG={}, SET={};
 const LS_KEY=KEY+"-logg-v1", SET_KEY=KEY+"-innst-v1";
-const SET_DEF={frekv:1,frekvFra:"",trinn:1,sitt:15,beinB:false,beinBfra:"",start:"2026-11-09"};
+const SET_DEF={frekv:1,frekvFra:"",frekvMsg:null,trinnFra:"",trinn:1,sitt:15,beinB:false,beinBfra:"",start:"2026-11-09"};
 function lsGet(k){ try{ return localStorage.getItem(k);}catch(e){ return null; } }
 function lsSet(k,v){ try{ localStorage.setItem(k,v);}catch(e){} }
 function loadLocal(){
@@ -322,8 +322,31 @@ function roligeDager(){
   return fra?dayDiff(cur,parseYmd(fra)):dayDiff(cur,parseYmd(ks[0]))+1;
 }
 function sittSiste7(){ let m=null; for(let k=0;k<7;k++){ const e=LOG[ymd(addDays(cur,-k))]; if(e&&typeof e.sitt==="number") m=Math.max(m||0,e.sitt); } return m; }
+/* Automatisk nivå: opp etter 21 rolige dager med minst 9 loggede, ned ved logget oppbluss. */
+const OPP_DAGER=21, OPP_LOGG=9;
+function frekvStatus(){
+  const fra=parseYmd(SET.frekvFra); let start=fra, logget=0;
+  for(const k of Object.keys(LOG).sort()){ const d=parseYmd(k); if(d<fra||d>cur) continue; if(urolig(LOG[k])){ start=addDays(d,1); logget=0; } else if(d>=start) logget++; }
+  const rolige=Math.max(0,dayDiff(cur,start));
+  const trinnVent=SET.trinnFra?Math.max(0,OPP_DAGER-dayDiff(cur,parseYmd(SET.trinnFra))):0;
+  return {rolige,logget,trinnVent};
+}
+function autoFrekv(){
+  if(!SET.frekvFra){ SET.frekvFra=ymd(cur); saveSet(); }
+  if(frekvNo()>=5) return;
+  const st=frekvStatus();
+  if(st.rolige>=OPP_DAGER&&st.logget>=OPP_LOGG&&st.trinnVent===0){
+    SET.frekv=frekvNo()+1; SET.frekvFra=ymd(cur); SET.frekvMsg={c:"acc",dato:ymd(cur),t:`Opp til nivå ${SET.frekv}: øvelsene ${FREKV[SET.frekv-1].txt}.`}; saveSet();
+  }
+}
+function oppblussNed(dato){
+  if(dayDiff(cur,parseYmd(dato))>2) return;
+  const fra=frekvNo(); SET.frekv=Math.max(1,fra-1); SET.frekvFra=ymd(cur);
+  SET.frekvMsg={c:"stop",dato:ymd(cur),t:fra>1?`Oppbluss logget: ned til nivå ${SET.frekv}, øvelsene ${FREKV[SET.frekv-1].txt}. Telleren starter på nytt.`:"Oppbluss logget: blir på nivå 1. Telleren starter på nytt."}; saveSet();
+}
 function statusNotes(){
   const out=[], r=roligeDager(), sm=sittSiste7(), t=TRINN[trinnNo()-1];
+  if(SET.frekvMsg&&dayDiff(cur,parseYmd(SET.frekvMsg.dato))<=6) out.push([SET.frekvMsg.c,SET.frekvMsg.t]);
   const e0=LOG[ymd(cur)], e1=LOG[ymd(addDays(cur,-1))];
   if(urolig(e0)||urolig(e1)) out.push(["stop","Oppbluss eller smerte over 3 siste døgn: tilbake til forrige nivå til bukveggen er på utgangsnivå. Styrke og motbakke går som normalt hvis de ikke provoserer."]);
   else if(r!=null&&t.sitt&&r>=21&&sm!=null&&sm>=t.sitt) out.push(["acc",`Kriteriet for trinn ${trinnNo()+1} er nådd: ${r} rolige dager, sitter ${sm} min. Trinnet endres under <a href="#bukvegg">Bukvegg</a>.`]);
@@ -381,8 +404,9 @@ function vBukvegg(){
   <div class="card"><h3 style="margin-top:0">Trinn nå</h3><div class="trinn">${tb}</div>
   <div class="meta" style="margin-top:12px"><span class="tag">${r==null?"Ingen logg ennå":r+(r===1?" rolig dag":" rolige dager")}</span><span class="tag">${sm==null?"Sittetid ikke logget siste uke":"Sitter "+sm+" min (siste 7 dager)"}</span></div></div>
   <div class="card"><h3 style="margin-top:0">Hvor ofte</h3><div class="trinn">${FREKV.map(f=>`<button class="tbtn${f.n===frekvNo()?" on":""}" data-frekv="${f.n}">${f.n}</button>`).join("")}</div>
-  <p style="margin:12px 0 0"><span class="key">${FREKV[frekvNo()-1].navn} i uka:</span> ${FREKV[frekvNo()-1].txt}${SET.frekvFra?`<br><span class="small muted">På dette nivået siden ${fmt(parseYmd(SET.frekvFra))} · ${Math.floor(dayDiff(cur,parseYmd(SET.frekvFra))/7)} uker</span>`:""}</p>
-  <ul><li>Pust og hudmobilisering hver dag</li><li>Opp ett nivå etter 3 rolige uker</li><li>Aldri nytt nivå og nytt trinn samtidig</li><li>Hver dag (nivå 5) før trinn 2</li><li>Oppbluss: ned ett nivå</li></ul>
+  <p style="margin:12px 0 0"><span class="key">${FREKV[frekvNo()-1].navn} i uka:</span> ${FREKV[frekvNo()-1].txt}${SET.frekvFra?`<br><span class="small muted">På dette nivået siden ${fmt(parseYmd(SET.frekvFra))}</span>`:""}</p>
+  ${frekvNo()<5?(st=>`<div class="meta"><span class="tag${st.rolige>=OPP_DAGER?" acc":""}">${Math.min(st.rolige,OPP_DAGER)} av ${OPP_DAGER} rolige dager</span><span class="tag${st.logget>=OPP_LOGG?" acc":""}">${Math.min(st.logget,OPP_LOGG)} av ${OPP_LOGG} loggede dager</span>${st.trinnVent?`<span class="tag warn">Nytt trinn: venter ${st.trinnVent} dager</span>`:""}</div>`)(frekvStatus()):""}
+  <ul><li>Pust og hudmobilisering hver dag</li><li>Appen flytter deg opp ett nivå etter 21 rolige dager med minst 9 loggede dager</li><li>Logget oppbluss: ned ett nivå med en gang, telleren starter på nytt</li><li>Smerte over 3 uten oppbluss: telleren starter på nytt</li><li>Nytt trinn: nivået står stille i 3 uker</li><li>Hver dag (nivå 5) før trinn 2</li><li>Nivået kan også settes for hånd</li></ul>
   <div class="tscroll"><table><tr><th>Nivå</th><th>Øvelsene gjøres</th></tr>${FREKV.map(f=>`<tr class="${f.n===frekvNo()?"now":""}"><td>${f.n}</td><td><span class="key">${f.navn}:</span> ${f.txt}</td></tr>`).join("")}</table></div></div>
   <div class="card"><div class="tscroll"><table><tr><th>Trinn</th><th>Innhold</th><th>Videre når</th></tr>${rows}</table></div></div>
   <div class="card"><h3 style="margin-top:0">Mikrodose, trinn ${trinnNo()}</h3>
@@ -492,8 +516,8 @@ document.addEventListener("click",ev=>{
   if(el.dataset.go){ ev.preventDefault(); selDate=parseYmd(el.dataset.go); if(location.hash!=="#idag") location.hash="#idag"; else { render(); window.scrollTo(0,0); } return; }
   if(el.dataset.anchor){ ev.preventDefault(); const go=()=>{ const t=document.getElementById(el.dataset.anchor); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); };
     const tab=el.getAttribute("href")||"#idag"; if(location.hash!==tab){ location.hash=tab; setTimeout(go,150); } else go(); return; }
-  if(el.dataset.frekv){ SET.frekv=+el.dataset.frekv; SET.frekvFra=ymd(cur); saveSet(); render(); return; }
-  if(el.dataset.trinn){ SET.trinn=+el.dataset.trinn; saveSet(); render(); return; }
+  if(el.dataset.frekv){ SET.frekv=+el.dataset.frekv; SET.frekvFra=ymd(cur); SET.frekvMsg=null; saveSet(); render(); return; }
+  if(el.dataset.trinn){ if(+el.dataset.trinn!==trinnNo()){ SET.trinn=+el.dataset.trinn; SET.trinnFra=ymd(cur); saveSet(); } render(); return; }
   if(el.dataset.sitt){ SET.sitt=Math.min(120,Math.max(5,SET.sitt+(+el.dataset.sitt))); saveSet(); render(); return; }
   if(el.dataset.backup){ downloadBackup(); return; }
   if(el.id==="startSave"){ const v=(document.getElementById("startDato").value||"").trim(), m=document.getElementById("startMsg");
@@ -504,7 +528,7 @@ document.addEventListener("click",ev=>{
     const e={dato:k,okt:s.title,trinn:SET.trinn,mikro:document.getElementById("fMi").checked,oktGjort:document.getElementById("fOk").checked,
       oppbluss:document.getElementById("fOp").checked,kommentar:(document.getElementById("fKom").value||"").trim(),lagret:new Date().toISOString()};
     const sm=num("fSm",0,10), si=num("fSi",0,600); if(sm!=null) e.smerte=sm; if(si!=null) e.sitt=si;
-    LOG[k]=e; saveLog(); render(); const m=document.getElementById("fMsg"); if(m) m.textContent="Lagret."; return;
+    const forrige=LOG[k]; LOG[k]=e; saveLog(); if(e.oppbluss&&!(forrige&&forrige.oppbluss)) oppblussNed(k); else autoFrekv(); render(); const m=document.getElementById("fMsg"); if(m) m.textContent="Lagret."; return;
   }
   if(el.id==="fDel"){ delete LOG[ymd(selDate)]; saveLog(); render(); return; }
 });
@@ -512,12 +536,12 @@ document.addEventListener("change",ev=>{
   if(ev.target.id==="restoreFile"&&ev.target.files[0]) restoreBackup(ev.target.files[0]);
   if(ev.target.id==="beinB"){ SET.beinB=ev.target.checked; SET.beinBfra=SET.beinB?ymd(cur):""; saveSet(); render(); }
 });
-loadLocal();
+loadLocal(); autoFrekv();
 document.getElementById("syncState").textContent="Logg på denne telefonen";
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-14-170326";
+const APP_VERSION="2026-11-14-170931";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

@@ -36,7 +36,7 @@
   "melding": "Treningsplanen din er klar."
  },
  "einar": {
-  "versjon": "2026-11-14-170326",
-  "melding": "Øvelsene starter på 3 dager i uka og trappes opp i fem nivåer. Velges under Bukvegg."
+  "versjon": "2026-11-14-170931",
+  "melding": "Appen flytter deg nå automatisk opp i nivå, og ned ved logget oppbluss."
  }
 }
