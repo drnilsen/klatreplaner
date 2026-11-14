@@ -169,7 +169,7 @@ function esc(t){ return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",
 /* ============ LAGRING ============ */
 let LOG={}, SET={};
 const LS_KEY=KEY+"-logg-v1", SET_KEY=KEY+"-innst-v1";
-const SET_DEF={trinn:1,sitt:15,beinB:false,beinBfra:"",start:"2026-11-09"};
+const SET_DEF={frekv:1,frekvFra:"",trinn:1,sitt:15,beinB:false,beinBfra:"",start:"2026-11-09"};
 function lsGet(k){ try{ return localStorage.getItem(k);}catch(e){ return null; } }
 function lsSet(k,v){ try{ localStorage.setItem(k,v);}catch(e){} }
 function loadLocal(){
@@ -210,11 +210,20 @@ const MIK={
   5:["Dead bug, strake bein: 3 × 30 s per side","Sideplanke på føtter: 3 × 20 s per side","Mageliggende på albuer: 5 × 20 s","Stående tilbakelening, armer over hodet: 5 × 10 s"],
   6:["Dead bug, strake bein: 3 × 30 s per side","Sideplanke på føtter: 3 × 30 s per side","Mageliggende på albuer: 5 × 20 s","Stående tilbakelening, armer over hodet: 5 × 10 s"]
 };
+// Hvor ofte øvelsene gjøres. Pust og hudmobilisering går hver dag.
+const FREKV=[
+  {n:1,navn:"3 dager",d:[1,3,5],txt:"man, ons, fre"},
+  {n:2,navn:"4 dager",d:[1,3,5,7],txt:"man, ons, fre, søn"},
+  {n:3,navn:"5 dager",d:[1,2,3,5,7],txt:"man, tir, ons, fre, søn"},
+  {n:4,navn:"6 dager",d:[1,2,3,5,6,7],txt:"alle dager unntatt torsdag"},
+  {n:5,navn:"Hver dag",d:[1,2,3,4,5,6,7],txt:"alle dager"}
+];
+function frekvNo(){ return Math.min(5,Math.max(1,SET.frekv|0)); }
 function trinnNo(){ return Math.min(6,Math.max(1,SET.trinn|0)); }
 function mikro(dow){
   const it=["Hudmobilisering langs linea alba: 2–3 min. Hudrulling og løft, først på tvers, så på langs. Drag, ikke smerte.",
             "Pust: 2 min. 360° mot hendene på nedre ribbein, lang utpust."];
-  if(dow===7) return B("Bukvegg – mikrodose",it,"5 min");
+  if(!FREKV[frekvNo()-1].d.includes(dow)) return B("Bukvegg – mikrodose",it.concat(["Øvelsene hviler i dag"]),"5 min");
   return B("Bukvegg – mikrodose",it.concat(MIK[trinnNo()]),"10 min");
 }
 function sittBlk(){ return B("Sitting",[`<span class="key">3–4 bolker à ${SET.sitt} min</span>, fordelt utover dagen`,"Åpen hoftevinkel eller ståpult resten av tiden"]); }
@@ -371,10 +380,13 @@ function vBukvegg(){
   return `<h2>Bukvegg</h2>${notesHtml(statusNotes())}
   <div class="card"><h3 style="margin-top:0">Trinn nå</h3><div class="trinn">${tb}</div>
   <div class="meta" style="margin-top:12px"><span class="tag">${r==null?"Ingen logg ennå":r+(r===1?" rolig dag":" rolige dager")}</span><span class="tag">${sm==null?"Sittetid ikke logget siste uke":"Sitter "+sm+" min (siste 7 dager)"}</span></div></div>
+  <div class="card"><h3 style="margin-top:0">Hvor ofte</h3><div class="trinn">${FREKV.map(f=>`<button class="tbtn${f.n===frekvNo()?" on":""}" data-frekv="${f.n}">${f.n}</button>`).join("")}</div>
+  <p style="margin:12px 0 0"><span class="key">${FREKV[frekvNo()-1].navn} i uka:</span> ${FREKV[frekvNo()-1].txt}${SET.frekvFra?`<br><span class="small muted">På dette nivået siden ${fmt(parseYmd(SET.frekvFra))} · ${Math.floor(dayDiff(cur,parseYmd(SET.frekvFra))/7)} uker</span>`:""}</p>
+  <ul><li>Pust og hudmobilisering hver dag</li><li>Opp ett nivå etter 3 rolige uker</li><li>Aldri nytt nivå og nytt trinn samtidig</li><li>Hver dag (nivå 5) før trinn 2</li><li>Oppbluss: ned ett nivå</li></ul>
+  <div class="tscroll"><table><tr><th>Nivå</th><th>Øvelsene gjøres</th></tr>${FREKV.map(f=>`<tr class="${f.n===frekvNo()?"now":""}"><td>${f.n}</td><td><span class="key">${f.navn}:</span> ${f.txt}</td></tr>`).join("")}</table></div></div>
   <div class="card"><div class="tscroll"><table><tr><th>Trinn</th><th>Innhold</th><th>Videre når</th></tr>${rows}</table></div></div>
   <div class="card"><h3 style="margin-top:0">Mikrodose, trinn ${trinnNo()}</h3>
-  <ul><li>Én runde hver dag. Provoserer det: annenhver dag</li><li>${lnk("Hudmobilisering")} 2–3 min</li><li>${lnk("Pust")} 2 min</li>${eks.join("")}
-  <li>Søndag: kun hudmobilisering og pust</li></ul></div>
+  <ul><li>Én runde på øvelsesdagene: ${FREKV[frekvNo()-1].txt}</li><li>${lnk("Hudmobilisering")} 2–3 min</li><li>${lnk("Pust")} 2 min</li>${eks.join("")}</ul></div>
   <div class="card"><h3 style="margin-top:0">Belastet kjerne, onsdag og lørdag</h3>${k?`<ul>${k.items.map(x=>`<li>${auto(x)}</li>`).join("")}</ul>`:`<p class="muted" style="margin:0">Starter på trinn 2.</p>`}</div>
   <div class="note">Smerte opptil 3/10 underveis. Tilbake til utgangsnivå innen 24 timer. Hvis ikke: ned ett nivå. Nytt trinn: én ny øvelse om gangen, halv dose første uke. Øvelser som provoserer, står over til neste forsøk.</div>`;
 }
@@ -408,7 +420,7 @@ function vRegler(){
   <div class="card"><ul>
   <li><span class="key">24-timersregelen:</span> smerte opptil 3/10 underveis, tilbake til utgangsnivå innen 24 timer</li>
   <li><span class="key">Én endring om gangen.</span> Aldri nytt bukveggtrinn og økt styrkelast i samme uke</li>
-  <li><span class="key">Lite og ofte</span> for bukveggen: korte doser hver dag</li>
+  <li><span class="key">Lite og ofte</span> for bukveggen: korte doser, hyppigheten trappes opp nivå for nivå</li>
   <li><span class="key">Lett uke</span> hver fjerde uke</li>
   <li><span class="key">Fredag er hviledag</span></li>
   <li><span class="key">Bein:</span> motbakke aldri dagen etter beinøkt</li>
@@ -480,6 +492,7 @@ document.addEventListener("click",ev=>{
   if(el.dataset.go){ ev.preventDefault(); selDate=parseYmd(el.dataset.go); if(location.hash!=="#idag") location.hash="#idag"; else { render(); window.scrollTo(0,0); } return; }
   if(el.dataset.anchor){ ev.preventDefault(); const go=()=>{ const t=document.getElementById(el.dataset.anchor); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); };
     const tab=el.getAttribute("href")||"#idag"; if(location.hash!==tab){ location.hash=tab; setTimeout(go,150); } else go(); return; }
+  if(el.dataset.frekv){ SET.frekv=+el.dataset.frekv; SET.frekvFra=ymd(cur); saveSet(); render(); return; }
   if(el.dataset.trinn){ SET.trinn=+el.dataset.trinn; saveSet(); render(); return; }
   if(el.dataset.sitt){ SET.sitt=Math.min(120,Math.max(5,SET.sitt+(+el.dataset.sitt))); saveSet(); render(); return; }
   if(el.dataset.backup){ downloadBackup(); return; }
@@ -504,7 +517,7 @@ document.getElementById("syncState").textContent="Logg på denne telefonen";
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-14-165749";
+const APP_VERSION="2026-11-14-170326";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
