@@ -608,7 +608,7 @@ function vRegler(){
    <li><b>Etter ≥ 5 dager fri:</b> første uke på fase 1-intensitet.</li>
    <li><b>Maks én ny ting per uke.</b></li>
    <li><b>Lavenergi-uke</b> (prøver, sykdom, reise): behold mandag og torsdag. Lørdag valgfri.</li>
-   <li><b>Progresjon:</b> buldring – først flere buldre, så hardere. PE/tau – først flere runder, så kortere pause, så hardere ruter. Styrke – vanskeligere variant, kabel minste vektsteg.</li></ul></div>
+   <li><b>Progresjon:</b> buldring – først flere forsøk, så hardere. PE/tau – først flere runder, så kortere pause, så hardere ruter. Styrke – vanskeligere variant, kabel minste vektsteg.</li></ul></div>
   <div class="card"><h3 style="margin-top:0">Fargen på dagen</h3>
    <p><span class="dot f-gronn"></span> <b>Grønn</b> uthvilt, god kvalitet, neste økt føles sterkere<br>
    <span class="dot f-gul"></span> <b>Gul</b> vedlikehold<br><span class="dot f-oransje"></span> <b>Oransje</b> trente for sliten, lav kvalitet<br>
@@ -627,10 +627,10 @@ function vRpe(){
    ["8","Full kraft, treffer og holder.","Hard pump, flyttene sitter.","Hard buldring fase 2 og 3, PE siste runder, 4 × 4, konkurranselikt tau, styrke (2 reps igjen)"],
    ["9","Alt du har, treffer så vidt.","Kvaliteten holder akkurat.","Brukes ikke i trening."],
    ["10","Bom eller fall.","Falt av pump.","Brukes ikke i trening."]];
-  const I=[["Hard buldring (man)","6 buldre 2 grader under maks, RPE 7, 3 min, maks 3 forsøk per buldre.","5 buldre nær maks, RPE 8, 3–4 min, maks 3 forsøk per buldre.","4 buldre nær maks, RPE 8, 4–5 min, maks 3 forsøk per buldre."],
+  const I=[["Hard buldring (man)","18 forsøk 2 grader under maks, RPE 7, 3 min, maks 3 per buldre.","15 forsøk nær maks, RPE 8, 3–4 min, maks 3 per buldre.","12 forsøk nær maks, RPE 8, 4–5 min, maks 3 per buldre."],
    ["Onsdag","Linked: 3–4 grader under maks, RPE 6–7, 3–4 min.","Linked: 2–3 under maks, RPE 7–8, 3 min. Ingen PE uke 8.","Rutedag 2 × 4: 1–2 under onsight, RPE 7–8, 8 min."],
    ["3×10 (tor)","4+ grader under onsight, RPE 3–4.","Samme.","Samme, 2 runder i konkurranseuker."],
-   ["Jam-format (lør)","RPE 5–8. 7 buldre, maks 3 forsøk per buldre.","Samme.","Samme."],
+   ["Jam-format (lør)","RPE 5–8. 21 forsøk, maks 3 per buldre.","Samme.","Samme."],
    ["Tau (lør)","Ledvolum: 3–4 under onsight, RPE 5.","Onsight: 1–2 under onsight, RPE 7, 8–10 min.","Uke 9–14 4 × 4: 3–4 under onsight, RPE 7–8, 10 min. Uke 15–20: nær maks, RPE 8, 10–15 min."],
    ["Styrke A (tor)","2 sett, RPE 7, 45–60 s.","Fra uke 6: 3 sett (B2, C1, D, E: 2), RPE 7–8, 45–60 s. Ett sett ned når onsdagen ble oransje.","2 sett, RPE 7. Ingen styrke siste 5 dager før konkurranse."]];
   const ph=["Fase 1 · uke 45–51, 1–2","Fase 2 · uke 3–7","Fase 3 · uke 9–20"];
@@ -930,34 +930,15 @@ function simplify(root){
 
 
 /* ============ ANTALL BULDRE + MAKS FORSØK PER BULDRE ============ */
-function bld(n,per,what){ what=what||"buldre"; return `<span class="key">${n} ${what}, maks ${per} forsøk per ${what==="problemer"?"problem":"buldre"}</span>`; }
+function bld(n,per,what){ what=what||"buldre"; return `<span class="key">${n*per} forsøk, maks ${per} per ${what==="problemer"?"problem":"buldre"}</span>`; }
+function bldK(n,per){ return `<span class="key">${n} buldre, maks ${per} forsøk per buldre</span>`; }
 function halfN(n){ return Math.max(2,Math.ceil(n/2)); }
 function perBoulder(root){
   try{
-    root.querySelectorAll(".card > .blk").forEach(bl=>{
-      const h=bl.querySelector("h4"); const name=h?(h.childNodes[0].textContent||"").trim():"";
-      if(/^(oppvarming|linked|3×10|nedtrapping|sva|lett|teknikk|ukas drill|mobilitet|styrke|fingerstyrke|test|spenst|pilates|aktivering|konkurranse$)/i.test(name)) return;
-      const ul=bl.querySelector(":scope > ul"); if(!ul) return;
-      const lis=[...ul.children];
-      lis.forEach(li=>{
-        const t=li.textContent.trim();
-        if(/^Maks \d+ forsøk( totalt)?\.?$/i.test(t)){ li.remove(); return; }
-        let html=li.innerHTML;
-        html=html.replace(/,? ?<span class="key">maks \d+ (forsøk )?totalt<\/span>/gi,"").replace(/,? ?<span class="key">maks \d+ forsøk( totalt)?<\/span>/gi,"").replace(/, maks \d+ forsøk( totalt)?(?! per| på| hver)/gi,"").replace(/, maks \d+ totalt\./gi,".").replace(/ maks \d+ forsøk \(\d+ buldre × maks \d+\)/,"");
-        html=html.replace(/<span class="key">(\d+(?:–\d+)? (?:buldre|problemer)), (maks \d+ forsøk per (?:buldre|problem))<\/span> ([^,.–<][^,.]*?)([,.])/,'<span class="key">$1</span> $3, <span class="key">$2</span>$4');
-        if(html!==li.innerHTML) li.innerHTML=html.replace(/,\s*\./g,".").replace(/\s+\./g,".");
-      });
-      const all=ul.textContent;
-      const cntLi=[...ul.children].find(li=>/\d+(–\d+)? (nye |harde |koordinasjons)?(buldre|problemer)/.test(li.textContent));
-      if(!cntLi) return;
-      const rpe=(all.match(/RPE (\d+)/)||[])[1]; if(rpe&&+rpe<6) return;
-      if(!/per buldre|per problem|på hvert|på hver|maks \d+ forsøk hver/.test(all)){
-        cntLi.innerHTML=cntLi.innerHTML.replace(/(\d+(–\d+)? (nye |harde |koordinasjons)?(buldre|problemer)[^,.]*)/,`$1, maks 3 forsøk per ${/problemer/.test(cntLi.textContent)?"problem":"buldre"}`);
-      }
-      const hard=/nær maks|på maks|over maks|RPE (8|9)/.test(all);
-      let reduced=false; try{ const si=session(selDate,true); const ii=si&&si.i; reduced=!!(ii&&(ii.light||ii.comp||ii.top||ii.nm||/^(nm|konk|topp)/.test(ii.phase||"")||(ii.c&&ii.c.vol))); }catch(e){}
-      if(!hard&&!reduced&&!/Går (de fleste|buldrene|problemene|de) på/.test(all)&&!/konkurranse/i.test(all)&&!/Ingen ekstra buldre|maks 2 forsøk/.test(all))
-        ul.insertAdjacentHTML("beforeend",`<li>Går de fleste på første forsøk: ta 1–2 ${/problemer/.test(cntLi.textContent)?"problemer":"buldre"} til, så lenge tida rekker.</li>`);
+    root.querySelectorAll(".card > .blk li").forEach(li=>{
+      if(/^Maks \d+ forsøk( totalt)?\.?$/i.test(li.textContent.trim())&&li.parentNode.textContent.match(/\d+ forsøk/g).length>1){ li.remove(); return; }
+      const html=li.innerHTML.replace(/<span class="key">(\d+ forsøk), (maks \d+ per (?:buldre|problem))<\/span> ([^,.–<][^,.]*?)([,.])/,'<span class="key">$1</span> $3, <span class="key">$2</span>$4');
+      if(html!==li.innerHTML) li.innerHTML=html;
     });
   }catch(e){}
 }
@@ -1026,7 +1007,7 @@ function rpeAnchor(root){
       if(/^(oppvarming|linked|3×10|nedtrapping|sva|lett|teknikk|forslag|mobilitet|styrke|fingerstyrke|test|spenst|pilates|aktivering|tau|hard led|4 × 4|2 × 4|ruter|falltrening)/i.test(name)) return;
       const ul=bl.querySelector(":scope > ul"); if(!ul) return;
       const lis=[...ul.children]; if(lis.some(li=>/^RPE \d/.test(li.textContent.trim()))) return;
-      const cnt=lis.find(li=>/\d+ (buldre|problemer)/.test(li.textContent)&&/RPE (\d)/.test(li.textContent)); if(!cnt) return;
+      const cnt=lis.find(li=>/\d+ (buldre|problemer|forsøk)/.test(li.textContent)&&/RPE (\d)/.test(li.textContent)); if(!cnt) return;
       const m=cnt.textContent.match(/RPE (\d(?:–\d)?)/); const a=m&&RPE_ANKER[m[1]]; if(!a) return;
       cnt.innerHTML=cnt.innerHTML.replace(/,?\s*(<a[^>]*>)?RPE \d(?:–\d)?(<\/a>)?\.?/,"").replace(/\s+,/g,",").replace(/\.\s*\./g,".").replace(/\s+$/,"");
       ul.insertAdjacentHTML("afterbegin",`<li><a href="#rpe">RPE ${m[1]}</a>: ${a}</li>`);
@@ -1226,7 +1207,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-09-190403";
+const APP_VERSION="2026-11-18-194619";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
