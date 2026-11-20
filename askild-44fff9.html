@@ -141,6 +141,16 @@ a{color:var(--accent)}
 .itab .blk li{font-weight:400}
 .itab .nu{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--accent);color:#fff;margin-left:6px;vertical-align:1px}
 @media (min-width:640px){ .brand h1{font-size:20px} h2{font-size:26px} }
+.vssum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 12px}
+.vssum div{background:var(--chip);border-radius:10px;padding:8px 6px;text-align:center}
+.vssum b{display:block;font-size:22px;line-height:1.1}.vssum small{color:var(--muted);font-size:12px}
+.vsrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.vsgrads{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.vsgrads button{font:inherit;font-size:14px;min-width:46px;padding:8px 6px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.vsgrads button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.vslist{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.vslist span{font-size:13px;padding:4px 8px;border-radius:8px;background:var(--chip);color:var(--muted)}
+.vslist span.ok{background:var(--accent-soft);color:var(--ink)}.vslist small{opacity:.6}
 </style>
 
 <div class="wrap">
@@ -229,7 +239,7 @@ function session(date,noTheme){
     s.count={label:"Forsøk",max};
     s.blocks=[
       B("Oppvarming",["5 min puls, mobilitet skulder/hofte.","20 min lett klatring med teknikktemaet – pyramide lett → middels, 10–12 buldre."],"30 min"),
-      B("Hoveddel",[hov, `<span class="key">Maks ${max} forsøk.</span>`,"Skrudde buldre, board og spraywall – fordel som du vil.","Stopp: "+stopp],"60–70 min"),
+      B("Hoveddel",[...((s.vs=i.phase==="nm"?0:i.light?VS_FULL/2:VS_FULL)?vsItems(s.vs,hov):[hov,`<span class="key">Maks ${max} forsøk.</span>`]),"Skrudde buldre, board og spraywall – fordel som du vil.","Stopp: "+stopp],"60–70 min"),
       B("Nedtrapping",["Lett klatring, rist ut."],"10–15 min")];
     if(date.getDate()<=7) s.notes.push(["acc","Første mandag i måneden: mål høyde (samme tidspunkt, uten sko) og skriv i loggen."]);
     break; }
@@ -407,7 +417,7 @@ async function shareText(t,msgEl){
   const ta=document.getElementById("shareFallback"); ta.value=t; ta.hidden=false; ta.select(); msgEl.textContent="Kopier teksten under.";
 }
 function downloadBackup(){
-  const blob=new Blob([JSON.stringify({utover:"Askild",versjon:1,logg:LOG},null,1)],{type:"application/json"});
+  const blob=new Blob([JSON.stringify({utover:"Askild",versjon:1,logg:LOG,vspill:VS},null,1)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="askild-logg-"+ymd(cur)+".json";
   document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
 }
@@ -415,6 +425,7 @@ function restoreBackup(file,msgEl){
   const r=new FileReader();
   r.onload=()=>{ try{ const o=JSON.parse(r.result); const l=o&&o.logg; if(!l||typeof l!=="object") throw 0;
       let n=0; for(const k in l){ if(/^\d{4}-\d\d-\d\d$/.test(k)&&!LOG[k]){ LOG[k]=l[k]; n++; } }
+      if(o.vspill&&typeof o.vspill==="object"){ for(const k in o.vspill){ if(/^\d{4}-\d\d-\d\d$/.test(k)&&!VS[k]) VS[k]=o.vspill[k]; } vsStore(); }
       lsSet(LS_KEY,JSON.stringify(LOG)); render(); const m=document.getElementById("shareMsg"); if(m) m.textContent=`Hentet inn ${n} økter.`; }
     catch(e){ msgEl.textContent="Fant ingen logg i filen."; } };
   r.readAsText(file);
@@ -442,6 +453,88 @@ function alerts(date){
   }
   return out;
 }
+
+/* ============ V-SPILL START (mandag) ============ */
+/* Topp gir poeng lik V-graden, ikke topp gir 0. Franske grader regnes om til V. Lagres bare lokalt. */
+const VS_FONT=[["4",0],["5",1],["5+",2],["6A",3],["6A+",3],["6B",4],["6B+",4],["6C",5],["6C+",5],["7A",6],["7A+",7],["7B",8],["7B+",8],["7C",9],["7C+",10],["8A",11],["8A+",12],["8B",13]];
+const VS_V=VS_FONT.map(x=>x[1]).filter((v,k,a)=>a.indexOf(v)===k).map(v=>["V"+v,v]);
+function vsPoints(grade){ const g=String(grade).trim().toUpperCase(); const m=/^V(\d+)$/.exec(g); if(m) return +m[1]; const f=VS_FONT.find(x=>x[0]===g); return f?f[1]:null; }
+const VS_KEY=KEY+"-vspill-v1", VS_PREF=KEY+"-vspill-valg", VS_FULL=20;
+let VS={}, vsPref={skala:"font",grad:"6A"};
+function vsLoad(){ try{ VS=JSON.parse(lsGet(VS_KEY)||"{}")||{}; }catch(e){ VS={}; } try{ const p=JSON.parse(lsGet(VS_PREF)||"null"); if(p&&p.skala&&vsPoints(p.grad)!=null) vsPref=p; }catch(e){} }
+function vsStore(){ lsSet(VS_KEY,JSON.stringify(VS)); lsSet(VS_PREF,JSON.stringify(vsPref)); }
+function vsStats(f){ const n=f.length, t=f.filter(x=>x.t).length, p=f.reduce((s,x)=>s+(x.t?x.v:0),0); return {n,t,p,snitt:t?p/t:0}; }
+function vsDone(k){ const r=VS[k]; return !!r&&r.f.length>=r.n; }
+function vsFullKeys(){ return Object.keys(VS).sort().filter(k=>vsDone(k)&&VS[k].n===VS_FULL); }
+function vsPremier(k){
+  if(!vsDone(k)) return []; const r=VS[k], st=vsStats(r.f), out=[], pct=st.t/st.n;
+  if(pct>=0.75) out.push(`Treff 75 %: ${st.t} av ${st.n} topper`); else if(pct>=0.6) out.push(`Treff 60 %: ${st.t} av ${st.n} topper`);
+  if(r.n===VS_FULL){ const seq=vsFullKeys().filter(x=>x<=k).map(x=>vsStats(VS[x].f).p);
+    if(seq.length>1){ const prev=seq.slice(0,-1), last=prev[prev.length-1];
+      if(st.p>Math.max(...prev)) out.push(`Ny bestenotering: ${st.p} poeng`);
+      if(st.p>last){ let c=0; for(let j=seq.length-1;j>=1;j--){ if(seq[j]>seq[j-1]) c++; else break; }
+        out.push(c>=3?`Framgang ${c} mandager på rad`:`Framgang fra forrige mandag: +${st.p-last}`); } } }
+  return out;
+}
+function vsPremHtml(k){ const p=vsPremier(k); return p.length?`<div class="meta" style="margin-top:8px">${p.map(x=>`<span class="tag acc">★ ${x}</span>`).join("")}</div>`:""; }
+function vsCard(date,N){
+  const ds=ymd(date), r=VS[ds]||{n:N,f:[]}, st=vsStats(r.f), left=Math.max(0,r.n-st.n), done=left===0;
+  const list=vsPref.skala==="v"?VS_V:VS_FONT;
+  let h=`<div class="card" id="vscard" data-n="${r.n}"><h3 style="margin-top:0">V-spill · ${r.n} forsøk</h3>
+   <div class="vssum"><div><b>${st.p}</b><small>poeng</small></div><div><b>${st.t}/${st.n}</b><small>topper</small></div><div><b>${left}</b><small>forsøk igjen</small></div></div>`;
+  if(!done){
+    h+=`<div class="vsrow"><button type="button" class="btn sm ${vsPref.skala==="font"?"pri":""}" data-vsskala="font">Fransk</button><button type="button" class="btn sm ${vsPref.skala==="v"?"pri":""}" data-vsskala="v">V-grad</button></div>
+    <div class="vsgrads">${list.map(([g,v])=>`<button type="button" data-vsgrad="${g}" class="${g===vsPref.grad?"on":""}">${g}</button>`).join("")}</div>
+    <p class="small muted" style="margin:6px 0 8px">Valgt: <b>${vsPref.grad}</b>${vsPref.skala==="font"?` = V${vsPoints(vsPref.grad)}`:""} · topp gir ${vsPoints(vsPref.grad)} poeng, ikke topp gir 0.</p>
+    <div class="vsrow"><button type="button" class="btn pri" data-vsreg="1">Topp</button><button type="button" class="btn" data-vsreg="0">Ikke topp</button>${st.n?'<button type="button" class="btn sm" data-vsangre="1" style="margin-left:auto">Angre siste</button>':""}</div>`;
+  } else {
+    h+=`<p style="margin:8px 0 0">Ferdig. Snitt på toppene: V${st.snitt.toFixed(1).replace(".",",")}.</p>${vsPremHtml(ds)}
+    <div class="vsrow" style="margin-top:8px"><button type="button" class="btn sm" data-vsangre="1">Angre siste</button></div>`;
+  }
+  if(st.n) h+=`<div class="vslist">${r.f.map((x,k)=>`<span class="${x.t?"ok":""}"><small>${k+1}</small> ${x.g} · ${x.t?x.v:0}</span>`).join("")}</div>`;
+  return h+`</div>`;
+}
+function vsRefresh(){ const el=document.getElementById("vscard"); if(el) el.outerHTML=vsCard(selDate,+el.dataset.n); }
+function vsClick(el){
+  const d=el.dataset;
+  if(d.vsskala){ if(d.vsskala!==vsPref.skala){ const v=vsPoints(vsPref.grad); vsPref.skala=d.vsskala; vsPref.grad=d.vsskala==="v"?"V"+v:VS_FONT.find(x=>x[1]===v)[0]; } vsStore(); vsRefresh(); return true; }
+  if(d.vsgrad){ vsPref.grad=d.vsgrad; vsStore(); vsRefresh(); return true; }
+  if(d.vsreg||d.vsangre){ const card=document.getElementById("vscard"); if(!card) return true; const ds=ymd(selDate);
+    const r=VS[ds]||(VS[ds]={n:+card.dataset.n,f:[]});
+    if(d.vsangre) r.f.pop(); else if(r.f.length<r.n) r.f.push({g:vsPref.grad,v:vsPoints(vsPref.grad),t:d.vsreg==="1"?1:0});
+    if(!r.f.length) delete VS[ds];
+    vsStore(); vsRefresh(); return true; }
+  return false;
+}
+function vsItems(n,hov){ return [`<span class="key">${n} forsøk</span> i V-spillet under økta. Topp gir poeng lik V-graden, ikke topp gir 0.`,String(hov).replace(/^.*?maks, /,"")]; }
+{ const o=reportDetail; reportDetail=function(e){ const t=o(e), r=e&&e.dato&&VS[e.dato]; if(!r||!r.f.length) return t; const st=vsStats(r.f), x=`V-spill ${st.p} poeng, ${st.t}/${st.n} topper`; return t?x+" · "+t:x; }; }
+function vsTidy(){ const c=document.getElementById("vscard"), f=document.getElementById("logform"); if(!c||!f) return;
+  f.querySelectorAll('#fAntall,#fTopper,[data-field="antall"],[data-field="topper"],[data-field="forsok"]').forEach(x=>{ if(x.parentElement) x.parentElement.style.display="none"; });
+  f.querySelectorAll(".row2").forEach(r=>{ if([...r.children].every(ch=>ch.style.display==="none")) r.style.display="none"; }); }
+new MutationObserver(vsTidy).observe(document.getElementById("view"),{childList:true});
+function vsBars(rows,val,lab,max){
+  const W=320,H=120,pl=6,pb=18,pt=16,n=rows.length,bw=Math.min(34,(W-2*pl)/n-6),step=(W-2*pl)/n; const mx=max||Math.max(1,...rows.map(val));
+  let s=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block" role="img"><line x1="${pl}" y1="${H-pb}" x2="${W-pl}" y2="${H-pb}" stroke="currentColor" stroke-opacity=".25"/>`;
+  rows.forEach((r,k)=>{ const v=val(r), h=(H-pb-pt)*v/mx, x=pl+step*k+(step-bw)/2, y=H-pb-h;
+    s+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(h,1).toFixed(1)}" rx="3" fill="var(--accent)" fill-opacity="${r.N===VS_FULL?1:.45}"/>
+     <text x="${(x+bw/2).toFixed(1)}" y="${(y-4).toFixed(1)}" font-size="10" text-anchor="middle" fill="currentColor">${lab(r)}</text>
+     <text x="${(x+bw/2).toFixed(1)}" y="${H-5}" font-size="9" text-anchor="middle" fill="currentColor" fill-opacity=".6">${r.d.getDate()}.${r.d.getMonth()+1}</text>`; });
+  return s+`</svg>`;
+}
+function vsLoggCard(){
+  const rows=Object.keys(VS).sort().filter(k=>VS[k].f.length).map(k=>({k,d:parseYmd(k),N:VS[k].n,...vsStats(VS[k].f)}));
+  if(!rows.length) return `<div class="card"><h3 style="margin-top:0">V-spill</h3><p class="muted" style="margin:0">Ingen V-spill logget ennå. Spillet ligger under mandagsøkta i <a href="#idag">I dag</a>.</p></div>`;
+  const last=rows.slice(-12), best=Math.max(0,...rows.filter(r=>r.N===VS_FULL&&r.n>=r.N).map(r=>r.p));
+  return `<div class="card"><h3 style="margin-top:0">V-spill</h3>
+   <p class="small muted" style="margin:0 0 4px">Egen utvikling fra mandag til mandag.${best?` Bestenotering: <b>${best} poeng</b>.`:""}</p>
+   <h4 class="small muted" style="margin:10px 0 2px">Poeng per mandag</h4>${vsBars(last,r=>r.p,r=>r.p)}
+   <h4 class="small muted" style="margin:12px 0 2px">Topper av forsøk</h4>${vsBars(last,r=>r.n?r.t/r.n:0,r=>`${r.t}/${r.n}`,1)}
+   <p class="small muted" style="margin:6px 0 0">Lysere søyle: lett uke eller ikke fullført.</p>
+   ${rows.slice().reverse().slice(0,8).map(r=>`<div class="entry"><div class="eh"><span>${DAY[isoWeek(r.d).dow]} ${fmt(r.d)}</span><small>uke ${isoWeek(r.d).w}</small></div>
+     <p>${r.p} poeng · ${r.t}/${r.n} topper${r.t?` · snitt V${r.snitt.toFixed(1).replace(".",",")}`:""}</p>${vsPremHtml(r.k)}</div>`).join("")}</div>`;
+}
+vsLoad();
+/* ============ V-SPILL SLUTT ============ */
 
 /* ============ VISNINGER ============ */
 const TABS=[["idag","I dag"],["uka","Uka"],["man","Mandag"],["ons","Onsdag"],["tor","Torsdag"],["lor","Lørdag"],["styrke","Styrke"],["teknikk","Teknikk"],["plan","Plan"],["rpe","RPE"],["regler","Regler"],["logg","Logg"]];
@@ -477,6 +570,7 @@ function vIdag(){
   h+=`<div class="card"><h2>${s.title}</h2>${tagsHtml(i)}${s.time&&s.time!=="–"?`<div class="small muted">Tid: ${s.time}</div>`:""}
     ${notesHtml(al)}${notesHtml(s.notes.filter(n=>n[0]!=="acc"))}${sessHtml(s)}${s.strA?strAList(s.strA):""}
     ${s.notes.filter(n=>n[0]==="acc").map(n=>`<p class="small muted">${n[1]}</p>`).join("")}</div>`;
+  if(s.vs) h+=vsCard(selDate,s.vs);
   if(s.key==="hvile"){ // vis neste økt
     let d=addDays(selDate,1), n=session(d), k=0; while(n.key==="hvile"&&k<6){ d=addDays(d,1); n=session(d); k++; }
     if(n.key!=="hvile") h+=`<div class="card small"><span class="muted">Neste økt:</span> <b>${DAY[n.i.dow]} ${fmt(d)}</b> – ${n.title}</div>`;
@@ -713,7 +807,7 @@ function vLogg(){
    <h3>Sikkerhetskopi</h3>
    <p class="small muted" style="margin:0 0 8px">Ta en kopi av og til, og før du bytter telefon eller sletter nettleserdata.</p>
    <div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn" data-backup="1">Last ned kopi</button><label class="btn" style="display:inline-flex;align-items:center">Hent inn kopi<input type="file" accept=".json,application/json" id="restoreFile" hidden></label></div></div>
-  ${progressCard()}${settingsCard()}
+  ${vsLoggCard()}${progressCard()}${settingsCard()}
   <div class="card"><h3 style="margin-top:0">Sesongen</h3>${grid}
    <p class="small muted" style="margin-bottom:0">${Object.keys(names).filter(k=>counts[k]).map(k=>`<span class="dot f-${k}"></span> ${counts[k]} ${names[k]}`).join(" &nbsp; ")||"Ingen økter logget ennå."}</p></div>
   <div class="card"><h3 style="margin-top:0">Økter</h3>${keys.length?keys.map(k=>{ const e=LOG[k], d=parseYmd(k);
@@ -1173,6 +1267,7 @@ window.addEventListener("hashchange",()=>{ render(); window.scrollTo(0,0); });
 
 document.addEventListener("click",async ev=>{
   const el=ev.target.closest("button,a"); if(!el) return;
+  if(vsClick(el)) return;
   if(el.dataset.nav){ selDate=addDays(selDate,+el.dataset.nav); render(); return; }
   if(el.dataset.today){ ev.preventDefault(); selDate=new Date(cur); render(); return; }
   if(el.dataset.wk){ weekRef=addDays(weekRef,+el.dataset.wk); render(); return; }
@@ -1207,7 +1302,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-18-194619";
+const APP_VERSION="2026-11-20-193241";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;

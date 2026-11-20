@@ -296,13 +296,12 @@ function session(date,noTheme){
       s.blocks=[B("Oppvarming",["30 min."],"30 min"),B("Hoveddel",["4 buldre i <a href='#konk' data-anchor='format'>konkurranseformat</a>, <span class=\"key\">maks 3 forsøk per buldre</span>.","5 min klatretid (lesing inkludert), 5 min pause."],"40 min")];
       s.fields=[["antall","Buldre"],["topper","Topper"]]; break; }
     let n=i.M===1?6:5, per=3; if(i.top){ n=4; per=2; } else if(i.light) n=halfN(n); const mx=n*per;
-    const vs=i.top?0:(i.light?VS_FULL/2:VS_FULL); s.vs=vs;
     const hov=`${bld(n,per)} ${i.M===1&&!i.top?"2 grader under maks, RPE 7, 3 min pause.":"nær maks, RPE 8–9, 4 min pause."}`;
     s.blocks=[B("Oppvarming",["5 min puls, skulder/hofte.","15 min lett klatring, pyramide lett → middels, 10–12 buldre."],"25 min"),
-      B("Hoveddel",[...(vs?[`<span class="key">${vs} forsøk</span> i V-spillet under økta. Topp gir poeng lik V-graden, ikke topp gir 0.`,i.M===1?"RPE 7, 3 min pause.":"RPE 8–9, 4 min pause."]:[hov,`<span class="key">Maks ${mx} forsøk totalt.</span>`]),"Skrudde buldre, board og spraywall – fordel som du vil.","Gjerne noen kompresjonsbuldre.","Stopp: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"65–70 min"),
+      B("Hoveddel",[...((s.vs=i.top?0:i.light?VS_FULL/2:VS_FULL)?vsItems(s.vs,hov):[hov,`<span class="key">Maks ${mx} forsøk totalt.</span>`]),"Skrudde buldre, board og spraywall – fordel som du vil.","Gjerne noen kompresjonsbuldre.","Stopp: forsøkstaket, eller to forsøk på rad med tydelig teknikkfall."],"65–70 min"),
       B("Nedtrapping",["Lett klatring."],"10 min")];
     if(!noTheme&&kd){ s.blocks[1].items.splice(1,0,tLink(kd)); s.theme=kd.n; }
-    s.fields=vs?[]:[["antall",`Buldre / forsøk (maks ${mx})`],["topper","Topper"]];
+    s.fields=[["antall",`Buldre / forsøk (maks ${mx})`],["topper","Topper"]];
     break; }
   case 2: {
     s.key="tir";
@@ -365,7 +364,7 @@ async function deleteEntry(date){ delete LOG[date]; lsSet(LS_KEY,JSON.stringify(
 
 const FN={gronn:"grønn",gul:"gul",oransje:"oransje",rod:"rød",svart:"svart"};
 const has=v=>v!=null&&v!=="";
-const FIELDS=["antall","topper","vpoeng","rdl","dips","resultat"];
+const FIELDS=["antall","topper","rdl","dips","resultat"];
 function reportDetail(e){ const t=[]; if(e.miljo) t.push("ga en yngre utøver oppmerksomhet"); for(const f of FIELDS) if(has(e[f])) t.push(`${e[f+"Navn"]||f} ${e[f]}`); if(e.kommentar) t.push(e.kommentar); return t.join(" · "); }
 function entryLine(k){ const e=LOG[k], d=parseYmd(k); const det=reportDetail(e); return `${DAYS[isoWeek(d).dow]} ${fmt(d)}: ${FN[e.farge]||"–"} · ${e.okt||""}${det?" · "+det:""}`; }
 function summary(scope){
@@ -460,8 +459,12 @@ function vsClick(el){
     vsStore(); vsRefresh(); return true; }
   return false;
 }
-function vsEntry(entry,ds){ const r=VS[ds]; if(!r||!r.f.length) return; const st=vsStats(r.f);
-  entry.antall=st.n; entry.antallNavn="Forsøk"; entry.topper=st.t; entry.topperNavn="Topper"; entry.vpoeng=st.p; entry.vpoengNavn="V-poeng"; }
+function vsItems(n,hov){ return [`<span class="key">${n} forsøk</span> i V-spillet under økta. Topp gir poeng lik V-graden, ikke topp gir 0.`,String(hov).replace(/^.*?maks, /,"")]; }
+{ const o=reportDetail; reportDetail=function(e){ const t=o(e), r=e&&e.dato&&VS[e.dato]; if(!r||!r.f.length) return t; const st=vsStats(r.f), x=`V-spill ${st.p} poeng, ${st.t}/${st.n} topper`; return t?x+" · "+t:x; }; }
+function vsTidy(){ const c=document.getElementById("vscard"), f=document.getElementById("logform"); if(!c||!f) return;
+  f.querySelectorAll('#fAntall,#fTopper,[data-field="antall"],[data-field="topper"],[data-field="forsok"]').forEach(x=>{ if(x.parentElement) x.parentElement.style.display="none"; });
+  f.querySelectorAll(".row2").forEach(r=>{ if([...r.children].every(ch=>ch.style.display==="none")) r.style.display="none"; }); }
+new MutationObserver(vsTidy).observe(document.getElementById("view"),{childList:true});
 function vsBars(rows,val,lab,max){
   const W=320,H=120,pl=6,pb=18,pt=16,n=rows.length,bw=Math.min(34,(W-2*pl)/n-6),step=(W-2*pl)/n; const mx=max||Math.max(1,...rows.map(val));
   let s=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block" role="img"><line x1="${pl}" y1="${H-pb}" x2="${W-pl}" y2="${H-pb}" stroke="currentColor" stroke-opacity=".25"/>`;
@@ -1114,7 +1117,6 @@ document.addEventListener("click",async ev=>{
     entry.miljo=!!(document.getElementById("fMiljo")||{}).checked;
     document.querySelectorAll("#logform [data-field]").forEach(x=>{ if(x.value.trim()!==""){ entry[x.dataset.field]=x.value.trim(); entry[x.dataset.field+"Navn"]=x.dataset.label; } });
     document.querySelectorAll("#logform [data-check]").forEach(x=>{ entry[x.dataset.check]=x.checked; });
-    vsEntry(entry,ymd(selDate));
     if(entry.kalk!=null){ const n=parseFloat(String(entry.kalk).replace(",",".")); if(!isNaN(n)) entry.kalk=n; }
     el.disabled=true; msg.textContent="Lagrer …";
     const r=await saveEntry(ymd(selDate),entry);
@@ -1134,7 +1136,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-20-192522";
+const APP_VERSION="2026-11-20-193241";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
