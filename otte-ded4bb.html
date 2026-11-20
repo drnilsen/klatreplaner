@@ -288,10 +288,10 @@ function session(date,noTheme){
     s.key="man"; s.hard=true;
     if(i.y===2027&&w===10){ s.title="Hvile etter NM"; s.key="hvile"; s.hard=false; s.blocks=[B("I dag",["Hvile."])]; break; }
     if(cf){ s.title="Konkurranseformat – siste harde økt"; s.time="ca. 1 t 30";
-      s.blocks=[warm("30 min"),B("Hoveddel",["4 buldre i <a href='#teknikk' data-anchor='format'>konkurranseformat</a>, <span class=\"key\">maks 3 forsøk per buldre</span>.","Rutinen før hvert forsøk."],"40–50 min")];
+      s.blocks=[warm("30 min"),B("Hoveddel",["4 buldre i <a href='#teknikk' data-anchor='format'>konkurranseformat</a>, <span class=\"key\">maks 4 forsøk per buldre</span>.",(s.vs="k",VS_KTXT),"Rutinen før hvert forsøk."],"40–50 min")];
       s.count={label:"Forsøk",max:12}; break; }
     if(i.phase==="top"){ const mx=8; s.title="Konkurranseformat"; s.time="ca. 1 t 30";
-      s.blocks=[warm("25–30 min"),B("Hoveddel",[`${bldK(4,2)} i <a href='#teknikk' data-anchor='format'>konkurranseformat</a>, nær maks, RPE 8–9, 4 min pause.`,"Les ferdig før første forsøk. Rutinen før hvert forsøk."],"40–50 min"),B("Nedtrapping",["Volumvegg."],"10 min")];
+      s.blocks=[warm("25–30 min"),B("Hoveddel",[`${bldK(4,4)} i <a href='#teknikk' data-anchor='format'>konkurranseformat</a>, nær maks, RPE 8–9, 4 min pause.`,(s.vs="k",VS_KTXT),"Les ferdig før første forsøk. Rutinen før hvert forsøk."],"40–50 min"),B("Nedtrapping",["Volumvegg."],"10 min")];
       s.count={label:"Forsøk",max:mx}; break; }
     s.title="Hard buldring"; s.time="ca. 1 t 50";
     let n=i.L===1?6:5; if(i.light) n=halfN(n); const mx=n*3;
@@ -461,59 +461,102 @@ function alerts(date){
 }
 
 /* ============ V-SPILL START (mandag) ============ */
-/* Topp gir poeng lik V-graden, ikke topp gir 0. Franske grader regnes om til V. Lagres bare lokalt. */
+/* Vanlig: N tellende forsøk, topp gir poeng lik V-graden, ikke topp gir 0.
+   Konkurranseformat: 4 buldre, maks 4 forsøk per buldre, 10 % mindre for hvert ekstra forsøk.
+   Franske grader regnes om til V. Lagres bare lokalt. */
 const VS_FONT=[["4",0],["5",1],["5+",2],["6A",3],["6A+",3],["6B",4],["6B+",4],["6C",5],["6C+",5],["7A",6],["7A+",7],["7B",8],["7B+",8],["7C",9],["7C+",10],["8A",11],["8A+",12],["8B",13]];
 const VS_V=VS_FONT.map(x=>x[1]).filter((v,k,a)=>a.indexOf(v)===k).map(v=>["V"+v,v]);
 function vsPoints(grade){ const g=String(grade).trim().toUpperCase(); const m=/^V(\d+)$/.exec(g); if(m) return +m[1]; const f=VS_FONT.find(x=>x[0]===g); return f?f[1]:null; }
 const VS_KEY=KEY+"-vspill-v1", VS_PREF=KEY+"-vspill-valg", VS_FULL=20;
+const VS_KB=4, VS_KA=4, VS_KTREKK=0.1;
+const VS_KTXT="Logg i V-spillet under økta: topp gir poeng lik V-graden, 10 % mindre for hvert ekstra forsøk.";
 let VS={}, vsPref={skala:"font",grad:"6A"};
 function vsLoad(){ try{ VS=JSON.parse(lsGet(VS_KEY)||"{}")||{}; }catch(e){ VS={}; } try{ const p=JSON.parse(lsGet(VS_PREF)||"null"); if(p&&p.skala&&vsPoints(p.grad)!=null) vsPref=p; }catch(e){} }
 function vsStore(){ lsSet(VS_KEY,JSON.stringify(VS)); lsSet(VS_PREF,JSON.stringify(vsPref)); }
+function vsNum(x){ return String(Math.round(x*10)/10).replace(".",","); }
 function vsStats(f){ const n=f.length, t=f.filter(x=>x.t).length, p=f.reduce((s,x)=>s+(x.t?x.v:0),0); return {n,t,p,snitt:t?p/t:0}; }
-function vsDone(k){ const r=VS[k]; return !!r&&r.f.length>=r.n; }
-function vsFullKeys(){ return Object.keys(VS).sort().filter(k=>vsDone(k)&&VS[k].n===VS_FULL); }
+function vsKPts(v,k){ return Math.round(v*(1-VS_KTREKK*(k-1))*10)/10; }
+function vsBTop(b){ return b.a.length>0&&b.a[b.a.length-1]===1; }
+function vsBDone(b){ return !!b.x||b.a.length>=VS_KA||vsBTop(b); }
+function vsSum(r){
+  if(r&&r.m==="k"){ let p=0,t=0,n=0,g=0,fl=0; r.b.forEach(b=>{ n+=b.a.length; if(vsBTop(b)){ t++; g+=b.v; p+=vsKPts(b.v,b.a.length); if(b.a.length===1) fl++; } });
+    const ferdige=r.b.filter(vsBDone).length; return {komp:true,p:Math.round(p*10)/10,t,n,tot:VS_KB,ferdige,fl,done:ferdige>=VS_KB,snitt:t?g/t:0,any:n>0}; }
+  const st=vsStats(r&&r.f||[]); return {komp:false,...st,tot:r?r.n:0,done:!!r&&st.n>=r.n,any:st.n>0};
+}
+function vsSame(a,b){ return (a.m||"")===(b.m||"")&&a.n===b.n; }
 function vsPremier(k){
-  if(!vsDone(k)) return []; const r=VS[k], st=vsStats(r.f), out=[], pct=st.t/st.n;
-  if(pct>=0.75) out.push(`Treff 75 %: ${st.t} av ${st.n} topper`); else if(pct>=0.6) out.push(`Treff 60 %: ${st.t} av ${st.n} topper`);
-  if(r.n===VS_FULL){ const seq=vsFullKeys().filter(x=>x<=k).map(x=>vsStats(VS[x].f).p);
+  const r=VS[k]; if(!r) return []; const st=vsSum(r); if(!st.done) return []; const out=[], pct=st.t/st.tot;
+  if(pct>=0.75) out.push(`Treff 75 %: ${st.t} av ${st.tot} topper`); else if(pct>=0.6) out.push(`Treff 60 %: ${st.t} av ${st.tot} topper`);
+  if(st.komp&&st.fl) out.push(`${st.fl} flash`);
+  if(st.komp||r.n===VS_FULL){ const seq=Object.keys(VS).sort().filter(x=>x<=k&&vsSame(VS[x],r)&&vsSum(VS[x]).done).map(x=>vsSum(VS[x]).p);
     if(seq.length>1){ const prev=seq.slice(0,-1), last=prev[prev.length-1];
-      if(st.p>Math.max(...prev)) out.push(`Ny bestenotering: ${st.p} poeng`);
+      if(st.p>Math.max(...prev)) out.push(`Ny bestenotering${st.komp?" i konkurranseformat":""}: ${vsNum(st.p)} poeng`);
       if(st.p>last){ let c=0; for(let j=seq.length-1;j>=1;j--){ if(seq[j]>seq[j-1]) c++; else break; }
-        out.push(c>=3?`Framgang ${c} mandager på rad`:`Framgang fra forrige mandag: +${st.p-last}`); } } }
+        out.push(c>=3?`Framgang ${c} ganger på rad`:`Framgang fra forrige gang: +${vsNum(st.p-last)}`); } } }
   return out;
 }
 function vsPremHtml(k){ const p=vsPremier(k); return p.length?`<div class="meta" style="margin-top:8px">${p.map(x=>`<span class="tag acc">★ ${x}</span>`).join("")}</div>`:""; }
+function vsPick(){ const list=vsPref.skala==="v"?VS_V:VS_FONT;
+  return `<div class="vsrow"><button type="button" class="btn sm ${vsPref.skala==="font"?"pri":""}" data-vsskala="font">Fransk</button><button type="button" class="btn sm ${vsPref.skala==="v"?"pri":""}" data-vsskala="v">V-grad</button></div>
+    <div class="vsgrads">${list.map(([g,v])=>`<button type="button" data-vsgrad="${g}" class="${g===vsPref.grad?"on":""}">${g}</button>`).join("")}</div>`; }
+function vsCardK(ds){
+  const r=VS[ds]||{m:"k",n:VS_KB,b:[]}, st=vsSum(r), last=r.b[r.b.length-1], open=last&&!vsBDone(last)?last:null, nr=open?r.b.length:r.b.length+1;
+  let h=`<div class="card" id="vscard" data-n="k"><h3 style="margin-top:0">V-spill · konkurranseformat</h3>
+   <div class="vssum"><div><b>${vsNum(st.p)}</b><small>poeng</small></div><div><b>${st.t}/${VS_KB}</b><small>topper</small></div><div><b>${st.ferdige}/${VS_KB}</b><small>buldre ferdig</small></div></div>`;
+  if(!st.done){
+    if(open){ const k=open.a.length+1;
+      h+=`<p style="margin:0 0 8px"><b>Bulder ${nr} · ${open.g}</b>${/^V/.test(open.g)?"":` = V${open.v}`} · forsøk ${k} av ${VS_KA} · topp nå gir ${vsNum(vsKPts(open.v,k))} poeng.</p>`;
+    } else {
+      h+=`<p style="margin:0 0 8px"><b>Bulder ${nr}:</b> velg grad.</p>${vsPick()}
+      <p class="small muted" style="margin:6px 0 8px">Valgt: <b>${vsPref.grad}</b>${vsPref.skala==="font"?` = V${vsPoints(vsPref.grad)}`:""} · topp på 1.–4. forsøk gir ${[1,2,3,4].map(k=>vsNum(vsKPts(vsPoints(vsPref.grad),k))).join(" – ")} poeng.</p>`; }
+    h+=`<div class="vsrow"><button type="button" class="btn pri" data-vsreg="1">Topp</button><button type="button" class="btn" data-vsreg="0">Ikke topp</button>${open?'<button type="button" class="btn sm" data-vsneste="1">Neste bulder</button>':""}${st.n?'<button type="button" class="btn sm" data-vsangre="1" style="margin-left:auto">Angre siste</button>':""}</div>`;
+  } else {
+    h+=`<p style="margin:8px 0 0">Ferdig.${st.t?` Snitt på toppene: V${vsNum(st.snitt)}.`:""}</p>${vsPremHtml(ds)}
+    <div class="vsrow" style="margin-top:8px"><button type="button" class="btn sm" data-vsangre="1">Angre siste</button></div>`;
+  }
+  if(r.b.length) h+=`<div class="vslist">${r.b.map((b,k)=>`<span class="${vsBTop(b)?"ok":""}"><small>${k+1}</small> ${b.g} · ${vsBTop(b)?`topp på ${b.a.length}. · ${vsNum(vsKPts(b.v,b.a.length))}`:vsBDone(b)?`ikke topp (${b.a.length}) · 0`:`${b.a.length} forsøk`}</span>`).join("")}</div>`;
+  return h+`</div>`;
+}
 function vsCard(date,N){
-  const ds=ymd(date), r=VS[ds]||{n:N,f:[]}, st=vsStats(r.f), left=Math.max(0,r.n-st.n), done=left===0;
-  const list=vsPref.skala==="v"?VS_V:VS_FONT;
+  const ds=ymd(date); if(VS[ds]?VS[ds].m==="k":N==="k") return vsCardK(ds);
+  const r=VS[ds]||{n:N,f:[]}, st=vsStats(r.f), left=Math.max(0,r.n-st.n), done=left===0;
   let h=`<div class="card" id="vscard" data-n="${r.n}"><h3 style="margin-top:0">V-spill · ${r.n} forsøk</h3>
    <div class="vssum"><div><b>${st.p}</b><small>poeng</small></div><div><b>${st.t}/${st.n}</b><small>topper</small></div><div><b>${left}</b><small>forsøk igjen</small></div></div>`;
   if(!done){
-    h+=`<div class="vsrow"><button type="button" class="btn sm ${vsPref.skala==="font"?"pri":""}" data-vsskala="font">Fransk</button><button type="button" class="btn sm ${vsPref.skala==="v"?"pri":""}" data-vsskala="v">V-grad</button></div>
-    <div class="vsgrads">${list.map(([g,v])=>`<button type="button" data-vsgrad="${g}" class="${g===vsPref.grad?"on":""}">${g}</button>`).join("")}</div>
+    h+=`${vsPick()}
     <p class="small muted" style="margin:6px 0 8px">Valgt: <b>${vsPref.grad}</b>${vsPref.skala==="font"?` = V${vsPoints(vsPref.grad)}`:""} · topp gir ${vsPoints(vsPref.grad)} poeng, ikke topp gir 0.</p>
     <div class="vsrow"><button type="button" class="btn pri" data-vsreg="1">Topp</button><button type="button" class="btn" data-vsreg="0">Ikke topp</button>${st.n?'<button type="button" class="btn sm" data-vsangre="1" style="margin-left:auto">Angre siste</button>':""}</div>`;
   } else {
-    h+=`<p style="margin:8px 0 0">Ferdig. Snitt på toppene: V${st.snitt.toFixed(1).replace(".",",")}.</p>${vsPremHtml(ds)}
+    h+=`<p style="margin:8px 0 0">Ferdig.${st.t?` Snitt på toppene: V${vsNum(st.snitt)}.`:""}</p>${vsPremHtml(ds)}
     <div class="vsrow" style="margin-top:8px"><button type="button" class="btn sm" data-vsangre="1">Angre siste</button></div>`;
   }
   if(st.n) h+=`<div class="vslist">${r.f.map((x,k)=>`<span class="${x.t?"ok":""}"><small>${k+1}</small> ${x.g} · ${x.t?x.v:0}</span>`).join("")}</div>`;
   return h+`</div>`;
 }
-function vsRefresh(){ const el=document.getElementById("vscard"); if(el) el.outerHTML=vsCard(selDate,+el.dataset.n); }
+function vsRefresh(){ const el=document.getElementById("vscard"); if(el) el.outerHTML=vsCard(selDate,el.dataset.n==="k"?"k":+el.dataset.n); }
 function vsClick(el){
   const d=el.dataset;
   if(d.vsskala){ if(d.vsskala!==vsPref.skala){ const v=vsPoints(vsPref.grad); vsPref.skala=d.vsskala; vsPref.grad=d.vsskala==="v"?"V"+v:VS_FONT.find(x=>x[1]===v)[0]; } vsStore(); vsRefresh(); return true; }
   if(d.vsgrad){ vsPref.grad=d.vsgrad; vsStore(); vsRefresh(); return true; }
-  if(d.vsreg||d.vsangre){ const card=document.getElementById("vscard"); if(!card) return true; const ds=ymd(selDate);
-    const r=VS[ds]||(VS[ds]={n:+card.dataset.n,f:[]});
-    if(d.vsangre) r.f.pop(); else if(r.f.length<r.n) r.f.push({g:vsPref.grad,v:vsPoints(vsPref.grad),t:d.vsreg==="1"?1:0});
-    if(!r.f.length) delete VS[ds];
+  if(d.vsreg||d.vsangre||d.vsneste){ const card=document.getElementById("vscard"); if(!card) return true; const ds=ymd(selDate);
+    if(card.dataset.n==="k"){
+      const r=VS[ds]||(VS[ds]={m:"k",n:VS_KB,b:[]}); let last=r.b[r.b.length-1];
+      if(d.vsangre){ if(last){ if(last.x) delete last.x; else last.a.pop(); if(!last.a.length) r.b.pop(); } }
+      else if(d.vsneste){ if(last&&!vsBDone(last)&&last.a.length) last.x=1; }
+      else { if(!last||vsBDone(last)){ if(r.b.length>=VS_KB) return true; last={g:vsPref.grad,v:vsPoints(vsPref.grad),a:[]}; r.b.push(last); } last.a.push(d.vsreg==="1"?1:0); }
+      if(!r.b.length) delete VS[ds];
+    } else {
+      const r=VS[ds]||(VS[ds]={n:+card.dataset.n,f:[]});
+      if(d.vsangre) r.f.pop(); else if(r.f.length<r.n) r.f.push({g:vsPref.grad,v:vsPoints(vsPref.grad),t:d.vsreg==="1"?1:0});
+      if(!r.f.length) delete VS[ds];
+    }
     vsStore(); vsRefresh(); return true; }
   return false;
 }
-function vsItems(n,hov){ return [`<span class="key">${n} forsøk</span> i V-spillet under økta. Topp gir poeng lik V-graden, ikke topp gir 0.`,String(hov).replace(/^.*?maks, /,"")]; }
-{ const o=reportDetail; reportDetail=function(e){ const t=o(e), r=e&&e.dato&&VS[e.dato]; if(!r||!r.f.length) return t; const st=vsStats(r.f), x=`V-spill ${st.p} poeng, ${st.t}/${st.n} topper`; return t?x+" · "+t:x; }; }
+function vsItems(n,hov){ const rest=String(hov||"").replace(/^.*?maks, /,"");
+  if(n==="k") return [`<span class="key">4 buldre i konkurranseformat</span>, maks 4 forsøk per buldre.`,VS_KTXT,...(rest?[rest]:[])];
+  return [`<span class="key">${n} forsøk</span> i V-spillet under økta. Topp gir poeng lik V-graden, ikke topp gir 0.`,rest]; }
+{ const o=reportDetail; reportDetail=function(e){ const t=o(e), r=e&&e.dato&&VS[e.dato]; if(!r) return t; const st=vsSum(r); if(!st.any) return t; const x=`V-spill${st.komp?" (konkurranseformat)":""} ${vsNum(st.p)} poeng, ${st.t}/${st.komp?st.tot:st.n} topper`; return t?x+" · "+t:x; }; }
 function vsTidy(){ const c=document.getElementById("vscard"), f=document.getElementById("logform"); if(!c||!f) return;
   f.querySelectorAll('#fAntall,#fTopper,[data-field="antall"],[data-field="topper"],[data-field="forsok"]').forEach(x=>{ if(x.parentElement) x.parentElement.style.display="none"; });
   f.querySelectorAll(".row2").forEach(r=>{ if([...r.children].every(ch=>ch.style.display==="none")) r.style.display="none"; }); }
@@ -522,22 +565,22 @@ function vsBars(rows,val,lab,max){
   const W=320,H=120,pl=6,pb=18,pt=16,n=rows.length,bw=Math.min(34,(W-2*pl)/n-6),step=(W-2*pl)/n; const mx=max||Math.max(1,...rows.map(val));
   let s=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block" role="img"><line x1="${pl}" y1="${H-pb}" x2="${W-pl}" y2="${H-pb}" stroke="currentColor" stroke-opacity=".25"/>`;
   rows.forEach((r,k)=>{ const v=val(r), h=(H-pb-pt)*v/mx, x=pl+step*k+(step-bw)/2, y=H-pb-h;
-    s+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(h,1).toFixed(1)}" rx="3" fill="var(--accent)" fill-opacity="${r.N===VS_FULL?1:.45}"/>
+    s+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(h,1).toFixed(1)}" rx="3" fill="var(--accent)" fill-opacity="${r.full?1:.45}"/>
      <text x="${(x+bw/2).toFixed(1)}" y="${(y-4).toFixed(1)}" font-size="10" text-anchor="middle" fill="currentColor">${lab(r)}</text>
      <text x="${(x+bw/2).toFixed(1)}" y="${H-5}" font-size="9" text-anchor="middle" fill="currentColor" fill-opacity=".6">${r.d.getDate()}.${r.d.getMonth()+1}</text>`; });
   return s+`</svg>`;
 }
 function vsLoggCard(){
-  const rows=Object.keys(VS).sort().filter(k=>VS[k].f.length).map(k=>({k,d:parseYmd(k),N:VS[k].n,...vsStats(VS[k].f)}));
+  const rows=Object.keys(VS).sort().map(key=>({key,d:parseYmd(key),r:VS[key],...vsSum(VS[key])})).filter(x=>x.any).map(x=>({...x,full:!x.komp&&x.r.n===VS_FULL&&x.done,nevn:x.komp?x.tot:x.n}));
   if(!rows.length) return `<div class="card"><h3 style="margin-top:0">V-spill</h3><p class="muted" style="margin:0">Ingen V-spill logget ennå. Spillet ligger under mandagsøkta i <a href="#idag">I dag</a>.</p></div>`;
-  const last=rows.slice(-12), best=Math.max(0,...rows.filter(r=>r.N===VS_FULL&&r.n>=r.N).map(r=>r.p));
+  const last=rows.slice(-12), best=Math.max(0,...rows.filter(x=>x.full).map(x=>x.p));
   return `<div class="card"><h3 style="margin-top:0">V-spill</h3>
-   <p class="small muted" style="margin:0 0 4px">Egen utvikling fra mandag til mandag.${best?` Bestenotering: <b>${best} poeng</b>.`:""}</p>
-   <h4 class="small muted" style="margin:10px 0 2px">Poeng per mandag</h4>${vsBars(last,r=>r.p,r=>r.p)}
-   <h4 class="small muted" style="margin:12px 0 2px">Topper av forsøk</h4>${vsBars(last,r=>r.n?r.t/r.n:0,r=>`${r.t}/${r.n}`,1)}
-   <p class="small muted" style="margin:6px 0 0">Lysere søyle: lett uke eller ikke fullført.</p>
-   ${rows.slice().reverse().slice(0,8).map(r=>`<div class="entry"><div class="eh"><span>${DAY[isoWeek(r.d).dow]} ${fmt(r.d)}</span><small>uke ${isoWeek(r.d).w}</small></div>
-     <p>${r.p} poeng · ${r.t}/${r.n} topper${r.t?` · snitt V${r.snitt.toFixed(1).replace(".",",")}`:""}</p>${vsPremHtml(r.k)}</div>`).join("")}</div>`;
+   <p class="small muted" style="margin:0 0 4px">Egen utvikling fra mandag til mandag.${best?` Bestenotering: <b>${vsNum(best)} poeng</b>.`:""}</p>
+   <h4 class="small muted" style="margin:10px 0 2px">Poeng per mandag</h4>${vsBars(last,x=>x.p,x=>vsNum(x.p))}
+   <h4 class="small muted" style="margin:12px 0 2px">Topper</h4>${vsBars(last,x=>x.nevn?x.t/x.nevn:0,x=>`${x.t}/${x.nevn}`,1)}
+   <p class="small muted" style="margin:6px 0 0">Lysere søyle: færre forsøk, konkurranseformat eller ikke fullført.</p>
+   ${rows.slice().reverse().slice(0,8).map(x=>`<div class="entry"><div class="eh"><span>${DAY[isoWeek(x.d).dow]} ${fmt(x.d)}</span><small>uke ${isoWeek(x.d).w}${x.komp?" · konkurranseformat":""}</small></div>
+     <p>${vsNum(x.p)} poeng · ${x.t}/${x.nevn} topper${x.t?` · snitt V${vsNum(x.snitt)}`:""}</p>${vsPremHtml(x.key)}</div>`).join("")}</div>`;
 }
 vsLoad();
 /* ============ V-SPILL SLUTT ============ */
@@ -1253,7 +1296,7 @@ initDb();
 render();
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-20-193241";
+const APP_VERSION="2026-11-20-194112";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
