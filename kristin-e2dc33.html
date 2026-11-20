@@ -271,7 +271,7 @@ function session(date,noTheme){
     const kort=P==="f2"||P==="taper";
     s.title="Buldring styrke + Styrke A"; s.time=kort?"ca. 1 t 15":"ca. 1 t 35";
     s.blocks=[B("Oppvarming",[""],"25 min"),
-      B("Buldring styrke",["RPE 8.",(s.vs=P==="taper"?0:VS_FULL)?`<span class="key">${s.vs} forsøk</span> i V-spillet under økta, på buldre med 3–7 flytt. Topp gir poeng lik V-graden, ikke topp gir 0. 3–5 min pause.`:`${bld(n,per)} på buldre med 3–7 flytt. 3–5 min pause.`,P==="f2"?"Behold kvaliteten, mindre volum.":P==="taper"?"Få forsøk, høy kvalitet.":"Harde flytt med god kvalitet."],kort?"30 min":"45 min")];
+      B("Buldring styrke",["RPE 8.",(s.vs=P==="taper"?0:VS_FULL)?`<span class="key">${s.vs} tellende forsøk</span> i V-spillet under økta, på buldre med 3–7 flytt. Topp gir poeng lik V-graden, ikke topp gir 0. 3–5 min pause.`:`${bld(n,per)} på buldre med 3–7 flytt. 3–5 min pause.`,P==="f2"?"Behold kvaliteten, mindre volum.":P==="taper"?"Få forsøk, høy kvalitet.":"Harde flytt med god kvalitet."],kort?"30 min":"45 min")];
     s.extra=styrkeAHtml(i)+blkHtml(B("Nedtrapping",["Lett klatring."],"10 min"));
     s.fields=[["forsok","Forsøk"],["topper","Buldre toppet"],TRETT];
     break; }
@@ -377,7 +377,7 @@ function alerts(date){
 const METRIC={title:"Tretthet (1–10)",series:[{k:"tretthet",name:"tretthet",color:"#0f6b5f"}]};
 
 /* ============ V-SPILL START (mandag) ============ */
-/* Vanlig: N tellende forsøk, topp gir poeng lik V-graden, ikke topp gir 0.
+/* Vanlig: 10 tellende forsøk (resten av økta utenfor spillet), topp gir poeng lik V-graden, ikke topp gir 0.
    Konkurranseformat: 4 buldre, maks 4 forsøk per buldre, 10 % mindre for hvert ekstra forsøk.
    Franske grader regnes om til V. Lagres bare lokalt. */
 const VS_FONT=[["4",0],["5",1],["5+",2],["6A",3],["6A+",3],["6B",4],["6B+",4],["6C",5],["6C+",5],["7A",6],["7A+",7],["7B",8],["7B+",8],["7C",9],["7C+",10],["8A",11],["8A+",12],["8B",13]];
@@ -436,7 +436,7 @@ function vsCardK(ds){
 function vsCard(date,N){
   const ds=ymd(date); if(VS[ds]?VS[ds].m==="k":N==="k") return vsCardK(ds);
   const r=VS[ds]||{n:N,f:[]}, st=vsStats(r.f), left=Math.max(0,r.n-st.n), done=left===0;
-  let h=`<div class="card" id="vscard" data-n="${r.n}"><h3 style="margin-top:0">V-spill · ${r.n} forsøk</h3>
+  let h=`<div class="card" id="vscard" data-n="${r.n}"><h3 style="margin-top:0">V-spill · ${r.n} tellende forsøk</h3>
    <div class="vssum"><div><b>${st.p}</b><small>poeng</small></div><div><b>${st.t}/${st.n}</b><small>topper</small></div><div><b>${left}</b><small>forsøk igjen</small></div></div>`;
   if(!done){
     h+=`${vsPick()}
@@ -469,9 +469,10 @@ function vsClick(el){
     vsStore(); vsRefresh(); return true; }
   return false;
 }
-function vsItems(n,hov){ const rest=String(hov||"").replace(/^.*?maks, /,"");
+function vsItems(n,hov){ const h=String(hov||""), rest=h.replace(/^.*?maks, /,"");
   if(n==="k") return [`<span class="key">4 buldre i konkurranseformat</span>, maks 4 forsøk per buldre.`,VS_KTXT,...(rest?[rest]:[])];
-  return [`<span class="key">${n} forsøk</span> i V-spillet under økta. Topp gir poeng lik V-graden, ikke topp gir 0.`,rest]; }
+  const m=/(\d+) forsøk, maks (\d+) per (buldre|problem)/.exec(h), tot=m?+m[1]:0;
+  return [`<span class="key">${n} tellende forsøk</span> i V-spillet under økta – bestem før forsøket at det teller. Topp gir poeng lik V-graden, ikke topp gir 0.`,...(tot>n?[`Resten utenfor spillet: <span class="key">maks ${tot} forsøk totalt</span>, maks ${m[2]} per ${m[3]}.`]:[]),rest]; }
 { const o=reportDetail; reportDetail=function(e){ const t=o(e), r=e&&e.dato&&VS[e.dato]; if(!r) return t; const st=vsSum(r); if(!st.any) return t; const x=`V-spill${st.komp?" (konkurranseformat)":""} ${vsNum(st.p)} poeng, ${st.t}/${st.komp?st.tot:st.n} topper`; return t?x+" · "+t:x; }; }
 function vsTidy(){ const c=document.getElementById("vscard"), f=document.getElementById("logform"); if(!c||!f) return;
   f.querySelectorAll('#fAntall,#fTopper,[data-field="antall"],[data-field="topper"],[data-field="forsok"]').forEach(x=>{ if(x.parentElement) x.parentElement.style.display="none"; });
@@ -1120,7 +1121,7 @@ render();
 
 
 /* ============ OPPDATERING ============ */
-const APP_VERSION="2026-11-20-194112";
+const APP_VERSION="2026-11-20-194332";
 function verLabel(v){ const m=/^(\d{4})-(\d\d)-(\d\d)/.exec(v); return m?`Planversjon ${+m[3]}. ${MON[+m[2]-1]} ${m[1]}`:""; }
 async function checkUpdate(){
   if(APP_VERSION.startsWith("__")) return;
