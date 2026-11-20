@@ -38,5 +38,9 @@
  "einar": {
   "versjon": "2026-11-14-170931",
   "melding": "Appen flytter deg nå automatisk opp i nivå, og ned ved logget oppbluss."
+ },
+ "kare": {
+  "versjon": "2026-11-20-192522",
+  "melding": "Testapp: V-spill på mandagsøkta."
  }
 }
